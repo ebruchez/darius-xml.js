@@ -26,7 +26,6 @@ import org.apache.xerces.impl.XMLDocumentScannerImpl;
 import org.apache.xerces.impl.XMLEntityManager;
 import org.apache.xerces.impl.XMLErrorReporter;
 import org.apache.xerces.impl.XMLNSDocumentScannerImpl;
-import org.apache.xerces.impl.dv.DTDDVFactory;
 import org.apache.xerces.impl.msg.XMLMessageFormatter;
 import org.apache.xerces.impl.validation.ValidationManager;
 import org.apache.xerces.util.SymbolTable;
@@ -165,9 +164,6 @@ public class NonValidatingConfiguration
 
     /** Grammar pool. */
     protected XMLGrammarPool fGrammarPool;
-
-    /** Datatype validator factory. */
-    protected DTDDVFactory fDatatypeValidatorFactory;
 
     // components (configurable)
 
@@ -334,11 +330,6 @@ public class NonValidatingConfiguration
             }
         }
 
-        fDatatypeValidatorFactory = createDatatypeValidatorFactory();
-        if (fDatatypeValidatorFactory != null) {
-			fProperties.put(DATATYPE_VALIDATOR_FACTORY,
-                        fDatatypeValidatorFactory);
-        }
         fValidationManager = createValidationManager();
 
         if (fValidationManager != null) {
@@ -782,10 +773,6 @@ public class NonValidatingConfiguration
         return new XMLDTDScannerImpl();
     } // createDTDScanner():XMLDTDScanner
 
-    /** Create a datatype validator factory. */
-    protected DTDDVFactory createDatatypeValidatorFactory() {
-        return DTDDVFactory.getInstance();
-    } // createDatatypeValidatorFactory():DatatypeValidatorFactory
     protected ValidationManager createValidationManager(){
         return new ValidationManager();
     }

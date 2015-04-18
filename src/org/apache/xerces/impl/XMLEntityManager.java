@@ -46,7 +46,6 @@ import org.apache.xerces.impl.msg.XMLMessageFormatter;
 import org.apache.xerces.impl.validation.ValidationManager;
 import org.apache.xerces.util.AugmentationsImpl;
 import org.apache.xerces.util.EncodingMap;
-import org.apache.xerces.util.HTTPInputSource;
 import org.apache.xerces.util.SecurityManager;
 import org.apache.xerces.util.SymbolTable;
 import org.apache.xerces.util.URI;
@@ -969,25 +968,6 @@ public class XMLEntityManager
                 else {
                     boolean followRedirects = true;
                     
-                    // setup URLConnection if we have an HTTPInputSource
-                    if (xmlInputSource instanceof HTTPInputSource) {
-                        final HttpURLConnection urlConnection = (HttpURLConnection) connect;
-                        final HTTPInputSource httpInputSource = (HTTPInputSource) xmlInputSource;
-                        
-                        // set request properties
-                        Iterator propIter = httpInputSource.getHTTPRequestProperties();
-                        while (propIter.hasNext()) {
-                            Map.Entry entry = (Map.Entry) propIter.next();
-                            urlConnection.setRequestProperty((String) entry.getKey(), (String) entry.getValue());
-                        }
-                        
-                        // set preference for redirection
-                        followRedirects = httpInputSource.getFollowHTTPRedirects();
-                        if (!followRedirects) {
-                            urlConnection.setInstanceFollowRedirects(followRedirects);
-                        }
-                    }
-                    
                     stream = connect.getInputStream();
                     
                     // REVISIT: If the URLConnection has external encoding
@@ -1191,21 +1171,12 @@ public class XMLEntityManager
 
     // set version of scanner to use
     public void setScannerVersion(short version) {
-        if(version == Constants.XML_VERSION_1_0) {
-            if(fXML10EntityScanner == null) {
-                fXML10EntityScanner = new XMLEntityScanner();
-            }
-			fXML10EntityScanner.reset(fSymbolTable, this, fErrorReporter);
-            fEntityScanner = fXML10EntityScanner;
-            fEntityScanner.setCurrentEntity(fCurrentEntity);
-        } else {
-            if(fXML11EntityScanner == null) {
-                fXML11EntityScanner = new XML11EntityScanner();
-            }
-			fXML11EntityScanner.reset(fSymbolTable, this, fErrorReporter);
-            fEntityScanner = fXML11EntityScanner;
-            fEntityScanner.setCurrentEntity(fCurrentEntity);
+        if(fXML10EntityScanner == null) {
+            fXML10EntityScanner = new XMLEntityScanner();
         }
+        fXML10EntityScanner.reset(fSymbolTable, this, fErrorReporter);
+        fEntityScanner = fXML10EntityScanner;
+        fEntityScanner.setCurrentEntity(fCurrentEntity);
     } // setScannerVersion(short)
 
     /** Returns the entity scanner. */
@@ -1266,11 +1237,12 @@ public class XMLEntityManager
 				parser_settings = true;
 		}
 
-		if (!parser_settings) {
-			// parser settings have not been changed
-			reset();
-			return;
-		}
+// @ebruchez: I don't understand how we get NonValidatingConfiguration to return true the first time. Commenting out for now.
+//		if (!parser_settings) {
+//			// parser settings have not been changed
+//			reset();
+//			return;
+//		}
 
         // sax features
         try {

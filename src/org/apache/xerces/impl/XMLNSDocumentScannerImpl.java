@@ -751,16 +751,7 @@ extends XMLDocumentScannerImpl {
                 fBindNamespaces = true;
             }
             else if (!fDTDValidator.hasGrammar()) {
-                fBindNamespaces = true;
-                fPerformValidation = fDTDValidator.validate();
-                // re-configure pipeline
-                XMLDocumentSource source = fDTDValidator.getDocumentSource();
-                XMLDocumentHandler handler = fDTDValidator.getDocumentHandler();
-                source.setDocumentHandler(handler);
-                if (handler != null)
-                    handler.setDocumentSource(source);
-                fDTDValidator.setDocumentSource(null);
-                fDTDValidator.setDocumentHandler(null);
+                throw new UnsupportedOperationException();
             }
         } // reconfigurePipeline()
     }

@@ -221,11 +221,12 @@ public abstract class XMLScanner
 			fParserSettings = true;
 		}
 
-		if (!fParserSettings) {
-			// parser settings have not been changed
-			init();
-			return;
-		}
+// @ebruchez: I don't understand how we get NonValidatingConfiguration to return true the first time. Commenting out for now.
+//		if (!fParserSettings) {
+//			// parser settings have not been changed
+//			init();
+//			return;
+//		}
 
         // Xerces properties
         fSymbolTable = (SymbolTable)componentManager.getProperty(SYMBOL_TABLE);
