@@ -17,21 +17,13 @@
 
 package org.orbeon.darius.impl
 
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.io.OutputStream
 import java.io.Reader
 import java.io.StringReader
-import java.net.HttpURLConnection
 import java.net.URI
-import java.net.URL
 import java.util.Locale
-import java.util.StringTokenizer
-
-import scala.collection.mutable
 
 import org.orbeon.darius.impl.XMLEntityManager._
 import org.orbeon.darius.impl.io.ASCIIReader
@@ -56,6 +48,7 @@ import org.orbeon.darius.xni.parser.XMLConfigurationException
 import org.orbeon.darius.xni.parser.XMLEntityResolver
 import org.orbeon.darius.xni.parser.XMLInputSource
 
+import scala.collection.mutable
 import scala.util.control.Breaks
 
 object XMLEntityManager {
@@ -239,52 +232,6 @@ object XMLEntityManager {
     }
     val baseURI = new URI(baseSystemId)//, true
     baseURI.resolve(systemURI).toString
-  }
-
-  def createOutputStream(uri: String): OutputStream = {
-    val expanded = XMLEntityManager.expandSystemId(uri, null, strict = true)
-    val url = new URL(if (expanded ne null) expanded else uri)
-    var out: OutputStream = null
-    val protocol = url.getProtocol
-    val host = url.getHost
-    if (protocol == "file" && 
-      ((host eq null) || host.length == 0 || host == "localhost")) {
-      val file = new File(getPathWithoutEscapes(url.getPath))
-      if (!file.exists()) {
-        val parent = file.getParentFile
-        if ((parent ne null) && ! parent.exists()) {
-          parent.mkdirs()
-        }
-      }
-      out = new FileOutputStream(file)
-    } else {
-      val urlCon = url.openConnection()
-      urlCon.setDoInput(false)
-      urlCon.setDoOutput(true)
-      urlCon.setUseCaches(false)
-      urlCon match {
-        case httpCon: HttpURLConnection ⇒ httpCon.setRequestMethod("PUT")
-        case _ ⇒
-      }
-      out = urlCon.getOutputStream
-    }
-    out
-  }
-
-  private def getPathWithoutEscapes(origPath: String): String = {
-    if ((origPath ne null) && origPath.length != 0 && origPath.indexOf('%') != -1) {
-      val tokenizer = new StringTokenizer(origPath, "%")
-      val result = new StringBuffer(origPath.length)
-      val size = tokenizer.countTokens()
-      result.append(tokenizer.nextToken())
-      for (i ← 1 until size) {
-        val token = tokenizer.nextToken()
-        result.append(Integer.valueOf(token.substring(0, 2), 16).intValue().toChar)
-        result.append(token.substring(2))
-      }
-      return result.toString
-    }
-    origPath
   }
 
   /**
@@ -1203,7 +1150,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       literal: Boolean, 
       isExternal: Boolean): String = {
     val publicId = xmlInputSource.getPublicId
-    var literalSystemId = xmlInputSource.getSystemId
+    val literalSystemId = xmlInputSource.getSystemId
     var baseSystemId = xmlInputSource.getBaseSystemId
     var encoding = xmlInputSource.getEncoding
     val encodingExternallySpecified = encoding ne null
@@ -1211,29 +1158,13 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
     fTempByteBuffer = null
     var stream: InputStream = null
     var reader = xmlInputSource.getCharacterStream
-    var expandedSystemId = expandSystemId(literalSystemId, baseSystemId, fStrictURI)
+    val expandedSystemId = expandSystemId(literalSystemId, baseSystemId, fStrictURI)
     if (baseSystemId eq null) {
       baseSystemId = expandedSystemId
     }
     if (reader eq null) {
       stream = xmlInputSource.getByteStream
-      if (stream eq null) {
-        val location = new URL(expandedSystemId)
-        val connect = location.openConnection()
-        if (!connect.isInstanceOf[HttpURLConnection]) {
-          stream = connect.getInputStream
-        } else {
-          val followRedirects = true
-          stream = connect.getInputStream
-          if (followRedirects) {
-            val redirect = connect.getURL.toString
-            if (redirect != expandedSystemId) {
-              literalSystemId = redirect
-              expandedSystemId = redirect
-            }
-          }
-        }
-      }
+      assert(stream ne null)
       val rewindableStream = new RewindableInputStream(stream)
       stream = rewindableStream
       if (encoding eq null) {
