@@ -17,7 +17,6 @@
 
 package org.orbeon.darius.util
 
-import java.util.Locale
 import java.util.MissingResourceException
 import java.util.ResourceBundle
 
@@ -26,10 +25,8 @@ object DatatypeMessageFormatter {
   private val BASE_NAME = "org.orbeon.darius.impl.msg.DatatypeMessages"
 
   /**
-   * Formats a message with the specified arguments using the given
-   * locale information.
+   * Formats a message with the specified arguments.
    *
-   * @param _locale   The locale of the message.
    * @param key       The message key.
    * @param arguments The message replacement text arguments. The order
    *                  of the arguments must match that of the placeholders
@@ -40,12 +37,8 @@ object DatatypeMessageFormatter {
    * @throws MissingResourceException Thrown if the message with the
    *                                  specified key cannot be found.
    */
-  def formatMessage(_locale: Locale, key: String, arguments: Array[Any]): String = {
-    var locale = _locale
-    if (locale eq null) {
-      locale = Locale.getDefault
-    }
-    val resourceBundle = ResourceBundle.getBundle(BASE_NAME, locale)
+  def formatMessage(key: String, arguments: Array[Any]): String = {
+    val resourceBundle = ResourceBundle.getBundle(BASE_NAME)
     var msg: String = null
     try {
       msg = resourceBundle.getString(key)

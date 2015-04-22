@@ -23,7 +23,6 @@ import java.io.InputStreamReader
 import java.io.Reader
 import java.io.StringReader
 import java.net.URI
-import java.util.Locale
 
 import org.orbeon.darius.impl.XMLEntityManager._
 import org.orbeon.darius.impl.io.ASCIIReader
@@ -1191,7 +1190,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
           reader = createReader(stream, encoding, isBigEndian)
         }
       } else {
-        encoding = encoding.toUpperCase(Locale.ENGLISH)
+        encoding = encoding.toUpperCase//Locale.ENGLISH
         if (encoding == "UTF-8") {
           val b3 = new Array[Int](3)
           var count = 0
@@ -1678,7 +1677,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
     if (encoding == "UTF-16" && (isBigEndian ne null)) {
       return createUTF16Reader(inputStream, isBigEndian.booleanValue())
     }
-    val ENCODING = encoding.toUpperCase(Locale.ENGLISH)
+    val ENCODING = encoding.toUpperCase//Locale.ENGLISH
     if (ENCODING == "UTF-8") {
       return createUTF8Reader(inputStream)
     }
@@ -1755,8 +1754,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
     if (fTempByteBuffer eq null) {
       fTempByteBuffer = fSmallByteBufferPool.getBuffer
     }
-    new UTF8Reader(stream, fTempByteBuffer, fErrorReporter.getMessageFormatter(XMLMessageFormatter.XML_DOMAIN), 
-      fErrorReporter.getLocale)
+    new UTF8Reader(stream, fTempByteBuffer, fErrorReporter.getMessageFormatter(XMLMessageFormatter.XML_DOMAIN))
   }
 
   /**
@@ -1772,8 +1770,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       fSmallByteBufferPool.returnBuffer(fTempByteBuffer)
       fTempByteBuffer = fLargeByteBufferPool.getBuffer
     }
-    new UTF16Reader(stream, fTempByteBuffer, isBigEndian, fErrorReporter.getMessageFormatter(XMLMessageFormatter.XML_DOMAIN), 
-      fErrorReporter.getLocale)
+    new UTF16Reader(stream, fTempByteBuffer, isBigEndian, fErrorReporter.getMessageFormatter(XMLMessageFormatter.XML_DOMAIN))
   }
 
   /**
@@ -1786,8 +1783,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
     if (fTempByteBuffer eq null) {
       fTempByteBuffer = fSmallByteBufferPool.getBuffer
     }
-    new ASCIIReader(stream, fTempByteBuffer, fErrorReporter.getMessageFormatter(XMLMessageFormatter.XML_DOMAIN), 
-      fErrorReporter.getLocale)
+    new ASCIIReader(stream, fTempByteBuffer, fErrorReporter.getMessageFormatter(XMLMessageFormatter.XML_DOMAIN))
   }
 
   /**

@@ -17,10 +17,6 @@
 
 package org.orbeon.darius.impl
 
-import java.util.Locale
-
-import scala.collection.mutable
-
 import org.orbeon.darius.impl.XMLErrorReporter._
 import org.orbeon.darius.util.DefaultErrorHandler
 import org.orbeon.darius.util.MessageFormatter
@@ -30,6 +26,8 @@ import org.orbeon.darius.xni.parser.XMLComponent
 import org.orbeon.darius.xni.parser.XMLComponentManager
 import org.orbeon.darius.xni.parser.XMLErrorHandler
 import org.orbeon.darius.xni.parser.XMLParseException
+
+import scala.collection.mutable
 
 object XMLErrorReporter {
 
@@ -119,11 +117,6 @@ object XMLErrorReporter {
 class XMLErrorReporter extends XMLComponent {
 
   /**
-   The locale to be used to format error messages.
-   */
-  protected var fLocale: Locale = _
-
-  /**
    Mapping of Message formatters for domains.
    */
   protected var fMessageFormatters = new mutable.HashMap[String, MessageFormatter]()
@@ -150,22 +143,6 @@ class XMLErrorReporter extends XMLComponent {
    * reported by users of the parser.
    */
   protected var fDefaultErrorHandler: XMLErrorHandler = _
-
-  /**
-   * Sets the current locale.
-   *
-   * @param locale The new locale.
-   */
-  def setLocale(locale: Locale): Unit = {
-    fLocale = locale
-  }
-
-  /**
-   * Gets the current locale.
-   *
-   * @return the current Locale
-   */
-  def getLocale: Locale = fLocale
 
   /**
    * Sets the document locator.
@@ -209,9 +186,7 @@ class XMLErrorReporter extends XMLComponent {
   }
 
   /**
-   * Reports an error. The error message passed to the error handler
-   * is formatted for the locale by the message formatter installed
-   * for the specified error domain.
+   * Reports an error.
    *
    * @param domain    The error domain.
    * @param key       The key of the error message.
@@ -228,9 +203,7 @@ class XMLErrorReporter extends XMLComponent {
   }
 
   /**
-   * Reports an error. The error message passed to the error handler
-   * is formatted for the locale by the message formatter installed
-   * for the specified error domain.
+   * Reports an error.
    *
    * @param domain    The error domain.
    * @param key       The key of the error message.
@@ -288,7 +261,7 @@ class XMLErrorReporter extends XMLComponent {
     val messageFormatter = getMessageFormatter(domain)
     var message: String = null
     if (messageFormatter ne null) {
-      message = messageFormatter.formatMessage(fLocale, key, arguments)
+      message = messageFormatter.formatMessage(key, arguments)
     } else {
       val str = new StringBuffer()
       str.append(domain)
@@ -437,7 +410,7 @@ class XMLErrorReporter extends XMLComponent {
   }
 
   /**
-   * Get the internal XMLErrrorHandler.
+   * Get the internal XMLErrorHandler.
    */
   def getErrorHandler: XMLErrorHandler = fErrorHandler
 }

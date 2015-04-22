@@ -20,7 +20,6 @@ package org.orbeon.darius.impl.io
 import java.io.IOException
 import java.io.InputStream
 import java.io.Reader
-import java.util.Locale
 
 import org.orbeon.darius.impl.io.UTF16Reader._
 import org.orbeon.darius.impl.msg.XMLMessageFormatter
@@ -38,10 +37,10 @@ object UTF16Reader {
  * A UTF-16 reader. Can also be used for UCS-2 (i.e. ISO-10646-UCS-2).
  */
 class UTF16Reader(protected val fInputStream: InputStream, 
-    protected val fBuffer: Array[Byte], 
-    protected val fIsBigEndian: Boolean, 
-    val fFormatter: MessageFormatter, 
-    val fLocale: Locale) extends Reader {
+  protected val fBuffer      : Array[Byte], 
+  protected val fIsBigEndian : Boolean, 
+  val fFormatter             : MessageFormatter
+) extends Reader {
 
   /**
    * Constructs a UTF-16 reader from the specified input stream
@@ -51,15 +50,13 @@ class UTF16Reader(protected val fInputStream: InputStream,
    * @param size              The initial buffer size.
    * @param isBigEndian       The byte order.
    * @param messageFormatter  Given MessageFormatter
-   * @param locale            Locale to use for messages
    */
   def this(inputStream: InputStream, 
-      size: Int, 
-      isBigEndian: Boolean, 
-      messageFormatter: MessageFormatter, 
-      locale: Locale) {
-    this(inputStream, new Array[Byte](size), isBigEndian, messageFormatter, locale)
-  }
+      size             : Int, 
+      isBigEndian      : Boolean, 
+      messageFormatter : MessageFormatter
+  ) =
+    this(inputStream, new Array[Byte](size), isBigEndian, messageFormatter)
   
   /**
    * Constructs a UTF-16 reader from the specified input stream
@@ -68,9 +65,8 @@ class UTF16Reader(protected val fInputStream: InputStream,
    * @param inputStream The input stream.
    * @param isBigEndian The byte order.
    */
-  def this(inputStream: InputStream, isBigEndian: Boolean) {
-    this(inputStream, DEFAULT_BUFFER_SIZE, isBigEndian, new XMLMessageFormatter(), Locale.getDefault)
-  }
+  def this(inputStream: InputStream, isBigEndian: Boolean) =
+    this(inputStream, DEFAULT_BUFFER_SIZE, isBigEndian, new XMLMessageFormatter())
 
   /**
    * Constructs a UTF-16 reader from the specified input stream
@@ -79,12 +75,11 @@ class UTF16Reader(protected val fInputStream: InputStream,
    * @param inputStream The input stream.
    * @param isBigEndian The byte order.
    */
-  def this(inputStream: InputStream, 
-      isBigEndian: Boolean, 
-      messageFormatter: MessageFormatter, 
-      locale: Locale) {
-    this(inputStream, DEFAULT_BUFFER_SIZE, isBigEndian, messageFormatter, locale)
-  }
+  def this(inputStream : InputStream, 
+    isBigEndian        : Boolean, 
+    messageFormatter   : MessageFormatter
+  ) =
+    this(inputStream, DEFAULT_BUFFER_SIZE, isBigEndian, messageFormatter)
 
   /**
    * Read a single character.  This method will block until a character is
@@ -206,7 +201,7 @@ class UTF16Reader(protected val fInputStream: InputStream,
    *                          or if some other I/O error occurs
    */
   override def mark(readAheadLimit: Int): Unit = {
-    throw new IOException(fFormatter.formatMessage(fLocale, "OperationNotSupported", Array("mark()", "UTF-16")))
+    throw new IOException(fFormatter.formatMessage("OperationNotSupported", Array("mark()", "UTF-16")))
   }
 
   /**
@@ -272,7 +267,7 @@ class UTF16Reader(protected val fInputStream: InputStream,
    Throws an exception for expected byte.
    */
   private def expectedTwoBytes(): Unit = {
-    throw new MalformedByteSequenceException(fFormatter, fLocale, XMLMessageFormatter.XML_DOMAIN, "ExpectedByte", 
+    throw new MalformedByteSequenceException(fFormatter, XMLMessageFormatter.XML_DOMAIN, "ExpectedByte", 
       Array("2", "2"))
   }
 }

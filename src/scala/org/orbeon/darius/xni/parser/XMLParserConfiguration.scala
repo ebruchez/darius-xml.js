@@ -18,7 +18,6 @@
 package org.orbeon.darius.xni.parser
 
 import java.io.IOException
-import java.util.Locale
 
 import org.orbeon.darius.xni.XMLDTDContentModelHandler
 import org.orbeon.darius.xni.XMLDTDHandler
@@ -221,19 +220,4 @@ trait XMLParserConfiguration extends XMLComponentManager {
    Returns the registered entity resolver.
    */
   def getEntityResolver: XMLEntityResolver
-
-  /**
-   * Set the locale to use for messages.
-   *
-   * @param locale The locale object to use for localization of messages.
-   *
-   * @throws XNIException Thrown if the parser does not support the
-   *                         specified locale.
-   */
-  def setLocale(locale: Locale): Unit
-
-  /**
-   Returns the locale.
-   */
-  def getLocale: Locale
 }

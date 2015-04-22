@@ -18,7 +18,6 @@
 package org.orbeon.darius.parsers
 
 import java.io.IOException
-import java.util.Locale
 
 import org.orbeon.darius.impl.Constants
 import org.orbeon.darius.impl.Constants._
@@ -133,11 +132,6 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
     extends ParserConfigurationSettings(parentSettings) with XMLParserConfiguration {
   
   import BasicParserConfiguration._
-
-  /**
-   Locale.
-   */
-  protected var fLocale: Locale = _
 
   /**
    Components.
@@ -395,23 +389,6 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
     }
     super.setProperty(propertyId, value)
   }
-
-  /**
-   * Set the locale to use for messages.
-   *
-   * @param locale The locale object to use for localization of messages.
-   *
-   * @throws XNIException Thrown if the parser does not support the
-   *                         specified locale.
-   */
-  def setLocale(locale: Locale): Unit = {
-    fLocale = locale
-  }
-
-  /**
-   Returns the locale.
-   */
-  def getLocale: Locale = fLocale
 
   /**
    * reset all components before parsing and namespace context

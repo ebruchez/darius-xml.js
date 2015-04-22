@@ -17,19 +17,16 @@
 
 package org.orbeon.darius.impl.msg
 
-import java.util.Locale
 import java.util.MissingResourceException
 import java.util.ResourceBundle
 
 import org.orbeon.darius.util.MessageFormatter
 
 object XMLMessageFormatter {
-
   /**
    * The domain of messages concerning the XML 1.0 specification.
    */
   val XML_DOMAIN = "http://www.w3.org/TR/1998/REC-xml-19980210"
-
   val XMLNS_DOMAIN = "http://www.w3.org/TR/1999/REC-xml-names-19990114"
 }
 
@@ -39,34 +36,10 @@ object XMLMessageFormatter {
  */
 class XMLMessageFormatter extends MessageFormatter {
 
-  private var fLocale: Locale = null
-
   private var fResourceBundle: ResourceBundle = null
 
-  /**
-   * Formats a message with the specified arguments using the given
-   * locale information.
-   *
-   * @param _locale    The locale of the message.
-   * @param key       The message key.
-   * @param arguments The message replacement text arguments. The order
-   *                  of the arguments must match that of the placeholders
-   *                  in the actual message.
-   *
-   * @return Returns the formatted message.
-   *
-   * @throws MissingResourceException Thrown if the message with the
-   *                                  specified key cannot be found.
-   */
-  def formatMessage(_locale: Locale, key: String, arguments: Array[Any]): String = {
-    var locale = _locale
-    if (locale eq null) {
-      locale = Locale.getDefault
-    }
-    if (locale != fLocale) {
-      fResourceBundle = ResourceBundle.getBundle("org.orbeon.darius.impl.msg.XMLMessages", locale)
-      fLocale = locale
-    }
+  def formatMessage(key: String, arguments: Array[Any]): String = {
+    fResourceBundle = ResourceBundle.getBundle("org.orbeon.darius.impl.msg.XMLMessages")
     var msg: String = null
     try {
       msg = fResourceBundle.getString(key)

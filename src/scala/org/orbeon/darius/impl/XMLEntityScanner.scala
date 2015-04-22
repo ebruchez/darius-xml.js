@@ -19,7 +19,6 @@ package org.orbeon.darius.impl
 
 import java.io.EOFException
 import java.io.IOException
-import java.util.Locale
 
 import org.orbeon.darius.impl.XMLEntityScanner._
 import org.orbeon.darius.impl.io.UCSReader
@@ -30,7 +29,6 @@ import org.orbeon.darius.util.XMLStringBuffer
 import org.orbeon.darius.xni.QName
 import org.orbeon.darius.xni.XMLLocator
 import org.orbeon.darius.xni.XMLString
-import org.orbeon.darius.xni.XMLLocator
 
 import scala.util.control.Breaks
 
@@ -100,7 +98,7 @@ class XMLEntityScanner extends XMLLocator {
     if (fCurrentEntity.stream ne null) {
       if ((fCurrentEntity.encoding eq null) || fCurrentEntity.encoding != encoding) {
         if ((fCurrentEntity.encoding ne null) && fCurrentEntity.encoding.startsWith("UTF-16")) {
-          val ENCODING = encoding.toUpperCase(Locale.ENGLISH)
+          val ENCODING = encoding.toUpperCase//Locale.ENGLISH
           if (ENCODING == "UTF-16") return
           if (ENCODING == "ISO-10646-UCS-4") {
             fCurrentEntity.reader = if (fCurrentEntity.encoding == "UTF-16BE") new UCSReader(fCurrentEntity.stream, 

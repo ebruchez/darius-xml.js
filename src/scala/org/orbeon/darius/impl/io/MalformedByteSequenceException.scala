@@ -17,8 +17,6 @@
 
 package org.orbeon.darius.impl.io
 
-import java.util.Locale
-
 import org.orbeon.darius.util.MessageFormatter
 
 /**
@@ -28,7 +26,6 @@ import org.orbeon.darius.util.MessageFormatter
  */
 class MalformedByteSequenceException(
   var fFormatter : MessageFormatter, 
-  var fLocale    : Locale,
   var fDomain    : String, 
   var fKey       : String, 
   var fArguments : Array[Any]
@@ -70,9 +67,8 @@ class MalformedByteSequenceException(
   override def getMessage: String = {
     synchronized {
       if (fMessage eq null) {
-        fMessage = fFormatter.formatMessage(fLocale, fKey, fArguments)
+        fMessage = fFormatter.formatMessage(fKey, fArguments)
         fFormatter = null
-        fLocale = null
       }
       fMessage
     }

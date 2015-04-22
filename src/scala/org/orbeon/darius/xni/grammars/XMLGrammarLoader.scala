@@ -18,9 +18,7 @@
 package org.orbeon.darius.xni.grammars
 
 import java.io.IOException
-import java.util.Locale
 
-import org.orbeon.darius.xni.XNIException
 import org.orbeon.darius.xni.parser.XMLConfigurationException
 import org.orbeon.darius.xni.parser.XMLEntityResolver
 import org.orbeon.darius.xni.parser.XMLErrorHandler
@@ -88,21 +86,6 @@ trait XMLGrammarLoader {
    *                  recognized or cannot be set.
    */
   def setProperty(propertyId: String, state: AnyRef): Unit
-
-  /**
-   * Set the locale to use for messages.
-   *
-   * @param locale The locale object to use for localization of messages.
-   *
-   * @throws XNIException Thrown if the parser does not support the
-   *                         specified locale.
-   */
-  def setLocale(locale: Locale): Unit
-
-  /**
-   Return the Locale the XMLGrammarLoader is using.
-   */
-  def getLocale: Locale
 
   /**
    * Sets the error handler.

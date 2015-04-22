@@ -18,7 +18,6 @@
 package org.orbeon.darius.parsers
 
 import java.io.IOException
-import java.util.Locale
 
 import org.orbeon.darius.impl.Constants
 import org.orbeon.darius.impl.XMLDTDScannerImpl
@@ -141,11 +140,6 @@ protected[parsers] object NonValidatingConfiguration {
   val SCHEMA_VALIDATOR = Constants.XERCES_PROPERTY_PREFIX + Constants.SCHEMA_VALIDATOR_PROPERTY
 
   /**
-   Property identifier: locale.
-   */
-  val LOCALE = Constants.XERCES_PROPERTY_PREFIX + Constants.LOCALE_PROPERTY
-
-  /**
    Set to true and recompile to print exception stack trace.
    */
   private val PRINT_EXCEPTION_STACK_TRACE = false
@@ -222,7 +216,7 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
 
   override val recognizedFeatures = Array(PARSER_SETTINGS, NAMESPACES, CONTINUE_AFTER_FATAL_ERROR)
 
-  override val recognizedProperties = Array(ERROR_REPORTER, ENTITY_MANAGER, DOCUMENT_SCANNER, DTD_SCANNER, DTD_VALIDATOR, NAMESPACE_BINDER, XMLGRAMMAR_POOL, DATATYPE_VALIDATOR_FACTORY, VALIDATION_MANAGER, LOCALE)
+  override val recognizedProperties = Array(ERROR_REPORTER, ENTITY_MANAGER, DOCUMENT_SCANNER, DTD_SCANNER, DTD_VALIDATOR, NAMESPACE_BINDER, XMLGRAMMAR_POOL, DATATYPE_VALIDATOR_FACTORY, VALIDATION_MANAGER)
   
   locally {
     addRecognizedFeatures(recognizedFeatures)
@@ -262,12 +256,6 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
       fErrorReporter.putMessageFormatter(XMLMessageFormatter.XML_DOMAIN, xmft)
       fErrorReporter.putMessageFormatter(XMLMessageFormatter.XMLNS_DOMAIN, xmft)
     }
-  
-    try {
-      setLocale(Locale.getDefault)
-    } catch {
-      case e: XNIException ⇒ 
-    }
   }
 
   def this() {
@@ -287,24 +275,10 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
     super.setFeature(featureId, state)
   }
 
-  override def getProperty(propertyId: String): Any = {
-    if (LOCALE == propertyId) {
-      return getLocale
-    }
-    super.getProperty(propertyId)
-  }
 
   override def setProperty(propertyId: String, value: AnyRef): Unit = {
     fConfigUpdated = true
-    if (LOCALE == propertyId) {
-      setLocale(value.asInstanceOf[Locale])
-    }
     super.setProperty(propertyId, value)
-  }
-
-  override def setLocale(locale: Locale): Unit = {
-    super.setLocale(locale)
-    fErrorReporter.setLocale(locale)
   }
 
   override def getFeature(featureId: String): Boolean = {

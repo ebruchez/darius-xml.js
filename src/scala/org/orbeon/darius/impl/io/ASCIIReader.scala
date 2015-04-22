@@ -20,7 +20,6 @@ package org.orbeon.darius.impl.io
 import java.io.IOException
 import java.io.InputStream
 import java.io.Reader
-import java.util.Locale
 
 import org.orbeon.darius.impl.msg.XMLMessageFormatter
 import org.orbeon.darius.util.MessageFormatter
@@ -40,8 +39,7 @@ object ASCIIReader {
 class ASCIIReader(
   protected val fInputStream : InputStream, 
   protected val fBuffer      : Array[Byte], 
-  val fFormatter             : MessageFormatter, 
-  val fLocale                : Locale
+  val fFormatter             : MessageFormatter 
 ) extends Reader {
   
   /**
@@ -51,15 +49,13 @@ class ASCIIReader(
    * @param inputStream The input stream.
    * @param size        The initial buffer size.
    * @param messageFormatter  the MessageFormatter to use to message reporting.
-   * @param locale    the Locale for which messages are to be reported
    */
   def this(
     inputStream      : InputStream, 
     size             : Int, 
-    messageFormatter : MessageFormatter, 
-    locale           : Locale
+    messageFormatter : MessageFormatter 
   ) =
-    this(inputStream, new Array[Byte](size), messageFormatter, locale)
+    this(inputStream, new Array[Byte](size), messageFormatter)
   
   /**
    * Constructs an ASCII reader from the specified input stream
@@ -67,10 +63,9 @@ class ASCIIReader(
    *
    * @param inputStream The input stream.
    * @param messageFormatter  the MessageFormatter to use to message reporting.
-   * @param locale    the Locale for which messages are to be reported
    */
-  def this(inputStream: InputStream, messageFormatter: MessageFormatter, locale: Locale) =
-    this(inputStream, ASCIIReader.DEFAULT_BUFFER_SIZE, messageFormatter, locale)
+  def this(inputStream: InputStream, messageFormatter: MessageFormatter) =
+    this(inputStream, ASCIIReader.DEFAULT_BUFFER_SIZE, messageFormatter)
 
   /**
    * Read a single character.  This method will block until a character is
@@ -90,7 +85,6 @@ class ASCIIReader(
     if (b0 >= 0x80) {
       throw new MalformedByteSequenceException(
         fFormatter, 
-        fLocale, 
         XMLMessageFormatter.XML_DOMAIN,
         "InvalidASCII", 
         Array(b0.toString)
@@ -124,7 +118,7 @@ class ASCIIReader(
     for (i ← 0 until count) {
       val b0 = fBuffer(i)
       if (b0 < 0) {
-        throw new MalformedByteSequenceException(fFormatter, fLocale, XMLMessageFormatter.XML_DOMAIN, 
+        throw new MalformedByteSequenceException(fFormatter, XMLMessageFormatter.XML_DOMAIN, 
           "InvalidASCII", Array(Integer toString b0 & 0x0FF))
       }
       ch(offset + i) = b0.toChar

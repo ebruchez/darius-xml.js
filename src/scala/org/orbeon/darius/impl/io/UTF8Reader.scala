@@ -20,7 +20,6 @@ package org.orbeon.darius.impl.io
 import java.io.IOException
 import java.io.InputStream
 import java.io.Reader
-import java.util.Locale
 
 import org.orbeon.darius.impl.msg.XMLMessageFormatter
 import org.orbeon.darius.util.MessageFormatter
@@ -44,9 +43,9 @@ object UTF8Reader {
  * A UTF-8 reader.
  */
 class UTF8Reader(protected val fInputStream: InputStream, 
-    protected val fBuffer: Array[Byte], 
-    val fFormatter: MessageFormatter, 
-    val fLocale: Locale) extends Reader {
+  protected val fBuffer : Array[Byte], 
+  val fFormatter        : MessageFormatter
+) extends Reader {
   
   import UTF8Reader._
 
@@ -67,14 +66,12 @@ class UTF8Reader(protected val fInputStream: InputStream,
    * @param inputStream The input stream.
    * @param size        The initial buffer size.
    * @param messageFormatter  the formatter for localizing/formatting errors.
-   * @param locale    the Locale to use for messages
    */
   def this(inputStream: InputStream, 
-      size: Int, 
-      messageFormatter: MessageFormatter, 
-      locale: Locale) {
-    this(inputStream, new Array[Byte](size), messageFormatter, locale)
-  }
+    size             : Int, 
+    messageFormatter : MessageFormatter
+  ) =
+    this(inputStream, new Array[Byte](size), messageFormatter)
   
   /**
    * Constructs a UTF-8 reader from the specified input stream
@@ -82,9 +79,8 @@ class UTF8Reader(protected val fInputStream: InputStream,
    *
    * @param inputStream The input stream.
    */
-  def this(inputStream: InputStream) {
-    this(inputStream, UTF8Reader.DEFAULT_BUFFER_SIZE, new XMLMessageFormatter(), Locale.getDefault)
-  }
+  def this(inputStream: InputStream) =
+    this(inputStream, UTF8Reader.DEFAULT_BUFFER_SIZE, new XMLMessageFormatter())
 
   /**
    * Constructs a UTF-8 reader from the specified input stream
@@ -92,11 +88,9 @@ class UTF8Reader(protected val fInputStream: InputStream,
    *
    * @param inputStream The input stream.
    * @param messageFormatter  given MessageFormatter
-   * @param locale    Locale to use for messages
    */
-  def this(inputStream: InputStream, messageFormatter: MessageFormatter, locale: Locale) {
-    this(inputStream, UTF8Reader.DEFAULT_BUFFER_SIZE, messageFormatter, locale)
-  }
+  def this(inputStream: InputStream, messageFormatter: MessageFormatter) =
+    this(inputStream, UTF8Reader.DEFAULT_BUFFER_SIZE, messageFormatter)
 
   /**
    * Read a single character.  This method will block until a character is
@@ -532,7 +526,7 @@ class UTF8Reader(protected val fInputStream: InputStream,
    *                          or if some other I/O error occurs
    */
   override def mark(readAheadLimit: Int): Unit = {
-    throw new IOException(fFormatter.formatMessage(fLocale, "OperationNotSupported", Array("mark()", "UTF-8")))
+    throw new IOException(fFormatter.formatMessage("OperationNotSupported", Array("mark()", "UTF-8")))
   }
 
   /**
@@ -568,7 +562,7 @@ class UTF8Reader(protected val fInputStream: InputStream,
    Throws an exception for expected byte.
    */
   private def expectedByte(position: Int, count: Int): Unit = {
-    throw new MalformedByteSequenceException(fFormatter, fLocale, XMLMessageFormatter.XML_DOMAIN, "ExpectedByte", 
+    throw new MalformedByteSequenceException(fFormatter, XMLMessageFormatter.XML_DOMAIN, "ExpectedByte", 
       Array(Integer toString position, Integer toString count))
   }
 
@@ -576,7 +570,7 @@ class UTF8Reader(protected val fInputStream: InputStream,
    Throws an exception for invalid byte.
    */
   private def invalidByte(position: Int, count: Int, c: Int): Unit = {
-    throw new MalformedByteSequenceException(fFormatter, fLocale, XMLMessageFormatter.XML_DOMAIN, "InvalidByte", 
+    throw new MalformedByteSequenceException(fFormatter, XMLMessageFormatter.XML_DOMAIN, "InvalidByte", 
       Array(Integer toString position, Integer toString count))
   }
 
@@ -584,7 +578,7 @@ class UTF8Reader(protected val fInputStream: InputStream,
    Throws an exception for invalid surrogate bits.
    */
   private def invalidSurrogate(uuuuu: Int): Unit = {
-    throw new MalformedByteSequenceException(fFormatter, fLocale, XMLMessageFormatter.XML_DOMAIN, "InvalidHighSurrogate", 
+    throw new MalformedByteSequenceException(fFormatter, XMLMessageFormatter.XML_DOMAIN, "InvalidHighSurrogate", 
       Array(Integer.toHexString(uuuuu)))
   }
 }

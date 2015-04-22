@@ -506,11 +506,6 @@ object Constants {
   val SECURITY_MANAGER_PROPERTY = "security-manager"
 
   /**
-   Locale property ("locale").
-   */
-  val LOCALE_PROPERTY = "locale"
-
-  /**
    Entity resolver property ("internal/entity-resolver").
    */
   val ENTITY_RESOLVER_PROPERTY = "internal/entity-resolver"
