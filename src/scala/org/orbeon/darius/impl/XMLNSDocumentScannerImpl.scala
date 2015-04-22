@@ -219,8 +219,6 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
 
   /**
    * Scans the name of an element in a start or empty tag.
-   *
-   * @see #scanStartElement()
    */
   override protected def scanStartElementName(): Unit = {
     fEntityScanner.scanQName(fElementQName)
@@ -230,7 +228,6 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
   /**
    * Scans the remainder of a start or empty tag after the element name.
    *
-   * @see #scanStartElement
    * @return True if element is empty.
    */
   override protected def scanStartElementAfterName(): Boolean = {

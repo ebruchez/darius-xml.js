@@ -50,8 +50,6 @@ trait XMLPullParserConfiguration extends XMLParserConfiguration {
    *                        configuration error when initializing the
    *                        parser.
    * @throws IOException Thrown on I/O error.
-   *
-   * @see #parse(boolean)
    */
   def setInputSource(inputSource: XMLInputSource): Unit
 
@@ -68,8 +66,6 @@ trait XMLPullParserConfiguration extends XMLParserConfiguration {
    * @throws IOException  An IO exception from the parser, possibly
    *                         from a byte stream or character stream
    *                         supplied by the parser.
-   *
-   * @see #setInputSource
    */
   def parse(complete: Boolean): Boolean
 

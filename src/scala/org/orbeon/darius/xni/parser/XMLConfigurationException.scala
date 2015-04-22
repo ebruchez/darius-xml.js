@@ -42,9 +42,6 @@ class XMLConfigurationException(fType: Short, fIdentifier: String)
 
   /**
    * Returns the exception type.
-   *
-   * @see #NOT_RECOGNIZED
-   * @see #NOT_SUPPORTED
    */
   def getType: Short = fType
 

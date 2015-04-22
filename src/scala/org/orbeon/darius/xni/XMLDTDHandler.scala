@@ -23,15 +23,11 @@ object XMLDTDHandler {
 
   /**
    * Conditional section: INCLUDE.
-   *
-   * @see #CONDITIONAL_IGNORE
    */
   val CONDITIONAL_INCLUDE: Short = 0
 
   /**
    * Conditional section: IGNORE.
-   *
-   * @see #CONDITIONAL_INCLUDE
    */
   val CONDITIONAL_IGNORE: Short = 1
 }
@@ -41,8 +37,6 @@ object XMLDTDHandler {
  * information items in the DTD of an XML document. Parser components
  * interested in DTD information implement this interface and are
  * registered as the DTD handler on the DTD source.
- *
- * @see XMLDTDContentModelHandler
  */
 trait XMLDTDHandler {
 
@@ -306,9 +300,6 @@ trait XMLDTDHandler {
    *                      augmentations.
    *
    * @throws XNIException Thrown by handler to signal an error.
-   *
-   * @see #CONDITIONAL_INCLUDE
-   * @see #CONDITIONAL_IGNORE
    */
   def startConditional(`type`: Short, augmentations: Augmentations): Unit
 

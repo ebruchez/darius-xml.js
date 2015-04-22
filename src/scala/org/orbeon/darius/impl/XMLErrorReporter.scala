@@ -114,9 +114,6 @@ object XMLErrorReporter {
  * are not required:
  * 
  *  - http://apache.org/xml/features/continue-after-fatal-error
- * 
- *
- * @see MessageFormatter
  */
 class XMLErrorReporter extends XMLComponent {
 
@@ -221,10 +218,6 @@ class XMLErrorReporter extends XMLComponent {
    *                  if needed.
    * @param severity  The severity of the error.
    * @return          The formatted error message.
-   *
-   * @see #SEVERITY_WARNING
-   * @see #SEVERITY_ERROR
-   * @see #SEVERITY_FATAL_ERROR
    */
   def reportError(domain: String, 
       key: String, 
@@ -245,10 +238,6 @@ class XMLErrorReporter extends XMLComponent {
    * @param severity  The severity of the error.
    * @param exception The exception to wrap.
    * @return          The formatted error message.
-   *
-   * @see #SEVERITY_WARNING
-   * @see #SEVERITY_ERROR
-   * @see #SEVERITY_FATAL_ERROR
    */
   def reportError(domain: String, 
       key: String, 
@@ -268,10 +257,6 @@ class XMLErrorReporter extends XMLComponent {
    *                  if needed.
    * @param severity  The severity of the error.
    * @return          The formatted error message.
-   *
-   * @see #SEVERITY_WARNING
-   * @see #SEVERITY_ERROR
-   * @see #SEVERITY_FATAL_ERROR
    */
   def reportError(location: XMLLocator, 
       domain: String, 
@@ -292,10 +277,6 @@ class XMLErrorReporter extends XMLComponent {
    * @param severity  The severity of the error.
    * @param exception The exception to wrap.
    * @return          The formatted error message.
-   *
-   * @see #SEVERITY_WARNING
-   * @see #SEVERITY_ERROR
-   * @see #SEVERITY_FATAL_ERROR
    */
   def reportError(location: XMLLocator, 
       domain: String, 

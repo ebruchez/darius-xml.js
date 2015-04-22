@@ -121,7 +121,6 @@ object SymbolTable {
  * creating it with a sufficiently large capacity may allow the
  * entries to be inserted more efficiently than letting it perform
  * automatic rehashing as needed to grow the table. 
- * @see SymbolHash
  */
 class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Float) {
 

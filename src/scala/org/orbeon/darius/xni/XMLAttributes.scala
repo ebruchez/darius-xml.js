@@ -26,8 +26,6 @@ package org.orbeon.darius.xni
  * The attributes are read-write so that subsequent stages in the document
  * pipeline can modify the values or change the attributes that are
  * propagated to the next stage.
- *
- * @see XMLDocumentHandler#startElement
  */
 trait XMLAttributes {
 
@@ -55,9 +53,6 @@ trait XMLAttributes {
    * @param attrValue The attribute value.
    *
    * @return Returns the attribute index.
-   *
-   * @see #setNonNormalizedValue
-   * @see #setSpecified
    */
   def addAttribute(attrName: QName, attrType: String, attrValue: String): Int
 
@@ -82,12 +77,6 @@ trait XMLAttributes {
    * 
    * Once you know the number of attributes, you can iterate
    * through the list.
-   *
-   * @see #getURI(int)
-   * @see #getLocalName(int)
-   * @see #getQName(int)
-   * @see #getType(int)
-   * @see #getValue(int)
    */
   def getLength: Int
 
@@ -145,8 +134,6 @@ trait XMLAttributes {
    * @return The Namespace URI, or the empty string if none
    *         is available, or null if the index is out of
    *         range.
-   *
-   * @see #getLength
    */
   def getURI(index: Int): String
 
@@ -158,8 +145,6 @@ trait XMLAttributes {
    * @return The local name, or the empty string if Namespace
    *         processing is not being performed, or null
    *         if the index is out of range.
-   *
-   * @see #getLength
    */
   def getLocalName(index: Int): String
 
@@ -171,8 +156,6 @@ trait XMLAttributes {
    * @return The XML 1.0 qualified name, or the empty string
    *         if none is available, or null if the index
    *         is out of range.
-   *
-   * @see #getLength
    */
   def getQName(index: Int): String
 
@@ -210,8 +193,6 @@ trait XMLAttributes {
    *
    * @return The attribute's type as a string, or null if the
    *         index is out of range.
-   *
-   * @see #getLength
    */
   def getType(index: Int): String
 
@@ -251,8 +232,6 @@ trait XMLAttributes {
    *
    * @param attrIndex The attribute index.
    * @param attrValue The new attribute value.
-   *
-   * @see #setNonNormalizedValue
    */
   def setValue(attrIndex: Int, attrValue: String): Unit
 
@@ -268,8 +247,6 @@ trait XMLAttributes {
    *
    * @return The attribute's value as a string, or null if the
    *         index is out of range.
-   *
-   * @see #getLength
    */
   def getValue(index: Int): String
 

@@ -192,10 +192,6 @@ class XMLInputSource(
    * the stream should also set the character stream on this object.
    * Also, the encoding of the byte stream used by the reader should
    * also be set on this object, if known.
-   *
-   * @param charStream The new character stream.
-   *
-   * @see #setEncoding
    */
   def setCharacterStream(charStream: Reader): Unit = {
     fCharStream = charStream

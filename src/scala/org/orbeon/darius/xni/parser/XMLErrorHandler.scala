@@ -23,8 +23,6 @@ import org.orbeon.darius.xni.XNIException
  * An interface for handling errors. If the application is interested
  * in error notifications, then it can register an error handler object
  * that implements this interface with the parser configuration.
- *
- * @see XMLParserConfiguration
  */
 trait XMLErrorHandler {
 

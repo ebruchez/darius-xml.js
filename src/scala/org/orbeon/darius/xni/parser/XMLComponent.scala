@@ -24,8 +24,6 @@ import org.orbeon.darius.xni.XNIException
  * by components in a parser configuration. The component methods allow
  * the component manager to initialize the component state and notify
  * the component when feature and property values change.
- *
- * @see XMLComponentManager
  */
 trait XMLComponent {
 

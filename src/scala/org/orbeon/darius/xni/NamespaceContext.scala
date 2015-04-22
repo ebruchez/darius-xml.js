@@ -39,11 +39,7 @@ object NamespaceContext {
  * Represents an interface to query namespace information.
  * 
  * The prefix and namespace must be identical references for equal strings, thus
- * each string should be internalized (@see String.intern())
- * or added to the `SymbolTable`
- *
- * @see <a href="../../../../../xerces2/org/apache/xerces/util/SymbolTable.html">
- * org.orbeon.darius.util.SymbolTable</a>
+ * each string should be internalized or added to the `SymbolTable`
  */
 trait NamespaceContext {
 
@@ -54,9 +50,6 @@ trait NamespaceContext {
    * of each XML element: the new context will automatically inherit
    * the declarations of its parent context, but it will also keep
    * track of which declarations were made within this context.
-   * 
-   *
-   * @see #popContext
    */
   def pushContext(): Unit
 
@@ -70,8 +63,6 @@ trait NamespaceContext {
    * Users must not attempt to declare additional Namespace
    * prefixes after popping a context, unless you push another
    * context first.
-   *
-   * @see #pushContext
    */
   def popContext(): Unit
 
@@ -93,9 +84,6 @@ trait NamespaceContext {
    * @param uri The Namespace URI to associate with the prefix.
    *
    * @return true if the prefix was legal, false otherwise
-   *
-   * @see #getURI
-   * @see #getDeclaredPrefixAt
    */
   def declarePrefix(prefix: String, uri: String): Boolean
 
@@ -126,8 +114,6 @@ trait NamespaceContext {
    *
    * @return One of the associated prefixes, or null if the uri
    *         does not map to any prefix.
-   *
-   * @see #getPrefix
    */
   def getPrefix(uri: String): String
 

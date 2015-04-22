@@ -25,8 +25,6 @@ package org.orbeon.darius.xni.parser
  * 
  * The methods of the component manager allow components to query features
  * and properties that affect the operation of the component.
- *
- * @see XMLComponent
  */
 trait XMLComponentManager {
 

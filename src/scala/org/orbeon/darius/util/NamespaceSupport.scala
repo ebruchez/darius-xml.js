@@ -37,9 +37,6 @@ class NamespaceSupport extends NamespaceContext {
    * series of tuples containing the namespace binding information:
    * <prefix, uri>. The default size can be set to anything
    * as long as it is a power of 2 greater than 1.
-   *
-   * @see #fNamespaceSize
-   * @see #fContext
    */
   protected var fNamespace: Array[String] = new Array[String](16 * 2)
 
@@ -53,8 +50,6 @@ class NamespaceSupport extends NamespaceContext {
    * information array. The index at the current context is the start
    * index of declared namespace bindings and runs to the size of the
    * namespace information array.
-   *
-   * @see #fNamespaceSize
    */
   protected var fContext: Array[Int] = new Array[Int](8)
 
@@ -80,9 +75,6 @@ class NamespaceSupport extends NamespaceContext {
     }
   }
 
-  /**
-   * @see org.orbeon.darius.xni.NamespaceContext#reset()
-   */
   def reset(): Unit = {
     fNamespaceSize = 0
     fCurrentContext = 0
@@ -98,9 +90,6 @@ class NamespaceSupport extends NamespaceContext {
     fCurrentContext += 1
   }
 
-  /**
-   * @see org.orbeon.darius.xni.NamespaceContext#pushContext()
-   */
   def pushContext(): Unit = {
     if (fCurrentContext + 1 == fContext.length) {
       val contextarray = new Array[Int](fContext.length * 2)
@@ -111,17 +100,11 @@ class NamespaceSupport extends NamespaceContext {
     fContext(fCurrentContext) = fNamespaceSize
   }
 
-  /**
-   * @see org.orbeon.darius.xni.NamespaceContext#popContext()
-   */
   def popContext(): Unit = {
     fNamespaceSize = fContext(fCurrentContext)
     fCurrentContext -= 1
   }
 
-  /**
-   * @see org.orbeon.darius.xni.NamespaceContext#declarePrefix(String, String)
-   */
   def declarePrefix(prefix: String, uri: String): Boolean = {
     if (prefix == XMLSymbols.PREFIX_XML || prefix == XMLSymbols.PREFIX_XMLNS) {
       return false
@@ -146,9 +129,6 @@ class NamespaceSupport extends NamespaceContext {
     true
   }
 
-  /**
-   * @see org.orbeon.darius.xni.NamespaceContext#getURI(String)
-   */
   def getURI(prefix: String): String = {
     var i = fNamespaceSize
     while (i > 0) {
@@ -160,9 +140,6 @@ class NamespaceSupport extends NamespaceContext {
     null
   }
 
-  /**
-   * @see org.orbeon.darius.xni.NamespaceContext#getPrefix(String)
-   */
   def getPrefix(uri: String): String = {
     var i = fNamespaceSize
     while (i > 0) {
@@ -174,23 +151,14 @@ class NamespaceSupport extends NamespaceContext {
     null
   }
 
-  /**
-   * @see org.orbeon.darius.xni.NamespaceContext#getDeclaredPrefixCount()
-   */
   def getDeclaredPrefixCount: Int = {
     (fNamespaceSize - fContext(fCurrentContext)) / 2
   }
 
-  /**
-   * @see org.orbeon.darius.xni.NamespaceContext#getDeclaredPrefixAt(int)
-   */
   def getDeclaredPrefixAt(index: Int): String = {
     fNamespace(fContext(fCurrentContext) + index * 2)
   }
 
-  /**
-   * @see org.orbeon.darius.xni.NamespaceContext#getAllPrefixes()
-   */
   def getAllPrefixes: Enumeration[String] = {
     var count = 0
     if (fPrefixes.length < (fNamespace.length / 2)) {
@@ -242,14 +210,8 @@ class NamespaceSupport extends NamespaceContext {
 
     private var counter: Int = 0
 
-    /**
-     * @see java.util.Enumeration#hasMoreElements()
-     */
     def hasMoreElements: Boolean = counter < size
 
-    /**
-     * @see java.util.Enumeration#nextElement()
-     */
     def nextElement(): String = {
       if (counter < size) {
         val result = fPrefixes(counter)

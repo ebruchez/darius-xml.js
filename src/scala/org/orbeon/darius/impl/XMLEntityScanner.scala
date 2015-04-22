@@ -92,8 +92,6 @@ class XMLEntityScanner extends XMLLocator {
    * @param encoding The IANA encoding name of the new encoding.
    *
    * @throws IOException Thrown if the new encoding is not supported.
-   *
-   * @see org.orbeon.darius.util.EncodingMap
    */
   def setEncoding(encoding: String): Unit = {
     if (DEBUG_ENCODINGS) {
@@ -229,9 +227,6 @@ class XMLEntityScanner extends XMLLocator {
    *
    * @throws IOException  Thrown if i/o error occurs.
    * @throws EOFException Thrown on end of file.
-   *
-   * @see org.orbeon.darius.util.SymbolTable
-   * @see org.orbeon.darius.util.XMLChar#isName
    */
   def scanNmtoken(): String = {
     if (DEBUG_BUFFER) {
@@ -288,10 +283,6 @@ class XMLEntityScanner extends XMLLocator {
    *
    * @throws IOException  Thrown if i/o error occurs.
    * @throws EOFException Thrown on end of file.
-   *
-   * @see org.orbeon.darius.util.SymbolTable
-   * @see org.orbeon.darius.util.XMLChar#isName
-   * @see org.orbeon.darius.util.XMLChar#isNameStart
    */
   def scanName(): String = {
     if (DEBUG_BUFFER) {
@@ -365,10 +356,6 @@ class XMLEntityScanner extends XMLLocator {
    *
    * @throws IOException  Thrown if i/o error occurs.
    * @throws EOFException Thrown on end of file.
-   *
-   * @see org.orbeon.darius.util.SymbolTable
-   * @see org.orbeon.darius.util.XMLChar#isNCName
-   * @see org.orbeon.darius.util.XMLChar#isNCNameStart
    */
   def scanNCName(): String = {
     if (DEBUG_BUFFER) {
@@ -448,10 +435,6 @@ class XMLEntityScanner extends XMLLocator {
    *
    * @throws IOException  Thrown if i/o error occurs.
    * @throws EOFException Thrown on end of file.
-   *
-   * @see org.orbeon.darius.util.SymbolTable
-   * @see org.orbeon.darius.util.XMLChar#isName
-   * @see org.orbeon.darius.util.XMLChar#isNameStart
    */
   def scanQName(qname: QName): Boolean = {
     if (DEBUG_BUFFER) {
@@ -1099,8 +1082,6 @@ class XMLEntityScanner extends XMLLocator {
    *
    * @throws IOException  Thrown if i/o error occurs.
    * @throws EOFException Thrown on end of file.
-   *
-   * @see org.orbeon.darius.util.XMLChar#isSpace
    */
   def skipSpaces(): Boolean = {
     if (DEBUG_BUFFER) {
@@ -1170,8 +1151,6 @@ class XMLEntityScanner extends XMLLocator {
    *
    * @throws IOException  Thrown if i/o error occurs.
    * @throws EOFException Thrown on end of file.
-   *
-   * @see org.orbeon.darius.util.XMLChar#isSpace
    */
   def skipDeclSpaces(): Boolean = {
     if (DEBUG_BUFFER) {

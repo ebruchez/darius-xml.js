@@ -29,8 +29,6 @@ import org.orbeon.darius.xni.XNIException
  * resolve them explicitly. If the registered entity resolver cannot
  * resolve the entity, it should return `null` so that the
  * parser will try to resolve the entity using a default mechanism.
- *
- * @see XMLParserConfiguration
  */
 trait XMLEntityResolver {
 
@@ -43,7 +41,6 @@ trait XMLEntityResolver {
    * @throws XNIException Thrown on general error.
    * @throws IOException  Thrown if resolved entity stream cannot be
    *                      opened or some other i/o error occurs.
-   * @see org.orbeon.darius.xni.XMLResourceIdentifier
    */
   def resolveEntity(resourceIdentifier: XMLResourceIdentifier): XMLInputSource
 }

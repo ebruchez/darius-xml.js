@@ -73,8 +73,6 @@ object XMLAttributesImpl {
  * The attributes are read-write so that subsequent stages in the document
  * pipeline can modify the values or change the attributes that are
  * propogated to the next stage.
- *
- * @see org.orbeon.darius.xni.XMLDocumentHandler#startElement
  */
 class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttributes {
 
@@ -135,8 +133,6 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * is needed to return the correct value from the getLocalName method.
    *
    * @param namespaces True if namespace processing is turned on.
-   *
-   * @see #getLocalName
    */
   def setNamespaces(namespaces: Boolean): Unit = {
     fNamespaces = namespaces
@@ -166,9 +162,6 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * @param value The attribute value.
    *
    * @return Returns the attribute index.
-   *
-   * @see #setNonNormalizedValue
-   * @see #setSpecified
    */
   def addAttribute(name: QName, `type`: String, value: String): Int = {
     var index: Int = 0
@@ -320,8 +313,6 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    *
    * @param attrIndex The attribute index.
    * @param attrValue The new attribute value.
-   *
-   * @see #setNonNormalizedValue
    */
   def setValue(attrIndex: Int, attrValue: String): Unit = {
     val attribute = fAttributes(attrIndex)
@@ -403,7 +394,6 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * @param index The attribute index (zero-based).
    * @return The attribute's type as a string, or null if the
    *         index is out of range.
-   * @see #getLength
    */
   def getType(index: Int): String = {
     if (index < 0 || index >= fLength) {
@@ -439,7 +429,6 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * @param index The attribute index (zero-based).
    * @return The attribute's value as a string, or null if the
    *         index is out of range.
-   * @see #getLength
    */
   def getValue(index: Int): String = {
     if (index < 0 || index >= fLength) {
@@ -478,7 +467,6 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * @param index The index of the attribute in the list (starting at 0).
    * @return The name of the indexed attribute, or null
    *         if the index is out of range.
-   * @see #getLength
    */
   def getName(index: Int): String = {
     if (index < 0 || index >= fLength) {
@@ -532,7 +520,6 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * @return The local name, or the empty string if Namespace
    *         processing is not being performed, or null
    *         if the index is out of range.
-   * @see #getLength
    */
   def getLocalName(index: Int): String = {
     if (!fNamespaces) {
@@ -551,7 +538,6 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * @return The XML 1.0 qualified name, or the empty string
    *         if none is available, or null if the index
    *         is out of range.
-   * @see #getLength
    */
   def getQName(index: Int): String = {
     if (index < 0 || index >= fLength) {
@@ -600,7 +586,6 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    *
    * @param index The attribute index (zero-based).
    * @return The Namespace URI
-   * @see #getLength
    */
   def getURI(index: Int): String = {
     if (index < 0 || index >= fLength) {
@@ -729,10 +714,6 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * @param name the attribute name
    * @param type the attribute type
    * @param value the attribute value
-   *
-   * @see #setNonNormalizedValue
-   * @see #setSpecified
-   * @see #checkDuplicatesNS
    */
   def addAttributeNS(name: QName, `type`: String, value: String): Unit = {
     val index = fLength

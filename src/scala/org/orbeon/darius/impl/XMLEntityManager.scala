@@ -815,8 +815,6 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    *
    * @param name The name of the entity.
    * @param text The text of the entity.
-   *
-   * @see SymbolTable
    */
   def addInternalEntity(name: String, text: String): Unit = {
     if (!fEntities.containsKey(name)) {
@@ -849,8 +847,6 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    *                     the system identifier is a relative URI.
    *                     When null the system identifier of the first
    *                     external entity on the stack is used instead.
-   *
-   * @see SymbolTable
    */
   def addExternalEntity(name: String, 
       publicId: String, 
@@ -932,8 +928,6 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    * @param publicId The public identifier of the entity.
    * @param systemId The system identifier of the entity.
    * @param notation The name of the notation.
-   *
-   * @see SymbolTable
    */
   def addUnparsedEntity(name: String, 
       publicId: String, 

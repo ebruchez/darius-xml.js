@@ -24,8 +24,6 @@ import org.orbeon.darius.xni.XNIException
 /**
  * The entity handler interface defines methods to report information
  * about the start and end of entities.
- *
- * @see org.orbeon.darius.impl.XMLEntityScanner
  */
 trait XMLEntityHandler {
 

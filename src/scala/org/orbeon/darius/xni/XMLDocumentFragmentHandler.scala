@@ -23,8 +23,6 @@ package org.orbeon.darius.xni
  * 
  * *Note:* Some of these methods overlap methods
  * found in the XMLDocumentHandler interface.
- *
- * @see XMLDocumentHandler
  */
 trait XMLDocumentFragmentHandler {
 

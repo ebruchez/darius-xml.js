@@ -577,9 +577,6 @@ abstract class AbstractXMLDocumentParser protected (config: XMLParserConfigurati
    *                      augmentations.
    *
    * @throws XNIException Thrown by handler to signal an error.
-   *
-   * @see #CONDITIONAL_INCLUDE
-   * @see #CONDITIONAL_IGNORE
    */
   def startConditional(`type`: Short, augs: Augmentations): Unit = {
   }
@@ -634,9 +631,6 @@ abstract class AbstractXMLDocumentParser protected (config: XMLParserConfigurati
    *                      augmentations.
    *
    * @throws XNIException Thrown by handler to signal an error.
-   *
-   * @see #empty
-   * @see #startGroup
    */
   def any(augs: Augmentations): Unit = {
   }
@@ -648,9 +642,6 @@ abstract class AbstractXMLDocumentParser protected (config: XMLParserConfigurati
    *                      augmentations.
    *
    * @throws XNIException Thrown by handler to signal an error.
-   *
-   * @see #any
-   * @see #startGroup
    */
   def empty(augs: Augmentations): Unit = {
   }
@@ -665,9 +656,6 @@ abstract class AbstractXMLDocumentParser protected (config: XMLParserConfigurati
    *                      augmentations.
    *
    * @throws XNIException Thrown by handler to signal an error.
-   *
-   * @see #any
-   * @see #empty
    */
   def startGroup(augs: Augmentations): Unit = {
   }
@@ -681,8 +669,6 @@ abstract class AbstractXMLDocumentParser protected (config: XMLParserConfigurati
    *                      augmentations.
    *
    * @throws XNIException Thrown by handler to signal an error.
-   *
-   * @see #startGroup
    */
   def pcdata(augs: Augmentations): Unit = {
   }
@@ -708,9 +694,6 @@ abstract class AbstractXMLDocumentParser protected (config: XMLParserConfigurati
    *                      augmentations.
    *
    * @throws XNIException Thrown by handler to signal an error.
-   *
-   * @see #SEPARATOR_CHOICE
-   * @see #SEPARATOR_SEQUENCE
    */
   def separator(separator: Short, augs: Augmentations): Unit = {
   }
@@ -725,10 +708,6 @@ abstract class AbstractXMLDocumentParser protected (config: XMLParserConfigurati
    *                      augmentations.
    *
    * @throws XNIException Thrown by handler to signal an error.
-   *
-   * @see #OCCURS_ZERO_OR_ONE
-   * @see #OCCURS_ZERO_OR_MORE
-   * @see #OCCURS_ONE_OR_MORE
    */
   def occurrence(occurrence: Short, augs: Augmentations): Unit = {
   }

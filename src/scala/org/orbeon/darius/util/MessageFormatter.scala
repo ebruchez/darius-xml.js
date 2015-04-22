@@ -24,8 +24,6 @@ import java.util.MissingResourceException
  * This interface provides a generic message formatting mechanism and
  * is useful for producing messages that must be localized and/or formatted
  * with replacement text.
- *
- * @see org.orbeon.darius.impl.XMLErrorReporter
  */
 trait MessageFormatter {
 

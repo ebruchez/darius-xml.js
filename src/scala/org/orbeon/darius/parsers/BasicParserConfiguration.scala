@@ -333,7 +333,6 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
    *
    * @return The current entity resolver, or null if none
    *         has been registered.
-   * @see #setEntityResolver
    */
   def getEntityResolver: XMLEntityResolver = {
     fProperties.get(ENTITY_RESOLVER).asInstanceOf[XMLEntityResolver]
@@ -355,7 +354,6 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
    * @param errorHandler The error handler.
    * @throws java.lang.NullPointerException If the handler
    *            argument is null.
-   * @see #getErrorHandler
    */
   def setErrorHandler(errorHandler: XMLErrorHandler): Unit = {
     fProperties.put(ERROR_HANDLER, errorHandler)
@@ -366,7 +364,6 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
    *
    * @return The current error handler, or null if none
    *         has been registered.
-   * @see #setErrorHandler
    */
   def getErrorHandler: XMLErrorHandler = {
     fProperties.get(ERROR_HANDLER).asInstanceOf[XMLErrorHandler]

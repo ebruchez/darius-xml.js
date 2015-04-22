@@ -274,21 +274,10 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
     this(null, null, null)
   }
 
-  /**
-   * Constructs a parser configuration using the specified symbol table.
-   */
   def this(symbolTable: SymbolTable) {
     this(symbolTable, null, null)
   }
 
-  /**
-   * Constructs a parser configuration using the specified symbol table and
-   * grammar pool.
-   * 
-   * *REVISIT:*
-   * Grammar pool will be updated when the new validation engine is
-   * implemented.
-   */
   def this(symbolTable: SymbolTable, grammarPool: XMLGrammarPool) {
     this(symbolTable, grammarPool, null)
   }
@@ -313,14 +302,6 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
     super.setProperty(propertyId, value)
   }
 
-  /**
-   * Set the locale to use for messages.
-   *
-   * @param locale The locale object to use for localization of messages.
-   *
-   * @throws XNIException Thrown if the parser does not support the
-   *                         specified locale.
-   */
   override def setLocale(locale: Locale): Unit = {
     super.setLocale(locale)
     fErrorReporter.setLocale(locale)
@@ -336,38 +317,10 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
     super.getFeature(featureId)
   }
 
-  /**
-   * Sets the input source for the document to parse.
-   *
-   * @param inputSource The document's input source.
-   *
-   * @throws XMLConfigurationException Thrown if there is a
-   *                        configuration error when initializing the
-   *                        parser.
-   * @throws IOException Thrown on I/O error.
-   *
-   * @see #parse(boolean)
-   */
   def setInputSource(inputSource: XMLInputSource): Unit = {
     fInputSource = inputSource
   }
 
-  /**
-   * Parses the document in a pull parsing fashion.
-   *
-   * @param complete True if the pull parser should parse the
-   *                 remaining document completely.
-   *
-   * @return True if there is more document to parse.
-   *
-   * @throws XNIException Any XNI exception, possibly wrapping
-   *                         another exception.
-   * @throws IOException  An IO exception from the parser, possibly
-   *                         from a byte stream or character stream
-   *                         supplied by the parser.
-   *
-   * @see #setInputSource
-   */
   def parse(complete: Boolean): Boolean = {
     if (fInputSource ne null) {
       try {
@@ -407,23 +360,10 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
     }
   }
 
-  /**
-   * If the application decides to terminate parsing before the xml document
-   * is fully parsed, the application should call this method to free any
-   * resource allocated during parsing. For example, close all opened streams.
-   */
   def cleanup(): Unit = {
     fEntityManager.closeReaders()
   }
 
-  /**
-   * Parses the specified input source.
-   *
-   * @param source The input source.
-   *
-   * @throws XNIException Throws exception on XNI error.
-   * @throws java.io.IOException Throws exception on i/o error.
-   */
   def parse(source: XMLInputSource): Unit = {
     if (fParseInProgress) {
       throw new XNIException("FWK005 parse may not be called while parsing.")
@@ -451,11 +391,6 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
     }
   }
 
-  /**
-   * Reset all components before parsing.
-   *
-   * @throws XNIException Thrown if an error occurs during initialization.
-   */
   override protected def reset(): Unit = {
     if (fValidationManager ne null)
       fValidationManager.reset()
@@ -488,18 +423,6 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
     }
   }
 
-  /**
-   * Check a feature. If feature is know and supported, this method simply
-   * returns. Otherwise, the appropriate exception is thrown.
-   *
-   * @param featureId The unique identifier (URI) of the feature.
-   *
-   * @throws XMLConfigurationException Thrown for configuration error.
-   *                                   In general, components should
-   *                                   only throw this exception if
-   *                                   it is *really*
-   *                                   a critical error.
-   */
   override protected def checkFeature(featureId: String): Unit = {
     if (featureId.startsWith(Constants.XERCES_FEATURE_PREFIX)) {
       val suffixLength = featureId.length - Constants.XERCES_FEATURE_PREFIX.length
@@ -534,19 +457,6 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
     super.checkFeature(featureId)
   }
 
-  /**
-   * Check a property. If the property is know and supported, this method
-   * simply returns. Otherwise, the appropriate exception is thrown.
-   *
-   * @param propertyId The unique identifier (URI) of the property
-   *                   being set.
-   *
-   * @throws XMLConfigurationException Thrown for configuration error.
-   *                                   In general, components should
-   *                                   only throw this exception if
-   *                                   it is *really*
-   *                                   a critical error.
-   */
   override protected def checkProperty(propertyId: String): Unit = {
     if (propertyId.startsWith(Constants.XERCES_PROPERTY_PREFIX)) {
       val suffixLength = propertyId.length - Constants.XERCES_PROPERTY_PREFIX.length

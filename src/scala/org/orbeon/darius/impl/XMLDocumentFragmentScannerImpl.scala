@@ -789,8 +789,6 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
 
   /**
    * Scans the name of an element in a start or empty tag.
-   *
-   * @see #scanStartElement()
    */
   protected def scanStartElementName(): Unit = {
     if (fNamespaces) {
@@ -805,7 +803,6 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
   /**
    * Scans the remainder of a start or empty tag after the element name.
    *
-   * @see #scanStartElement
    * @return True if element is empty.
    */
   protected def scanStartElementAfterName(): Boolean = {

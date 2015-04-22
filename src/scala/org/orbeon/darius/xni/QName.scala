@@ -24,8 +24,6 @@ package org.orbeon.darius.xni
  * To be used correctly, the strings must be identical references for
  * equal strings. Within the parser, these values are considered symbols
  * and should always be retrieved from the `SymbolTable`.
- *
- * @see <a href="../../../../../xerces2/org/apache/xerces/util/SymbolTable.html">org.orbeon.darius.util.SymbolTable</a>
  */
 class QName extends Cloneable {
 

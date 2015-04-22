@@ -32,8 +32,6 @@ object XMLDTDContentModelHandler {
    *  <!ELEMENT elem (foo|bar+)>
    *  <!ELEMENT elem (foo|bar|baz)>
    *  <!ELEMENT elem (#PCDATA|foo|bar)*>
-   *
-   * @see #SEPARATOR_SEQUENCE
    */
   val SEPARATOR_CHOICE: Short = 0
 
@@ -45,8 +43,6 @@ object XMLDTDContentModelHandler {
    *  <!ELEMENT elem (foo,bar)>
    *  <!ELEMENT elem (foo,bar*)>
    *  <!ELEMENT elem (foo,bar,baz)>
-   *
-   * @see #SEPARATOR_CHOICE
    */
   val SEPARATOR_SEQUENCE: Short = 1
 
@@ -58,9 +54,6 @@ object XMLDTDContentModelHandler {
    * For example:
    * 
    *  <!ELEMENT elem (foo?)>
-   *
-   * @see #OCCURS_ZERO_OR_MORE
-   * @see #OCCURS_ONE_OR_MORE
    */
   val OCCURS_ZERO_OR_ONE: Short = 2
 
@@ -74,9 +67,6 @@ object XMLDTDContentModelHandler {
    * 
    *  <!ELEMENT elem (foo*)>
    *  <!ELEMENT elem (#PCDATA|foo|bar)*>
-   *
-   * @see #OCCURS_ZERO_OR_ONE
-   * @see #OCCURS_ONE_OR_MORE
    */
   val OCCURS_ZERO_OR_MORE: Short = 3
 
@@ -89,9 +79,6 @@ object XMLDTDContentModelHandler {
    * For example:
    * 
    *  <!ELEMENT elem (foo+)>
-   *
-   * @see #OCCURS_ZERO_OR_ONE
-   * @see #OCCURS_ZERO_OR_MORE
    */
   val OCCURS_ONE_OR_MORE: Short = 4
 }
@@ -102,8 +89,6 @@ object XMLDTDContentModelHandler {
  * declaration. Parser components interested in DTD content model
  * information implement this interface and are registered as the DTD
  * content model handler on the DTD content model source.
- *
- * @see XMLDTDHandler
  */
 trait XMLDTDContentModelHandler {
 
@@ -127,9 +112,6 @@ trait XMLDTDContentModelHandler {
    *                      augmentations.
    *
    * @throws XNIException Thrown by handler to signal an error.
-   *
-   * @see #empty
-   * @see #startGroup
    */
   def any(augmentations: Augmentations): Unit
 
@@ -140,9 +122,6 @@ trait XMLDTDContentModelHandler {
    *
    * @param augmentations Additional information that may include infoset
    *                      augmentations.
-   *
-   * @see #any
-   * @see #startGroup
    */
   def empty(augmentations: Augmentations): Unit
 
@@ -156,9 +135,6 @@ trait XMLDTDContentModelHandler {
    *                      augmentations.
    *
    * @throws XNIException Thrown by handler to signal an error.
-   *
-   * @see #any
-   * @see #empty
    */
   def startGroup(augmentations: Augmentations): Unit
 
@@ -171,8 +147,6 @@ trait XMLDTDContentModelHandler {
    *                      augmentations.
    *
    * @throws XNIException Thrown by handler to signal an error.
-   *
-   * @see #startGroup
    */
   def pcdata(augmentations: Augmentations): Unit
 
@@ -196,9 +170,6 @@ trait XMLDTDContentModelHandler {
    *                      augmentations.
    *
    * @throws XNIException Thrown by handler to signal an error.
-   *
-   * @see #SEPARATOR_CHOICE
-   * @see #SEPARATOR_SEQUENCE
    */
   def separator(separator: Short, augmentations: Augmentations): Unit
 
@@ -212,10 +183,6 @@ trait XMLDTDContentModelHandler {
    *                      augmentations.
    *
    * @throws XNIException Thrown by handler to signal an error.
-   *
-   * @see #OCCURS_ZERO_OR_ONE
-   * @see #OCCURS_ZERO_OR_MORE
-   * @see #OCCURS_ONE_OR_MORE
    */
   def occurrence(occurrence: Short, augmentations: Augmentations): Unit
 
