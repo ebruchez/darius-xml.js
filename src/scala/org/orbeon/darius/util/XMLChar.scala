@@ -1611,7 +1611,7 @@ object XMLChar {
         if (!isSpace(value.charAt(start))) {
           whileBreaks.break()
         }
-        start
+        start += 1
       }
     }
     end = lengthMinusOne
@@ -1620,7 +1620,7 @@ object XMLChar {
         if (!isSpace(value.charAt(end))) {
           whileBreaks.break()
         }
-        end
+        end -= 1
       }
     }
     if (start == 0 && end == lengthMinusOne) {
