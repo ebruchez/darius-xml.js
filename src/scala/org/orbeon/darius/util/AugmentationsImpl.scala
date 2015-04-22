@@ -24,6 +24,6 @@ class AugmentationsImpl extends Augmentations {
   def putItem(key: String, item: Any): Any = null
   def removeItem(key: String): Any = ???
   def getItem(key: String): Any = ???
-  def keys(): java.util.Enumeration[String] = ???
+  def keys(): Iterator[String] = ???
   def removeAllItems(): Unit = ()
 }

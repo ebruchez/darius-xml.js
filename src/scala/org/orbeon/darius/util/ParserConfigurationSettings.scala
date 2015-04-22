@@ -17,14 +17,11 @@
 
 package org.orbeon.darius.util
 
-import java.util.ArrayList
-import java.util.HashMap
-
 import org.orbeon.darius.impl.Constants
 import org.orbeon.darius.xni.parser.XMLComponentManager
 import org.orbeon.darius.xni.parser.XMLConfigurationException
-import org.orbeon.darius.xni.parser.XMLComponentManager
-import org.orbeon.darius.xni.parser.XMLConfigurationException
+
+import scala.collection.mutable
 
 object ParserConfigurationSettings {
   protected[darius] val PARSER_SETTINGS = Constants.XERCES_FEATURE_PREFIX + Constants.PARSER_SETTINGS
@@ -47,22 +44,22 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
   /**
    Recognized properties.
    */
-  protected var fRecognizedProperties = new ArrayList[String]()
+  protected var fRecognizedProperties = new mutable.ArrayBuffer[String]()
 
   /**
    Properties.
    */
-  protected var fProperties = new HashMap[String, Any]()
+  protected var fProperties = new mutable.HashMap[String, Any]()
 
   /**
    Recognized features.
    */
-  protected var fRecognizedFeatures = new ArrayList[String]()
+  protected var fRecognizedFeatures = new mutable.ArrayBuffer[String]()
 
   /**
    Features.
    */
-  protected var fFeatures = new HashMap[String, Any]()
+  protected var fFeatures = new mutable.HashMap[String, Any]()
 
   def this() {
     this(null)
@@ -77,7 +74,7 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
     for (i ← 0 until featureIdsCount) {
       val featureId = featureIds(i)
       if (!fRecognizedFeatures.contains(featureId)) {
-        fRecognizedFeatures.add(featureId)
+        fRecognizedFeatures += featureId
       }
     }
   }
@@ -112,7 +109,7 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
     for (i ← 0 until propertyIdsCount) {
       val propertyId = propertyIds(i)
       if (!fRecognizedProperties.contains(propertyId)) {
-        fRecognizedProperties.add(propertyId)
+        fRecognizedProperties += propertyId
       }
     }
   }
@@ -141,12 +138,13 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
    *                                   a critical error.
    */
   def getFeature(featureId: String): Boolean = {
-    val state = fFeatures.get(featureId).asInstanceOf[java.lang.Boolean]
-    if (state eq null) {
-      checkFeature(featureId)
-      return false
+    fFeatures.get(featureId) match {
+      case Some(state) ⇒
+        state.asInstanceOf[java.lang.Boolean]
+      case None ⇒
+        checkFeature(featureId)
+        false
     }
-    state.booleanValue()
   }
 
   /**
@@ -162,11 +160,13 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
    *                                   a critical error.
    */
   def getProperty(propertyId: String): Any = {
-    val propertyValue = fProperties.get(propertyId)
-    if (propertyValue == null) {// @ebruchez: Any == null? 
-      checkProperty(propertyId)
+    fProperties.get(propertyId) match {
+      case Some(propertyValue) ⇒
+        propertyValue
+      case None ⇒
+        checkProperty(propertyId)
+        null
     }
-    propertyValue
   }
 
   /**

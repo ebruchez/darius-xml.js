@@ -66,7 +66,7 @@ trait Augmentations {
    * Returns an enumeration of the keys in the Augmentations structure
    *
    */
-  def keys(): java.util.Enumeration[String]
+  def keys(): Iterator[String]
 
   /**
    * Remove all objects from the Augmentations structure.

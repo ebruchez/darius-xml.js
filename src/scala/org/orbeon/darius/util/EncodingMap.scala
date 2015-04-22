@@ -17,7 +17,8 @@
 
 package org.orbeon.darius.util
 
-import java.util.HashMap
+
+import scala.collection.mutable
 
 /**
  * EncodingMap is a convenience class which handles conversions between
@@ -31,12 +32,12 @@ object EncodingMap {
   /**
    fIANA2JavaMap
    */
-  protected val fIANA2JavaMap = new HashMap[String, String]()
+  protected val fIANA2JavaMap = new mutable.HashMap[String, String]()
 
   /**
    fJava2IANAMap
    */
-  protected val fJava2IANAMap = new HashMap[String, String]()
+  protected val fJava2IANAMap = new mutable.HashMap[String, String]()
 
   fIANA2JavaMap.put("BIG5", "Big5")
 
@@ -894,7 +895,7 @@ object EncodingMap {
    * @param ianaEncoding The IANA encoding name.
    */
   def getIANA2JavaMapping(ianaEncoding: String): String = {
-    fIANA2JavaMap.get(ianaEncoding)
+    fIANA2JavaMap.get(ianaEncoding).orNull
   }
 
   /**
@@ -907,7 +908,7 @@ object EncodingMap {
    * for other applications running in the system.
    */
   def removeIANA2JavaMapping(ianaEncoding: String): String = {
-    fIANA2JavaMap.remove(ianaEncoding)
+    fIANA2JavaMap.remove(ianaEncoding).orNull
   }
 
   /**
@@ -930,7 +931,7 @@ object EncodingMap {
    * @param javaEncoding The Java encoding name.
    */
   def getJava2IANAMapping(javaEncoding: String): String = {
-    fJava2IANAMap.get(javaEncoding)
+    fJava2IANAMap.get(javaEncoding).orNull
   }
 
   /**
@@ -943,6 +944,6 @@ object EncodingMap {
    * for other applications running in the system.
    */
   def removeJava2IANAMapping(javaEncoding: String): String = {
-    fJava2IANAMap.remove(javaEncoding)
+    fJava2IANAMap.remove(javaEncoding).orNull
   }
 }

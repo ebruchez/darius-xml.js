@@ -17,8 +17,9 @@
 
 package org.orbeon.darius.impl
 
-import java.util.HashMap
 import java.util.Locale
+
+import scala.collection.mutable
 
 import org.orbeon.darius.impl.XMLErrorReporter._
 import org.orbeon.darius.util.DefaultErrorHandler
@@ -125,7 +126,7 @@ class XMLErrorReporter extends XMLComponent {
   /**
    Mapping of Message formatters for domains.
    */
-  protected var fMessageFormatters = new HashMap[String, MessageFormatter]()
+  protected var fMessageFormatters = new mutable.HashMap[String, MessageFormatter]()
 
   /**
    Error handler.
@@ -194,7 +195,7 @@ class XMLErrorReporter extends XMLComponent {
    * @param domain The domain of the message formatter.
    */
   def getMessageFormatter(domain: String): MessageFormatter = {
-    fMessageFormatters.get(domain)
+    fMessageFormatters.get(domain).orNull
   }
 
   /**
@@ -204,7 +205,7 @@ class XMLErrorReporter extends XMLComponent {
    * @param domain The domain of the message formatter.
    */
   def removeMessageFormatter(domain: String): MessageFormatter = {
-    fMessageFormatters.remove(domain)
+    fMessageFormatters.remove(domain).orNull
   }
 
   /**

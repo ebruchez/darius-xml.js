@@ -18,8 +18,6 @@
 package org.orbeon.darius.parsers
 
 import java.io.IOException
-import java.util.ArrayList
-import java.util.HashMap
 import java.util.Locale
 
 import org.orbeon.darius.impl.Constants
@@ -38,6 +36,8 @@ import org.orbeon.darius.xni.parser.XMLEntityResolver
 import org.orbeon.darius.xni.parser.XMLErrorHandler
 import org.orbeon.darius.xni.parser.XMLInputSource
 import org.orbeon.darius.xni.parser.XMLParserConfiguration
+
+import scala.collection.mutable
 
 protected[parsers] object BasicParserConfiguration {
 
@@ -142,7 +142,7 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
   /**
    Components.
    */
-  protected var fComponents = new ArrayList[XMLComponent]()
+  protected var fComponents = new mutable.ArrayBuffer[XMLComponent]()
 
   /**
    The document handler.
@@ -164,13 +164,13 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
    */
   protected var fLastComponent: XMLDocumentSource = _
 
-  fRecognizedFeatures = new ArrayList[String]()
+  fRecognizedFeatures = new mutable.ArrayBuffer[String]()
 
-  fRecognizedProperties = new ArrayList[String]()
+  fRecognizedProperties = new mutable.ArrayBuffer[String]()
 
-  fFeatures = new HashMap[String, Any]()
+  fFeatures = new mutable.HashMap[String, Any]()
 
-  fProperties = new HashMap[String, Any]()
+  fProperties = new mutable.HashMap[String, Any]()
 
   val recognizedFeatures = Array(PARSER_SETTINGS, VALIDATION, NAMESPACES, EXTERNAL_GENERAL_ENTITIES, EXTERNAL_PARAMETER_ENTITIES)
 
@@ -219,7 +219,7 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
     if (fComponents.contains(component)) {
       return
     }
-    fComponents.add(component)
+    fComponents += component
     val recognizedFeatures = component.getRecognizedFeatures
     addRecognizedFeatures(recognizedFeatures)
     val recognizedProperties = component.getRecognizedProperties
@@ -383,16 +383,14 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
    *            requested feature is not known.
    */
   override def setFeature(featureId: String, state: Boolean): Unit = {
-    for (i ← 0 until fComponents.size) {
-      val c = fComponents.get(i)
+    for (c ← fComponents) {
       c.setFeature(featureId, state)
     }
     super.setFeature(featureId, state)
   }
 
   override def setProperty(propertyId: String, value: AnyRef): Unit = {
-    for (i ← 0 until fComponents.size) {
-      val c = fComponents.get(i)
+    for (c ← fComponents) {
       c.setProperty(propertyId, value)
     }
     super.setProperty(propertyId, value)
@@ -419,8 +417,7 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
    * reset all components before parsing and namespace context
    */
   protected def reset(): Unit = {
-    for (i ← 0 until fComponents.size) {
-      val c = fComponents.get(i)
+    for (c ← fComponents) {
       c.reset(this)
     }
   }

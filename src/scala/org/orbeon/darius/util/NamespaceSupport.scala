@@ -17,9 +17,6 @@
 
 package org.orbeon.darius.util
 
-import java.util.Enumeration
-import java.util.NoSuchElementException
-
 import org.orbeon.darius.xni.NamespaceContext
 
 import scala.util.control.Breaks
@@ -67,10 +64,10 @@ class NamespaceSupport extends NamespaceContext {
   def this(context: NamespaceContext) {
     this()
     pushContext()
-    val prefixes = context.getAllPrefixes
-    while (prefixes.hasMoreElements) {
-      val prefix = prefixes.nextElement()
-      val uri = context.getURI(prefix)
+    for {
+      prefix ← context.getAllPrefixes
+      uri = context.getURI(prefix)
+    } locally {
       declarePrefix(prefix, uri)
     }
   }
@@ -159,7 +156,7 @@ class NamespaceSupport extends NamespaceContext {
     fNamespace(fContext(fCurrentContext) + index * 2)
   }
 
-  def getAllPrefixes: Enumeration[String] = {
+  def getAllPrefixes: Iterator[String] = {
     var count = 0
     if (fPrefixes.length < (fNamespace.length / 2)) {
       val prefixes = new Array[String](fNamespaceSize)
@@ -184,7 +181,7 @@ class NamespaceSupport extends NamespaceContext {
         i += 2
       }
     }
-    new Prefixes(fPrefixes, count)
+    fPrefixes.iterator.take(count)
   }
 
   /**
@@ -204,30 +201,5 @@ class NamespaceSupport extends NamespaceContext {
       i -= 2
     }
     false
-  }
-
-  protected class Prefixes(var prefixes: Array[String], var size: Int) extends Enumeration[String] {
-
-    private var counter: Int = 0
-
-    def hasMoreElements: Boolean = counter < size
-
-    def nextElement(): String = {
-      if (counter < size) {
-        val result = fPrefixes(counter)
-        counter += 1
-        return result
-      }
-      throw new NoSuchElementException("Illegal access to Namespace prefixes enumeration.")
-    }
-
-    override def toString: String = {
-      val buf = new StringBuffer()
-      for (i ← 0 until size) {
-        buf.append(prefixes(i))
-        buf.append(' ')
-      }
-      buf.toString
-    }
   }
 }

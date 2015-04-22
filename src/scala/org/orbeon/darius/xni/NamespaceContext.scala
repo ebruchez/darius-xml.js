@@ -17,8 +17,6 @@
 
 package org.orbeon.darius.xni
 
-import java.util.Enumeration
-
 object NamespaceContext {
 
   /**
@@ -134,7 +132,7 @@ trait NamespaceContext {
    * that have not been overridden.
    * @return Enumeration
    */
-  def getAllPrefixes: Enumeration[String]
+  def getAllPrefixes: Iterator[String]
 
   /**
    * Reset this Namespace support object for reuse.
