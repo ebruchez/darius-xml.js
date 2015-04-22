@@ -385,10 +385,6 @@ class XMLErrorReporter extends XMLComponent {
    * Returns the default state for a feature, or null if this
    * component does not want to report a default value for this
    * feature.
-   *
-   * @param featureId The feature identifier.
-   *
-   * @since Xerces 2.2.0
    */
   def getFeatureDefault(featureId: String): java.lang.Boolean = {
     RECOGNIZED_FEATURES.indices.find(RECOGNIZED_FEATURES(_) == featureId)
@@ -399,10 +395,6 @@ class XMLErrorReporter extends XMLComponent {
    * Returns the default state for a property, or null if this
    * component does not want to report a default value for this
    * property.
-   *
-   * @param propertyId The property identifier.
-   *
-   * @since Xerces 2.2.0
    */
   def getPropertyDefault(propertyId: String): AnyRef = {
     RECOGNIZED_PROPERTIES.indices.find(RECOGNIZED_PROPERTIES(_) == propertyId)
