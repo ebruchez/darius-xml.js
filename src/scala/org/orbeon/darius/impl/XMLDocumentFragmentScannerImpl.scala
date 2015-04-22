@@ -106,7 +106,7 @@ protected[impl] object XMLDocumentFragmentScannerImpl {
   val NAMESPACES = Constants.SAX_FEATURE_PREFIX + Constants.NAMESPACES_FEATURE
 
   /**
-   Feature identifier: notify built-in refereces.
+   Feature identifier: notify built-in references.
    */
   val NOTIFY_BUILTIN_REFS = Constants.XERCES_FEATURE_PREFIX + Constants.NOTIFY_BUILTIN_REFS_FEATURE
 

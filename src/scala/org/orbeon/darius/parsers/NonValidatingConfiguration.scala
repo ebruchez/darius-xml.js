@@ -74,12 +74,12 @@ protected[parsers] object NonValidatingConfiguration {
   val LOAD_EXTERNAL_DTD = Constants.XERCES_FEATURE_PREFIX + Constants.LOAD_EXTERNAL_DTD_FEATURE
 
   /**
-   Feature identifier: notify built-in refereces.
+   Feature identifier: notify built-in references.
    */
   val NOTIFY_BUILTIN_REFS = Constants.XERCES_FEATURE_PREFIX + Constants.NOTIFY_BUILTIN_REFS_FEATURE
 
   /**
-   Feature identifier: notify character refereces.
+   Feature identifier: notify character references.
    */
   val NOTIFY_CHAR_REFS = Constants.XERCES_FEATURE_PREFIX + Constants.NOTIFY_CHAR_REFS_FEATURE
 
@@ -399,7 +399,7 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
   }
 
   protected def configurePipeline(): Unit = {
-    if (fFeatures.get(NAMESPACES) == true) {
+    if (fFeatures.get(NAMESPACES).contains(true)) {
       if (fNamespaceScanner eq null) {
         fNamespaceScanner = new XMLNSDocumentScannerImpl()
         addComponent(fNamespaceScanner.asInstanceOf[XMLComponent])
