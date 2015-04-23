@@ -18,6 +18,7 @@
 package org.orbeon.darius.impl
 
 import org.orbeon.darius.impl.msg.XMLMessageFormatter
+import org.orbeon.darius.util.HexUtils
 import org.orbeon.darius.util.SymbolTable
 import org.orbeon.darius.util.XMLChar
 import org.orbeon.darius.util.XMLResourceIdentifierImpl
@@ -450,7 +451,7 @@ abstract class XMLScanner extends XMLComponent {
             scanSurrogates(fStringBuffer2)
           } else if (isInvalidLiteral(c)) {
             val key = if (scanningTextDecl) "InvalidCharInTextDecl" else "InvalidCharInXMLDecl"
-            reportFatalError(key, Array(Integer.toString(c, 16)))
+            reportFatalError(key, Array(HexUtils.toHexString(c)))
             fEntityScanner.scanChar()
           }
         }
@@ -731,7 +732,7 @@ abstract class XMLScanner extends XMLComponent {
             }
           }
         } else if (c != -1 && isInvalidLiteral(c)) {
-          reportFatalError("InvalidCharInAttValue", Array(eleName, atName, Integer.toString(c, 16)))
+          reportFatalError("InvalidCharInAttValue", Array(eleName, atName, HexUtils.toHexString(c)))
           fEntityScanner.scanChar()
           if (entityDepth == fEntityDepth) {
             fStringBuffer2.append(c.toChar)
@@ -1103,13 +1104,13 @@ abstract class XMLScanner extends XMLComponent {
     val high = fEntityScanner.scanChar()
     val low = fEntityScanner.peekChar()
     if (!XMLChar.isLowSurrogate(low)) {
-      reportFatalError("InvalidCharInContent", Array(Integer.toString(high, 16)))
+      reportFatalError("InvalidCharInContent", Array(HexUtils.toHexString(high)))
       return false
     }
     fEntityScanner.scanChar()
     val c = XMLChar.supplemental(high.toChar, low.toChar)
     if (isInvalid(c)) {
-      reportFatalError("InvalidCharInContent", Array(Integer.toString(c, 16)))
+      reportFatalError("InvalidCharInContent", Array(HexUtils.toHexString(c)))
       return false
     }
     buf.append(high.toChar)

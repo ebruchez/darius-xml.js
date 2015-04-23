@@ -24,6 +24,7 @@ import org.orbeon.darius.impl.XMLDocumentFragmentScannerImpl._
 import org.orbeon.darius.impl.io.MalformedByteSequenceException
 import org.orbeon.darius.impl.msg.XMLMessageFormatter
 import org.orbeon.darius.util.AugmentationsImpl
+import org.orbeon.darius.util.HexUtils
 import org.orbeon.darius.util.XMLAttributesImpl
 import org.orbeon.darius.util.XMLChar
 import org.orbeon.darius.util.XMLStringBuffer
@@ -1003,7 +1004,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
                 fDocumentHandler.characters(fStringBuffer, null)
               }
             } else {
-              reportFatalError("InvalidCharInCDSect", Array(Integer.toString(c, 16)))
+              reportFatalError("InvalidCharInCDSect", Array(HexUtils.toHexString(c)))
               fEntityScanner.scanChar()
             }
           }
@@ -1281,7 +1282,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
                           }
                         }
                       } else {
-                        reportFatalError("InvalidCharInContent", Array(Integer.toString(c, 16)))
+                        reportFatalError("InvalidCharInContent", Array(HexUtils.toHexString(c)))
                         fEntityScanner.scanChar()
                       }
                     }
