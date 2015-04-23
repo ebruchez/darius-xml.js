@@ -77,7 +77,7 @@ The current demo app, including the XML parser:
     - `util`: 2,630 lines
     - `xni`: 767 lines
     - `parsers`: 664 lines
-    - `demo: 139 lines
+    - `demo`: 139 lines
     - `api`: 40 lines
     
 For comparison:
