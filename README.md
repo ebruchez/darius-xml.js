@@ -8,7 +8,7 @@ See the [demo][demo] for a quick feel.
 
 Darius is able to parse a number of XML files already, but hasn't been tested to any serious extent.
 
-There is not yet a usable API, whether for JavaScript or for Scala (issue #2).
+There is not yet a usable API, whether for JavaScript or for Scala (issue [#2][issue2]).
 
 The current demo app (including the XML parser) is 144 KB of compressed JavaScript.
 
@@ -89,6 +89,8 @@ Files specific to Darius are also under the Apache 2 license.
 [scalajs]: http://www.scala-js.org/
 
 [demo]: http://ebruchez.github.io/darius.js/
+
+[issue2]: https://github.com/ebruchez/darius.js/issues/2
 
 [domparser]: https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
 
