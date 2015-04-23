@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <style>
+            .form-group .alert {
+                margin-top: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <a href="https://github.com/ebruchez/darius.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+        <div class="container-fluid">
+
+            <div class="starter-template">
+                <h1>Darius.js</h1>
+                <p class="lead">
+                    The <a href="https://xerces.apache.org/xerces2-j/">Xerces</a> XML parser running in the web browser
+                    via <a href="http://www.scala-js.org/">Scala.js</a>.
+                </p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="input-textarea">Source XML</label>
+                        <textarea id="input-textarea" class="form-control" rows="20" placeholder="Input XML"><books>
+  <book>
+   <book-id>504967</book-id>
+   <title>Quattordici lettere inedite di Pietro Mascagni</title>
+   <publication>NRMI, iv (1970)</publication>
+   <publication-date>1970</publication-date>
+   <language>Italian</language>
+   <page-range>493-513</page-range>
+  </book>
+  <book>
+   <book-id>504968</book-id>
+   <title>G. Verga: a Great Writer and his World</title>
+   <publication-place>London</publication-place>
+   <publication-date>1972</publication-date>
+   <language>English</language>
+  </book>
+  <book>
+   <book-id>504969</book-id>
+   <title>Die Beziehungen zwischen Pietro Mascagni und Benito Mussolini</title>
+   <publication>AnMc, no.l7 (1976)</publication>
+   <publication-date>1976</publication-date>
+   <language>German</language>
+   <page-range>212-53</page-range>
+  </book>
+  <book>
+   <book-id>504970</book-id>
+   <title>Italian Opera in Transition, 1871-1893</title>
+   <publication>diss., U. of California, Berkeley</publication>
+   <publication-date>1977</publication-date>
+   <language>German</language>
+  </book>
+  <book>
+   <book-id>504971</book-id>
+   <title>La mia vita e i miei successi</title>
+   <publication-place>Milano</publication-place>
+   <publication-date>1982</publication-date>
+   <language>Italian</language>
+  </book>
+  <book>
+   <book-id>504972</book-id>
+   <title>The world of Italian opera</title>
+   <publication-place>London</publication-place>
+   <publication-date>1984</publication-date>
+   <language>English</language>
+   <page-range>246-247</page-range>
+  </book>
+  <book>
+   <book-id>504973</book-id>
+   <title>Musica e musicisti nel ventennio fascista</title>
+   <publication-place>Fiesole</publication-place>
+   <publication-date>1984</publication-date>
+   <language>Italian</language>
+  </book>
+  <book>
+   <book-id>504974</book-id>
+   <title>La nostalgia di un bel riso immortale (Le Maschere)</title>
+   <publication>Stagione lirica di Livorno 1984</publication>
+   <publication-place>Livorno</publication-place>
+   <publication-date>1984</publication-date>
+   <language>Italian</language>
+  </book>
+  <book>
+   <book-id>504975</book-id>
+   <title>Mascagni coglie l'occasione cinematografica</title>
+   <publication>Rassegna Musicale Curci, a. XXXVIII n. 1</publication>
+   <publication-date>198501</publication-date>
+   <language>Italian</language>
+   <page-range>7-12</page-range>
+  </book>
+  <book>
+   <book-id>504976</book-id>
+   <title>Panneggi medievali per la donna decadente: Parisina e Francesca</title>
+   <publication>Chigiana, xxxvii (1985)</publication>
+   <publication-date>1985</publication-date>
+   <language>Italian</language>
+   <page-range>135-150</page-range>
+  </book>
+  <book>
+   <book-id>504977</book-id>
+   <title>Mascagni</title>
+   <publication>Grande enciclopedia della musica lirica</publication>
+   <editor>Longanesi</editor>
+   <publication-place>Milano</publication-place>
+   <publication-date>1985</publication-date>
+   <language>Italian</language>
+  </book>
+  <book>
+   <book-id>504978</book-id>
+   <title>Pietro Mascagni, Cavalleria rusticana/R. Leoncavallo, Der Bajazzo: Texte, Materialen Kommentare</title>
+   <editor>A. Csampai and D. Holland</editor>
+   <publication-place>Reinbek</publication-place>
+   <publication-date>1987</publication-date>
+   <language>German</language>
+  </book>
+  <book>
+   <book-id>504979</book-id>
+   <title>Callas at Julliard</title>
+   <publication-place>London</publication-place>
+   <publication-date>1987</publication-date>
+   <language>English</language>
+   <page-range>253</page-range>
+  </book>
+  <book>
+   <book-id>504980</book-id>
+   <title>Un Biedermeier intriso di passione (L'amico Fritz)</title>
+   <publication>Stagione lirica di Livorno 1981; Teatro "Verdi" Trieste 1988</publication>
+   <publication-date>1988</publication-date>
+   <language>Italian</language>
+  </book>
+  <book>
+   <book-id>504981</book-id>
+   <title>The Origins of Italian Literaturoper: Guglielmo Ratcliff, La figlia di Iorio, Parisina, and Francesca da Rimini</title>
+   <publication>Reading Opera, ed. A. Groos and R. Parker</publication>
+   <publication-place>Princeton</publication-place>
+   <publication-date>1988</publication-date>
+   <language>English</language>
+   <page-range>92-128</page-range>
+  </book>
+  <book>
+   <book-id>504982</book-id>
+   <title>Mascagni</title>
+   <publication>Repertorio di musica sinfonica</publication>
+   <editor>Ricordi/Giunti</editor>
+   <publication-place>Milano</publication-place>
+   <publication-date>1989</publication-date>
+   <language>Italian</language>
+  </book>
+  <book>
+   <book-id>504983</book-id>
+   <title>La malinconia erotica del canto di Ratcliff</title>
+   <publication>Teatro Massimo Bellini, Catania, Stagione lirica 1990</publication>
+   <publication-place>Catania</publication-place>
+   <publication-date>1990</publication-date>
+   <language>Italian</language>
+   <page-range>11-33</page-range>
+  </book>
+  <book>
+   <book-id>504984</book-id>
+   <title>Der tragiek van Mascagni</title>
+   <publication>Operascala, nummer 2</publication>
+   <publication-date>199011</publication-date>
+   <page-range>49-51</page-range>
+  </book>
+  <book>
+   <book-id>504985</book-id>
+   <title>Fernando de Lucia</title>
+   <publication-place>London</publication-place>
+   <publication-date>1990</publication-date>
+  </book>
+  <book>
+   <book-id>504986</book-id>
+   <title>Parole tra Lucca e Livorno (su Cavalleria Rusticana e Tabarro), Stagione lirica C.E.L.</title>
+   <publication-place>Livorno</publication-place>
+   <publication-date>1993</publication-date>
+   <language>Italian</language>
+  </book>
+  <book>
+   <book-id>504987</book-id>
+   <title>L'apoteosi della cicogna, Pinotta, A Giacomo Leopardi, Zanetto</title>
+   <publication>booklet for the Bongiovanni CD set GB 2101/92</publication>
+   <publication-place>Bologna</publication-place>
+   <publication-date>199?</publication-date>
+   <language>Italian</language>
+  </book>
+  <book>
+   <book-id>504988</book-id>
+   <title>Parisina atto IV, Guardando la S. Teresa del Bernini</title>
+   <publication>Stagione sinfonica Teatro Comunale Firenze</publication>
+   <publication-place>Firenze</publication-place>
+   <publication-date>1995</publication-date>
+   <language>Italian</language>
+  </book>
+  <book>
+   <book-id>504989</book-id>
+   <title>Mascagni</title>
+   <publication>Opera Quarterly, Volume II, nr 2</publication>
+   <publication-date>1995</publication-date>
+   <language>English</language>
+   <page-range>55</page-range>
+  </book>
+  <book>
+   <book-id>504990</book-id>
+   <title>Mascagni e D'Annunzio: "Parisina"</title>
+   <publication>Cultura e scuola, n. 135-136</publication>
+   <publication-date>1995</publication-date>
+   <language>Italian</language>
+   <page-range>185-199</page-range>
+  </book>
+  <book>
+   <book-id>504991</book-id>
+   <title>Nugae mascagnane (su Serenatella, Pinotta, A Giacomo Leopardi, L'apoteosi della cicogna, Tomina, Romanza senza parole)</title>
+   <publication>Studi e Fantasie. Saggi, versi, musica e testimonianze in onore di Leonardo Pinzauti, a cura di Daniele Spini, Passigli</publication>
+   <publication-place>Firenze</publication-place>
+   <publication-date>1996</publication-date>
+   <language>Italian</language>
+   <page-range>221-239</page-range>
+  </book>
+  <book>
+   <book-id>504992</book-id>
+   <title>Voci "Cavalleria rusticana", "Guglielmo Ratcliff", "Iris"</title>
+   <publication>Dizionario dell'Opera</publication>
+   <editor>Baldini &amp;amp; Castoldi</editor>
+   <publication-place>Milano</publication-place>
+   <publication-date>1998</publication-date>
+   <language>Italian</language>
+  </book>
+  <book>
+   <book-id>504993</book-id>
+   <title>Le liriche da camera</title>
+   <publication>booklet for the Bongiovanni CD</publication>
+   <publication-place>Bologna</publication-place>
+   <publication-date>1988</publication-date>
+   <language>Italian</language>
+  </book>
+  <book>
+   <book-id>504994</book-id>
+   <title>Die vergessene Oper, Folge 142, Guglielmo Ratcliff</title>
+   <publication>Orpheus</publication>
+   <publication-place>Berlin</publication-place>
+   <publication-date>199912</publication-date>
+   <language>German</language>
+  </book>
+  <book>
+   <book-id>504995</book-id>
+   <title>Tempo di Mascagni</title>
+   <publication>Opera News</publication>
+   <publication-date>200001</publication-date>
+   <language>English</language>
+  </book>
+  <book>
+   <book-id>504996</book-id>
+   <title>Friends and rivals</title>
+   <publication>Opera News</publication>
+   <publication-date>200001</publication-date>
+   <language>English</language>
+  </book>
+  <book>
+   <book-id>504997</book-id>
+   <title>Il verismo si mette al pianoforte</title>
+   <publication>booklet for the Bongiovanni CD GB 5100-2</publication>
+   <publication-place>Bologna</publication-place>
+   <publication-date>2000</publication-date>
+   <language>Italian</language>
+  </book>
+  <book>
+   <book-id>504998</book-id>
+   <title>Die vergessene Oper, Folge 164, Parisina</title>
+   <publication>Orpheus</publication>
+   <publication-place>Berlin</publication-place>
+   <publication-date>200008</publication-date>
+   <language>German</language>
+   <page-range>15-17</page-range>
+  </book>
+  <book>
+   <book-id>504999</book-id>
+   <title>Due volte Parisina</title>
+   <publication>Il giornale della musica, n° 163</publication>
+   <publication-date>200009</publication-date>
+   <language>Italian</language>
+   <page-range>29</page-range>
+  </book>
+  <book>
+   <book-id>504926</book-id>
+   <title>Pietro Mascagni e la nuova opera Iris</title>
+   <publication>Nuova Antologia</publication>
+   <publication-date>1898</publication-date>
+   <language>Italian</language>
+  </book>
+  <book>
+   <book-id>504927</book-id>
+   <title>Le maschere</title>
+   <publication>RMI, viii (1901)</publication>
+   <publication-date>1901</publication-date>
+   <page-range>178-80</page-range>
+  </book>
+  <book>
+   <book-id>504928</book-id>
+   <title>Il connubio Mascagni-D'Annunzio per una trilogia italiana</title>
+   <publication>Musica [Rome], iv</publication>
+   <publication-date>1910</publication-date>
+   <language>Italian</language>
+  </book>
+</books></textarea>
+                        <div class="alert alert-danger hidden" role="alert"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="result-list">Parsing result</label>
+                        <div class="alert alert-danger hidden" role="alert"></div>
+                        <ul id="result-list" class="list-group"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery/2.1.1/jquery.js"></script>
+        <script type="text/javascript" src="./target/scala-2.11/darius-fastopt.js"></script>
+        <!--<script type="text/javascript" src="./target/scala-2.11/darius-launcher.js"></script>-->
+        <script type="text/javascript">
+            org.orbeon.darius.demo.Demo().initialize();
+        </script>
+
+    </body>
+</html>
