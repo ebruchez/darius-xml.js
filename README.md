@@ -1,11 +1,13 @@
 ## What is this?
 
-A partial port of a the [Apache Xerces XML parser][1] to [Scala.js][2].
+A partial port of a the [Apache Xerces XML parser][xerces] to [Scala.js][scalajs].
+
+See the [demo][demo] for a quick feel.
 
 ## Why is it needed?
 
 If you need to process XML documents, you need an XML parser. Web browsers all embed one, and there is even a [standard
-API for this][3], but:
+API for this][domparser], but:
  
 - there is no support for any XML parsing or XML DOM within Web Workers
 - standard error handling is awkward and varies between browsers
@@ -45,7 +47,7 @@ Benefits:
 
 - The parser reuses code which has been tested for more than 15 years.
 - There is no need to write a parser from scratch. (You might think it is easy, being "just pointy brackets", but
-  doing it properly, following the [XML 1.0][4] and [Namespaces in XML 1.0][5] specs, is in fact pretty hard.)
+  doing it properly, following the [XML 1.0][xml10] and [Namespaces in XML 1.0][xmlns10] specs, is in fact pretty hard.)
 
 Drawbacks:
 
@@ -75,19 +77,21 @@ There is not yet a usable API, whether for JavaScript or for Scala.
 
 The current demo app (including the XML parser) weighs in at 130 KB of compressed JavaScript.
 
-## Licenses
+## Open source licenses
 
 Xerces is provided under the Apache 2 license. This means that the Scala files directly translated from Xerces are also
 released under that same Apache 2 license.
 
-Files specific to Darius are also placed under the Apache 2 license. 
+Files specific to Darius are also under the Apache 2 license. 
 
-[1]: https://xerces.apache.org/xerces2-j/
+[xerces]: https://xerces.apache.org/xerces2-j/
 
-[2]: http://www.scala-js.org/
+[scalajs]: http://www.scala-js.org/
 
-[3]: https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
+[demo]: http://ebruchez.github.io/darius.js/
 
-[4]: http://www.w3.org/TR/REC-xml/
+[domparser]: https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
 
-[5]: http://www.w3.org/TR/REC-xml-names/
+[xml10]: http://www.w3.org/TR/REC-xml/
+
+[xmlns10]: http://www.w3.org/TR/REC-xml-names/
