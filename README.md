@@ -8,9 +8,7 @@ See the [demo][demo] for a quick feel.
 
 Darius is able to parse a number of XML files already, but hasn't been tested to any serious extent.
 
-There is not yet a usable API, whether for JavaScript or for Scala (issue [#2][issue2]).
-
-The current demo app (including the XML parser) is 144 KB of compressed JavaScript.
+There is not yet a usable API, whether for JavaScript or for Scala ([issue #2][issue2]).
 
 ## Why is it needed?
 
@@ -24,7 +22,7 @@ API for this][domparser], but:
 There are a numbers of XML parsers for JavaScript, but as of April 2015 I have found none that can pretends to a minimum
 of compliance with the XML specification.
 
-## How is it done
+## How it is done
 
 Since it doesn't seem wise to start writing an XML parser from scratch in 2015, I thought that starting with the
 time-tested Apache Xerces (which is also Java's built-in XML parser), which has more than 15 years of development behind
@@ -66,6 +64,27 @@ Drawbacks:
 - The Scala code is the result of a translation from Java which means that errors might have been introduced. The best
   way to address this is to run a solid test suite on the Scala.js version.
 
+## Numbers
+
+The current demo app, including the XML parser:
+ 
+- weighs 144 KB of compressed JavaScript
+    - including relevant Scala library code
+    - excluding jQuery, which is used for the demo app
+- has 82 Scala files (including a few files for the demo)
+- has 11,867 lines of non-blank, non-comments, non-test Scala code
+    - `impl`: 7,627 lines 
+    - `util`: 2,630 lines
+    - `xni`: 767 lines
+    - `parsers`: 664 lines
+    - `demo: 139 lines
+    - `api`: 40 lines
+    
+For comparison:
+
+- a compressed Java JAR containing only the Xerces parser is 206 KB
+- a compressed Java JAR of the full Xerces parser is 1.4 MB
+
 ## API
 
 TBD
@@ -77,7 +96,7 @@ sbt fastOptJs
 sbt fullOptJs
 ```
 
-## Open source licenses
+## Open source license
 
 Xerces is provided under the Apache 2 license. This means that the Scala files directly translated from Xerces are also
 released under that same Apache 2 license.
