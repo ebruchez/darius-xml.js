@@ -258,7 +258,6 @@ protected[impl] object XMLDocumentFragmentScannerImpl {
  *  - http://apache.org/xml/properties/internal/symbol-table
  *  - http://apache.org/xml/properties/internal/error-reporter
  *  - http://apache.org/xml/properties/internal/entity-manager
- * 
  */
 class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner with XMLComponent with XMLEntityHandler {
   
@@ -562,9 +561,6 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
       .map(PROPERTY_DEFAULTS(_)).orNull
   }
 
-  /**
-   * setDocumentHandler
-   */
   def setDocumentHandler(documentHandler: XMLDocumentHandler): Unit = {
     fDocumentHandler = documentHandler
   }

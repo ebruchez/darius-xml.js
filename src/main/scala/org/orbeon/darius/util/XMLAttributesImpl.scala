@@ -405,9 +405,6 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
   /**
    * Look up an attribute's type by XML 1.0 qualified name.
    *
-   * See {@link #getType(int) getType(int)} for a description
-   * of the possible types.
-   *
    * @param qname The XML 1.0 qualified name.
    * @return The attribute type as a string, or null if the
    *         attribute is not in the list or if qualified names
@@ -439,9 +436,6 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
 
   /**
    * Look up an attribute's value by XML 1.0 qualified name.
-   *
-   * See {@link #getValue(int) getValue(int)} for a description
-   * of the possible values.
    *
    * @param qname The XML 1.0 qualified name.
    * @return The attribute value as a string, or null if the
@@ -550,9 +544,6 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
   /**
    * Look up an attribute's type by Namespace name.
    *
-   * See {@link #getType(int) getType(int)} for a description
-   * of the possible types.
-   *
    * @param uri The Namespace URI, or null if the
    *        name has no Namespace URI.
    * @param localName The local name of the attribute.
@@ -597,9 +588,6 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
 
   /**
    * Look up an attribute's value by Namespace name.
-   *
-   * See {@link #getValue(int) getValue(int)} for a description
-   * of the possible values.
    *
    * @param uri The Namespace URI, or null if the
    * @param localName The local name of the attribute.

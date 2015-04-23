@@ -198,9 +198,6 @@ trait XMLAttributes {
 
   /**
    * Look up an attribute's type by XML 1.0 qualified name.
-   * 
-   * See {@link #getType(int) getType(int)} for a description
-   * of the possible types.
    *
    * @param qName The XML 1.0 qualified name.
    *
@@ -212,9 +209,6 @@ trait XMLAttributes {
 
   /**
    * Look up an attribute's type by Namespace name.
-   * 
-   * See {@link #getType(int) getType(int)} for a description
-   * of the possible types.
    *
    * @param uri       The Namespace URI, or the empty String if the
    *                  name has no Namespace URI.
@@ -252,9 +246,6 @@ trait XMLAttributes {
 
   /**
    * Look up an attribute's value by XML 1.0 qualified name.
-   * 
-   * See {@link #getValue(int) getValue(int)} for a description
-   * of the possible values.
    *
    * @param qName The XML 1.0 qualified name.
    *
@@ -266,9 +257,6 @@ trait XMLAttributes {
 
   /**
    * Look up an attribute's value by Namespace name.
-   * 
-   * See {@link #getValue(int) getValue(int)} for a description
-   * of the possible values.
    *
    * @param uri       The Namespace URI, or the empty String if the
    *                  name has no Namespace URI.

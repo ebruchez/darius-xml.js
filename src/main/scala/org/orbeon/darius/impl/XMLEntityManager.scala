@@ -147,7 +147,6 @@ object XMLEntityManager {
   private val PROPERTY_DEFAULTS = Array(null, null, null, null, new java.lang.Integer(DEFAULT_BUFFER_SIZE), null)
 
   private val XMLEntity = "[xml]".intern()
-
   private val DTDEntity = "[dtd]".intern()
 
   /**
@@ -166,46 +165,39 @@ object XMLEntityManager {
    Debug switching readers for encodings.
    */
   private val DEBUG_ENCODINGS = false
-
-  private val DEBUG_RESOLVER = false
-
-  private var gUserDir: String = _
-
-  private var gUserDirURI: URI = _
+  private val DEBUG_RESOLVER  = false
 
   private val gNeedEscaping = new Array[Boolean](128)
-
   private val gAfterEscaping1 = new Array[Char](128)
-
   private val gAfterEscaping2 = new Array[Char](128)
   
   private val gHexChs = Array[Char]('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
 
-  var i = 0
-  while (i <= 0x1f) {
-    gNeedEscaping(i) = true
-    gAfterEscaping1(i) = gHexChs(i >> 4)
-    gAfterEscaping2(i) = gHexChs(i & 0xf)
-    i += 1
-  }
+  locally {
+    var i = 0
+    while (i <= 0x1f) {
+      gNeedEscaping(i) = true
+      gAfterEscaping1(i) = gHexChs(i >> 4)
+      gAfterEscaping2(i) = gHexChs(i & 0xf)
+      i += 1
+    }
+  
+    gNeedEscaping(0x7f) = true
+    gAfterEscaping1(0x7f) = '7'
+    gAfterEscaping2(0x7f) = 'F'
 
-  gNeedEscaping(0x7f) = true
-
-  gAfterEscaping1(0x7f) = '7'
-
-  gAfterEscaping2(0x7f) = 'F'
-
-  val escChs = Array(' ', '<', '>', '#', '%', '"', '{', '}', '|', '\\', '^', '~', '[', ']', '`')
-
-  val len = escChs.length
-
-  var ch: Char = 0
-
-  for (i ← 0 until len) {
-    ch = escChs(i)
-    gNeedEscaping(ch) = true
-    gAfterEscaping1(ch) = gHexChs(ch >> 4)
-    gAfterEscaping2(ch) = gHexChs(ch & 0xf)
+    val escChs = Array(' ', '<', '>', '#', '%', '"', '{', '}', '|', '\\', '^', '~', '[', ']', '`')
+  
+    val len = escChs.length
+  
+    var ch: Char = 0
+  
+    for (i ← 0 until len) {
+      ch = escChs(i)
+      gNeedEscaping(ch) = true
+      gAfterEscaping1(ch) = gHexChs(ch >> 4)
+      gAfterEscaping2(ch) = gHexChs(ch & 0xf)
+    }
   }
 
   /**
@@ -453,25 +445,13 @@ object XMLEntityManager {
    */
   private class CharacterBufferPool(var fPoolSize: Int, var fExternalBufferSize: Int, var fInternalBufferSize: Int) {
 
-    private var fInternalBufferPool: Array[CharacterBuffer] = _
-    private var fExternalBufferPool: Array[CharacterBuffer] = _
-    private var fInternalTop: Int = _
-    private var fExternalTop: Int = _
-
-    init()
+    private val fInternalBufferPool = new Array[CharacterBuffer](fPoolSize)
+    private var fExternalBufferPool = new Array[CharacterBuffer](fPoolSize)
+    private var fInternalTop = -1
+    private var fExternalTop = -1
 
     def this(externalBufferSize: Int, internalBufferSize: Int) {
       this(CharacterBufferPool.DEFAULT_POOL_SIZE, externalBufferSize, internalBufferSize)
-    }
-
-    /**
-     Initializes buffer pool. *
-     */
-    private def init(): Unit = {
-      fInternalBufferPool = new Array[CharacterBuffer](fPoolSize)
-      fExternalBufferPool = new Array[CharacterBuffer](fPoolSize)
-      fInternalTop = -1
-      fExternalTop = -1
     }
 
     /**
@@ -1134,20 +1114,23 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
   /**
    * This method uses the passed-in XMLInputSource to make
    * fCurrentEntity usable for reading.
-   * @param name  name of the entity (XML is it's the document entity)
-   * @param xmlInputSource    the input source, with sufficient information
-   *      to begin scanning characters.
-   * @param literal        True if this entity is started within a
-   *                       literal value.
-   * @param isExternal    whether this entity should be treated as an internal or external entity.
-   * @throws IOException  if anything can't be read
-   *  XNIException    If any parser-specific goes wrong.
+   * 
+   * @param name            name of the entity (XML is it's the document entity)
+   * @param xmlInputSource  the input source, with sufficient information
+   *                        to begin scanning characters.
+   * @param literal         true if this entity is started within a
+   *                        literal value.
+   * @param isExternal      whether this entity should be treated as an internal or external entity.
+   * @throws IOException    if anything can't be read
+   *         XNIException   If any parser-specific goes wrong.
    * @return the encoding of the new entity or null if a character stream was employed
    */
-  def setupCurrentEntity(name: String, 
-      xmlInputSource: XMLInputSource, 
-      literal: Boolean, 
-      isExternal: Boolean): String = {
+  def setupCurrentEntity(
+    name           : String, 
+    xmlInputSource : XMLInputSource, 
+    literal        : Boolean, 
+    isExternal     : Boolean
+  ): String = {
     val publicId = xmlInputSource.getPublicId
     val literalSystemId = xmlInputSource.getSystemId
     var baseSystemId = xmlInputSource.getBaseSystemId
@@ -1316,9 +1299,6 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
     fEntityScanner.setCurrentEntity(fCurrentEntity)
   }
 
-  /**
-   Returns the entity scanner.
-   */
   def getEntityScanner: XMLEntityScanner = {
     if (fEntityScanner eq null) {
       if (fXML10EntityScanner eq null) {
@@ -1779,7 +1759,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
   }
 
   /**
-   Create a new ISO-8859-1 reader from the InputStream. *
+   Create a new ISO-8859-1 reader from the InputStream.
    */
   private def createLatin1Reader(stream: InputStream): Reader = {
     if (DEBUG_ENCODINGS) {
