@@ -17,46 +17,18 @@
 
 package org.orbeon.darius.impl.msg
 
-import java.util.MissingResourceException
-import java.util.ResourceBundle
-
 import org.orbeon.darius.util.MessageFormatter
 
 object XMLMessageFormatter {
-  /**
-   * The domain of messages concerning the XML 1.0 specification.
-   */
-  val XML_DOMAIN = "http://www.w3.org/TR/1998/REC-xml-19980210"
+  val XML_DOMAIN   = "http://www.w3.org/TR/1998/REC-xml-19980210"
   val XMLNS_DOMAIN = "http://www.w3.org/TR/1999/REC-xml-names-19990114"
 }
 
-/**
- * XMLMessageFormatter provides error messages for the XML 1.0 Recommendation and for
- * the Namespaces Recommendation
- */
 class XMLMessageFormatter extends MessageFormatter {
 
-  private var fResourceBundle: ResourceBundle = null
-
+  // @ebruchez: plain message for now, until we hook up English error messages
   def formatMessage(key: String, arguments: Array[Any]): String = {
-    fResourceBundle = ResourceBundle.getBundle("org.orbeon.darius.impl.msg.XMLMessages")
     var msg: String = null
-    try {
-      msg = fResourceBundle.getString(key)
-      if (arguments ne null) {
-        try {
-          msg = java.text.MessageFormat.format(msg, arguments)
-        } catch {
-          case e: Exception ⇒
-            msg = fResourceBundle.getString("FormatFailed")
-            msg += " " + fResourceBundle.getString(key)
-        }
-      }
-    } catch {
-      case e: MissingResourceException ⇒
-        msg = fResourceBundle.getString("BadMessageKey")
-        throw new MissingResourceException(key, msg, key)
-    }
     if (msg eq null) {
       msg = key
       if (arguments.length > 0) {
