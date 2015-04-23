@@ -4,6 +4,14 @@ A partial port of a the [Apache Xerces XML parser][xerces] to [Scala.js][scalajs
 
 See the [demo][demo] for a quick feel.
 
+## Status
+
+Darius is able to parse a number of XML files already, but hasn't been tested to any serious extent.
+
+There is not yet a usable API, whether for JavaScript or for Scala (issue #2).
+
+The current demo app (including the XML parser) is 144 KB of compressed JavaScript.
+
 ## Why is it needed?
 
 If you need to process XML documents, you need an XML parser. Web browsers all embed one, and there is even a [standard
@@ -68,14 +76,6 @@ TBD
 sbt fastOptJs
 sbt fullOptJs
 ```
-
-## Status
-
-Darius is able to parse a number of XML file already, but hasn't been tested to any serious extent.
-
-There is not yet a usable API, whether for JavaScript or for Scala.
-
-The current demo app (including the XML parser) weighs in at 130 KB of compressed JavaScript.
 
 ## Open source licenses
 
