@@ -21,18 +21,18 @@ import org.orbeon.darius.util.SymbolTable._
 
 import scala.util.control.Breaks
 
-object SymbolTable {
+private object SymbolTable {
 
   /**
    Default table size.
    */
-  protected val TABLE_SIZE = 101
+  val TABLE_SIZE = 101
 
   /**
    * This class is a symbol table entry. Each entry acts as a node
    * in a linked list.
    */
-  protected class Entry(val symbol: String, val characters: Array[Char], var next: Entry)
+  class Entry(val symbol: String, val characters: Array[Char], var next: Entry)
   
   object Entry {
     def apply(symbol: String, next: Entry): Entry = {
@@ -124,18 +124,18 @@ object SymbolTable {
  */
 class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Float) {
 
-  protected var fBuckets: Array[Entry] = new Array[Entry](fTableSize)
+  private var fBuckets: Array[Entry] = new Array[Entry](fTableSize)
 
   /**
    The total number of entries in the hash table.
    */
-  protected var fCount: Int = 0
+  private var fCount: Int = 0
 
   /**
    The table is rehashed when its size exceeds this threshold.  (The
    * value of this field is (int)(capacity * loadFactor).)
    */
-  protected var fThreshold: Int = (fTableSize * fLoadFactor).toInt
+  private var fThreshold: Int = (fTableSize * fLoadFactor).toInt
 
   locally {
     if (fTableSize < 0) {
@@ -155,7 +155,7 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
    * Constructs a new, empty SymbolTable with the specified initial capacity
    * and default load factor, which is `0.75`.
    *
-   * @param     initialCapacity   the initial capacity of the hashtable.
+   * @param     initialCapacity   the initial capacity of the hash table.
    * @throws    IllegalArgumentException if the initial capacity is less
    *            than zero.
    */
@@ -167,9 +167,8 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
    * Constructs a new, empty SymbolTable with a default initial capacity (101)
    * and load factor, which is `0.75`.
    */
-  def this() {
+  def this() =
     this(TABLE_SIZE, 0.75f)
-  }
 
   /**
    * Adds the specified symbol to the symbol table and returns a
@@ -268,7 +267,7 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
    * Increases the capacity of and internally reorganizes this
    * SymbolTable, in order to accommodate and access its entries more
    * efficiently.  This method is called automatically when the
-   * number of keys in the SymbolTable exceeds this hashtable's capacity
+   * number of keys in the SymbolTable exceeds this hash table's capacity
    * and load factor.
    */
   protected def rehash(): Unit = {
@@ -342,5 +341,15 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
       }
     }
     false
+  }
+  
+  // @ebruchez
+  def dumpEntries(): Unit = {
+    println("Symbol table contents:")
+    for (topLevelEntry ← fBuckets if topLevelEntry ne null) {
+      Iterator.iterate(topLevelEntry)(_.next) takeWhile (_ ne null) foreach { e ⇒
+        println(s"""  ${e.symbol}""")
+      }
+    }
   }
 }

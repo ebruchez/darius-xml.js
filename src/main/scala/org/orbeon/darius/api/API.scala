@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream
 
 import org.orbeon.darius.parsers.AbstractXMLDocumentParser
 import org.orbeon.darius.parsers.NonValidatingConfiguration
+import org.orbeon.darius.util.SymbolTable
 import org.orbeon.darius.xni._
 import org.orbeon.darius.xni.parser.XMLErrorHandler
 import org.orbeon.darius.xni.parser.XMLInputSource
@@ -36,9 +37,10 @@ object API {
     val fileName = "test.xml"
     val encoding = "UTF-8"
     
-    val source = new XMLInputSource(null, fileName, baseDir, new ByteArrayInputStream(xml.getBytes("UTF-8")), encoding)
-    val config = new NonValidatingConfiguration()
-    val parser = new AbstractXMLDocumentParser(config) {}
+    val source  = new XMLInputSource(null, fileName, baseDir, new ByteArrayInputStream(xml.getBytes("UTF-8")), encoding)
+    val symbols = new SymbolTable
+    val config  = new NonValidatingConfiguration(symbols)
+    val parser  = new AbstractXMLDocumentParser(config) {}
     
     config.setDocumentHandler(handler)
     config.setErrorHandler(new XMLErrorHandler {
@@ -50,5 +52,6 @@ object API {
         println("Fatal: " + exception.getMessage)
     })
     parser.parse(source)
+    symbols.dumpEntries()
   }
 }
