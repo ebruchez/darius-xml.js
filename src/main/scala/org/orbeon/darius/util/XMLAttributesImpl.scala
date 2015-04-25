@@ -21,7 +21,6 @@ import org.orbeon.darius.util.XMLAttributesImpl._
 import org.orbeon.darius.xni.Augmentations
 import org.orbeon.darius.xni.QName
 import org.orbeon.darius.xni.XMLAttributes
-import org.orbeon.darius.xni.Augmentations
 
 import scala.util.control.Breaks
 
@@ -72,7 +71,7 @@ object XMLAttributesImpl {
  * 
  * The attributes are read-write so that subsequent stages in the document
  * pipeline can modify the values or change the attributes that are
- * propogated to the next stage.
+ * propagated to the next stage.
  */
 class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttributes {
 
@@ -286,7 +285,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * @param attrIndex The attribute index.
    * @param attrName  The attribute name structure to fill in.
    */
-  def getName(attrIndex: Int, attrName: QName): Unit = {
+  def setNameFields(attrIndex: Int, attrName: QName): Unit = {
     attrName.setValues(fAttributes(attrIndex).name)
   }
 

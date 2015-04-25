@@ -54,10 +54,12 @@ trait XMLDocumentHandler {
    * @throws XNIException
    *                   Thrown by handler to signal an error.
    */
-  def startDocument(locator: XMLLocator, 
-      encoding: String, 
-      namespaceContext: NamespaceContext, 
-      augs: Augmentations): Unit
+  def startDocument(
+    locator          : XMLLocator, 
+    encoding         : String, 
+    namespaceContext : NamespaceContext, 
+    augs             : Augmentations
+  ): Unit
 
   /**
    * Notifies of the presence of an XMLDecl line in the document. If
@@ -73,10 +75,12 @@ trait XMLDocumentHandler {
    * @throws XNIException
    *                   Thrown by handler to signal an error.
    */
-  def xmlDecl(version: String, 
-      encoding: String, 
-      standalone: String, 
-      augs: Augmentations): Unit
+  def xmlDecl(
+    version    : String, 
+    encoding   : String, 
+    standalone : String, 
+    augs       : Augmentations
+  ): Unit
 
   /**
    * Notifies of the presence of the DOCTYPE line in the document.
@@ -92,10 +96,12 @@ trait XMLDocumentHandler {
    * @throws XNIException
    *                   Thrown by handler to signal an error.
    */
-  def doctypeDecl(rootElement: String, 
-      publicId: String, 
-      systemId: String, 
-      augs: Augmentations): Unit
+  def doctypeDecl(
+    rootElement : String, 
+    publicId    : String, 
+    systemId    : String, 
+    augs        : Augmentations
+  ): Unit
 
   /**
    * A comment.

@@ -117,7 +117,7 @@ trait XMLAttributes {
    * @param attrIndex The attribute index.
    * @param attrName  The attribute name structure to fill in.
    */
-  def getName(attrIndex: Int, attrName: QName): Unit
+  def setNameFields(attrIndex: Int, attrName: QName): Unit
 
   /**
    * Returns the prefix of the attribute at the specified index.

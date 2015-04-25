@@ -56,10 +56,11 @@ class QName extends Cloneable {
   /**
    Constructs a QName with the specified values.
    */
-  def this(prefix: String, 
-      localpart: String, 
-      rawname: String, 
-      uri: String) {
+  def this(
+    prefix    : String, 
+    localpart : String, 
+    rawname   : String, 
+    uri       : String) = {
     this()
     setValues(prefix, localpart, rawname, uri)
   }
@@ -67,7 +68,7 @@ class QName extends Cloneable {
   /**
    Constructs a copy of the specified QName.
    */
-  def this(qname: QName) {
+  def this(qname: QName) = {
     this()
     setValues(qname)
   }
@@ -78,10 +79,10 @@ class QName extends Cloneable {
    * @param qname The qualified name to be copied.
    */
   def setValues(qname: QName): Unit = {
-    prefix = qname.prefix
+    prefix    = qname.prefix
     localpart = qname.localpart
-    rawname = qname.rawname
-    uri = qname.uri
+    rawname   = qname.rawname
+    uri       = qname.uri
   }
 
   /**
@@ -92,24 +93,26 @@ class QName extends Cloneable {
    * @param rawname   The qname rawname. (e.g. "a:foo")
    * @param uri       The URI binding. (e.g. "http://foo.com/mybinding")
    */
-  def setValues(prefix: String, 
-      localpart: String, 
-      rawname: String, 
-      uri: String): Unit = {
-    this.prefix = prefix
+  def setValues(
+    prefix    : String, 
+    localpart : String, 
+    rawname   : String, 
+    uri       : String
+  ): Unit = {
+    this.prefix    = prefix
     this.localpart = localpart
-    this.rawname = rawname
-    this.uri = uri
+    this.rawname   = rawname
+    this.uri       = uri
   }
 
   /**
    Clears the values of the qname components.
    */
   def clear(): Unit = {
-    prefix = null
+    prefix    = null
     localpart = null
-    rawname = null
-    uri = null
+    rawname   = null
+    uri       = null
   }
 
   /**
@@ -120,29 +123,24 @@ class QName extends Cloneable {
   /**
    Returns the hashcode for this object.
    */
-  override def hashCode(): Int = {
-    if (uri ne null) {
-      return uri.hashCode + 
-        (if (localpart ne null) localpart.hashCode else 0)
-    }
-    if (rawname ne null) rawname.hashCode else 0
-  }
+  override def hashCode(): Int =
+    if (uri ne null)
+      uri.hashCode + (if (localpart ne null) localpart.hashCode else 0)
+    else
+      if (rawname ne null) rawname.hashCode else 0
 
   /**
    Returns true if the two objects are equal.
    */
-  override def equals(`object`: Any): Boolean = {
-    `object` match {
+  override def equals(other: Any): Boolean =
+    other match {
+      case qname: QName if qname.uri ne null ⇒
+        uri == qname.uri && localpart == qname.localpart
       case qname: QName ⇒
-        if (qname.uri ne null) {
-          return uri == qname.uri && localpart == qname.localpart
-        } else if (uri eq null) {
-          return rawname == qname.rawname
-        }
+        rawname == qname.rawname
       case _ ⇒
+        false
     }
-    false
-  }
 
   /**
    Returns a string representation of this object.

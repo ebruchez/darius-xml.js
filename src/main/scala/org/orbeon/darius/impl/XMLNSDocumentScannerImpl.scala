@@ -171,7 +171,7 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
       }
       val length = fAttributes.getLength
       for (i ← 0 until length) {
-        fAttributes.getName(i, fAttributeQName)
+        fAttributes.setNameFields(i, fAttributeQName)
         val aprefix = if (fAttributeQName.prefix ne null) fAttributeQName.prefix else XMLSymbols.EMPTY_STRING
         val uri = fNamespaceContext.getURI(aprefix)
         if (! ((fAttributeQName.uri ne null) && fAttributeQName.uri == uri)) {
@@ -287,7 +287,7 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
       }
       val length = fAttributes.getLength
       for (i ← 0 until length) {
-        fAttributes.getName(i, fAttributeQName)
+        fAttributes.setNameFields(i, fAttributeQName)
         val aprefix = if (fAttributeQName.prefix ne null) fAttributeQName.prefix else XMLSymbols.EMPTY_STRING
         val uri = fNamespaceContext.getURI(aprefix)
         if (! ((fAttributeQName.uri ne null) && fAttributeQName.uri == uri)) {
