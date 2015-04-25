@@ -1,8 +1,10 @@
 enablePlugins(ScalaJSPlugin)
 
-name         := "Darius"
+organization := "org.orbeon"
+name         := "darius"
 version      := "1.0"
 scalaVersion := "2.11.6"
+version      := "SNAPSHOT"
 
 scalaSource in Compile := baseDirectory.value / "src" / "main" / "scala"
 scalaSource in Test    := baseDirectory.value / "src" / "test" / "scala"
