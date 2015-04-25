@@ -99,7 +99,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
   protected var fAttributes: Array[Attribute] = new Array[Attribute](4)
 
   /**
-   * Hashtable of attribute information.
+   * Hash table of attribute information.
    * Provides an alternate view of the attribute specification.
    */
   protected var fAttributeTableView: Array[Attribute] = _

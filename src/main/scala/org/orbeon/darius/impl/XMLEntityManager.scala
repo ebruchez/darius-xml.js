@@ -1772,7 +1772,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
   }
 
   /**
-   * Returns the hashtable of declared entities.
+   * Returns the hash map of declared entities.
    * 
    * *REVISIT:*
    * This should be done the "right" way by designing a better way to

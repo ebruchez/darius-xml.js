@@ -110,11 +110,11 @@ object SymbolTable {
  * increase the time cost to look up an entry (which is reflected in most
  * `SymbolTable` operations, including `addSymbol` and `containsSymbol`).
  *
- * The initial capacity controls a tradeoff between wasted space and the
+ * The initial capacity controls a trade-off between wasted space and the
  * need for `rehash` operations, which are time-consuming.
  * No `rehash` operations will *ever* occur if the initial
  * capacity is greater than the maximum number of entries the
- * `Hashtable` will contain divided by its load factor.  However,
+ * hash table will contain divided by its load factor.  However,
  * setting the initial capacity too high can waste space.
  *
  * If many entries are to be made into a `SymbolTable`,
