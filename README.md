@@ -1,12 +1,12 @@
-## What is this?
+## What is Darius XML?
 
-A partial port of a the [Apache Xerces XML parser][xerces] to [Scala.js][scalajs].
+An XML parser based on [Apache Xerces][xerces] running in the Web browser via [Scala.js][scalajs].
 
 See the [demo][demo] for a quick feel.
 
 ## Status
 
-Darius is able to parse a number of XML files already, but hasn't been tested to any serious extent.
+Darius XML is able to parse a number of XML files already, but hasn't been tested to any serious extent.
 
 There is not yet a usable API, whether for JavaScript or for Scala ([issue #2][issue2]).
 
@@ -15,7 +15,7 @@ There is not yet a usable API, whether for JavaScript or for Scala ([issue #2][i
 If you need to process XML documents, you need an XML parser. Web browsers all embed one, and there is even a [standard
 API for this][domparser], but:
  
-- there is no support for any XML parsing or XML DOM within Web Workers
+- there is no support for any XML parsing or XML DOM within Web workers
 - standard error handling is awkward and varies between browsers
 - each browser has its own implementation, so parsing behavior might vary
   
@@ -101,15 +101,15 @@ sbt fullOptJs
 Xerces is provided under the Apache 2 license. This means that the Scala files directly translated from Xerces are also
 released under that same Apache 2 license.
 
-Files specific to Darius are also under the Apache 2 license. 
+Files specific to Darius XML are also under the Apache 2 license. 
 
 [xerces]: https://xerces.apache.org/xerces2-j/
 
 [scalajs]: http://www.scala-js.org/
 
-[demo]: http://ebruchez.github.io/darius.js/
+[demo]: http://ebruchez.github.io/darius-xml.js/
 
-[issue2]: https://github.com/ebruchez/darius.js/issues/2
+[issue2]: https://github.com/ebruchez/darius-xml.js/issues/2
 
 [domparser]: https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
 
