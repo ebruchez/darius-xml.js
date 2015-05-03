@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/darius.iml" filepath="$PROJECT_DIR$/.idea/modules/darius.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/darius-build.iml" filepath="$PROJECT_DIR$/.idea/modules/darius-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/darius-xml.iml" filepath="$PROJECT_DIR$/.idea/modules/darius-xml.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/darius-xml-build.iml" filepath="$PROJECT_DIR$/.idea/modules/darius-xml-build.iml" />
     </modules>
   </component>
 </project>

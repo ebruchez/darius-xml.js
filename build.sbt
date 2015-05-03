@@ -1,7 +1,7 @@
 enablePlugins(ScalaJSPlugin)
 
 organization := "org.orbeon"
-name         := "darius"
+name         := "darius-xml"
 version      := "1.0"
 scalaVersion := "2.11.6"
 version      := "SNAPSHOT"
