@@ -26,13 +26,25 @@ object XMLMessageFormatter {
 
 class XMLMessageFormatter extends MessageFormatter {
 
-  // @ebruchez: plain message for now, until we hook up English error messages
   def formatMessage(key: String, argsOrNull: Array[Any]): String = {
-    val str = new StringBuffer(key)
-    Option(argsOrNull) filter (_.nonEmpty) foreach { args ⇒
-      str.append('?')
-      str.append(args map String.valueOf mkString "&")
-    } 
-    str.toString
+    
+    XMLMessages.Messages.get(key) match {
+      case Some(message) ⇒
+        
+        var res = message
+        
+        for ((value, index) ← Option(argsOrNull).to[List] flatMap { _ map String.valueOf } zipWithIndex)
+          res = res.replaceAllLiterally(s"{$index}", value)
+        
+        res
+        
+      case None ⇒
+        val str = new StringBuffer(key)
+        Option(argsOrNull) filter (_.nonEmpty) foreach { args ⇒
+          str.append('?')
+          str.append(args map String.valueOf mkString "&")
+        } 
+        str.toString
+    }
   }
 }
