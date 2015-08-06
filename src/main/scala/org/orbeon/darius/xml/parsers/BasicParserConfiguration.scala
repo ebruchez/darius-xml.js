@@ -19,6 +19,8 @@ package org.orbeon.darius.xml.parsers
 
 import java.io.IOException
 
+import java.{util ⇒ ju}
+
 import org.orbeon.darius.xml.impl.Constants
 import org.orbeon.darius.xml.impl.Constants._
 import org.orbeon.darius.xml.util.ParserConfigurationSettings
@@ -35,8 +37,6 @@ import org.orbeon.darius.xml.xni.parser.XMLEntityResolver
 import org.orbeon.darius.xml.xni.parser.XMLErrorHandler
 import org.orbeon.darius.xml.xni.parser.XMLInputSource
 import org.orbeon.darius.xml.xni.parser.XMLParserConfiguration
-
-import scala.collection.mutable
 
 protected[parsers] object BasicParserConfiguration {
 
@@ -87,19 +87,19 @@ protected[parsers] object BasicParserConfiguration {
  * basic parser configuration creates the symbol table (if not
  * specified at construction time) and manages all of the recognized
  * features and properties.
- * 
+ *
  * The basic parser configuration does *not* mandate
  * any particular pipeline configuration or the use of specific
  * components except for the symbol table. If even this is too much
  * for a basic parser configuration, the programmer can create a new
  * configuration class that implements the
  * `XMLParserConfiguration` interface.
- * 
+ *
  * Subclasses of the basic parser configuration can add their own
  * recognized features and properties by calling the
  * `addRecognizedFeature` and
  * `addRecognizedProperty` methods, respectively.
- * 
+ *
  * The basic parser configuration assumes that the configuration
  * will be made up of various parser components that implement the
  * `XMLComponent` interface. If subclasses of this
@@ -109,34 +109,34 @@ protected[parsers] object BasicParserConfiguration {
  * method. The basic parser configuration will make sure to call
  * the `reset` method of each registered component
  * before parsing an instance document.
- * 
+ *
  * This class recognizes the following features and properties:
- * 
+ *
  * - Features
- *  
+ *
  *   - http://xml.org/sax/features/validation
  *   - http://xml.org/sax/features/namespaces
  *   - http://xml.org/sax/features/external-general-entities
  *   - http://xml.org/sax/features/external-parameter-entities
- *  
+ *
  * - Properties
- *  
+ *
  *   - http://xml.org/sax/properties/xml-string
  *   - http://apache.org/xml/properties/internal/symbol-table
  *   - http://apache.org/xml/properties/internal/error-handler
  *   - http://apache.org/xml/properties/internal/entity-resolver
- *  
- * 
+ *
+ *
  */
 abstract class BasicParserConfiguration protected (protected var fSymbolTable: SymbolTable, parentSettings: XMLComponentManager)
     extends ParserConfigurationSettings(parentSettings) with XMLParserConfiguration {
-  
+
   import BasicParserConfiguration._
 
   /**
    Components.
    */
-  protected var fComponents = new mutable.ArrayBuffer[XMLComponent]()
+  protected var fComponents = new ju.ArrayList[XMLComponent]()
 
   /**
    The document handler.
@@ -158,13 +158,13 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
    */
   protected var fLastComponent: XMLDocumentSource = _
 
-  fRecognizedFeatures = new mutable.ArrayBuffer[String]()
+  fRecognizedFeatures = new ju.ArrayList[String]()
 
-  fRecognizedProperties = new mutable.ArrayBuffer[String]()
+  fRecognizedProperties = new ju.ArrayList[String]()
 
-  fFeatures = new mutable.HashMap[String, Any]()
+  fFeatures = new ju.HashMap[String, Any]()
 
-  fProperties = new mutable.HashMap[String, Any]()
+  fProperties = new ju.HashMap[String, Any]()
 
   val recognizedFeatures = Array(PARSER_SETTINGS, VALIDATION, NAMESPACES, EXTERNAL_GENERAL_ENTITIES, EXTERNAL_PARAMETER_ENTITIES)
 
@@ -213,7 +213,7 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
     if (fComponents.contains(component)) {
       return
     }
-    fComponents += component
+    fComponents.add(component)
     val recognizedFeatures = component.getRecognizedFeatures
     addRecognizedFeatures(recognizedFeatures)
     val recognizedProperties = component.getRecognizedProperties
@@ -238,15 +238,15 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
 
   /**
    * Parse an XML document.
-   * 
+   *
    * The parser can use this method to instruct this configuration
    * to begin parsing an XML document from any valid input source
    * (a character stream, a byte stream, or a URI).
-   * 
+   *
    * Parsers may not invoke this method while a parse is in progress.
    * Once a parse is complete, the parser may then parse another XML
    * document.
-   * 
+   *
    * This method is synchronous: it will not return until parsing
    * has ended.  If a client application wants to terminate
    * parsing early, it should throw an exception.
@@ -411,7 +411,7 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
   override protected def checkProperty(propertyId: String): Unit = {
     if (propertyId.startsWith(Constants.SAX_PROPERTY_PREFIX)) {
       val suffixLength = propertyId.length - Constants.SAX_PROPERTY_PREFIX.length
-      if (suffixLength == Constants.XML_STRING_PROPERTY.length && 
+      if (suffixLength == Constants.XML_STRING_PROPERTY.length &&
         propertyId.endsWith(Constants.XML_STRING_PROPERTY)) {
         val `type` = XMLConfigurationException.NOT_SUPPORTED
         throw new XMLConfigurationException(`type`, propertyId)

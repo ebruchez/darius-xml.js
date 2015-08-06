@@ -23,6 +23,7 @@ import java.io.InputStreamReader
 import java.io.Reader
 import java.io.StringReader
 import java.net.URI
+import java.{util ⇒ ju}
 
 import org.orbeon.darius.xml.impl.XMLEntityManager._
 import org.orbeon.darius.xml.impl.io.ASCIIReader
@@ -47,7 +48,6 @@ import org.orbeon.darius.xml.xni.parser.XMLConfigurationException
 import org.orbeon.darius.xml.xni.parser.XMLEntityResolver
 import org.orbeon.darius.xml.xni.parser.XMLInputSource
 
-import scala.collection.mutable
 import scala.util.control.Breaks
 
 object XMLEntityManager {
@@ -170,7 +170,7 @@ object XMLEntityManager {
   private val gNeedEscaping = new Array[Boolean](128)
   private val gAfterEscaping1 = new Array[Char](128)
   private val gAfterEscaping2 = new Array[Char](128)
-  
+
   private val gHexChs = Array[Char]('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
 
   locally {
@@ -181,17 +181,17 @@ object XMLEntityManager {
       gAfterEscaping2(i) = gHexChs(i & 0xf)
       i += 1
     }
-  
+
     gNeedEscaping(0x7f) = true
     gAfterEscaping1(0x7f) = '7'
     gAfterEscaping2(0x7f) = 'F'
 
     val escChs = Array(' ', '<', '>', '#', '%', '"', '{', '}', '|', '\\', '^', '~', '[', ']', '`')
-  
+
     val len = escChs.length
-  
+
     var ch: Char = 0
-  
+
     for (i ← 0 until len) {
       ch = escChs(i)
       gNeedEscaping(ch) = true
@@ -300,9 +300,9 @@ object XMLEntityManager {
   /**
    * External entity.
    */
-  protected class ExternalEntity(name: String, 
-        var entityLocation: XMLResourceIdentifier, 
-        var notation: String, 
+  protected class ExternalEntity(name: String,
+        var entityLocation: XMLResourceIdentifier,
+        var notation: String,
         inExternalSubset: Boolean)
     extends Entity(name, inExternalSubset) {
 
@@ -374,7 +374,7 @@ object XMLEntityManager {
    * Information about auto-detectable encodings.
    */
   private[impl] class EncodingInfo private (val encoding: String, val isBigEndian: java.lang.Boolean, val hasBOM: Boolean)
-  
+
   object ByteBufferPool {
     private val DEFAULT_POOL_SIZE = 3
   }
@@ -509,10 +509,10 @@ object XMLEntityManager {
  * is a central component in a standard parser configuration and this
  * class works directly with the entity scanner to manage the underlying
  * xni.
- * 
+ *
  * This component requires the following features and properties from the
  * component manager that uses it:
- * 
+ *
  *  - http://xml.org/sax/features/validation
  *  - http://xml.org/sax/features/external-general-entities
  *  - http://xml.org/sax/features/external-parameter-entities
@@ -520,7 +520,7 @@ object XMLEntityManager {
  *  - http://apache.org/xml/properties/internal/symbol-table
  *  - http://apache.org/xml/properties/internal/error-reporter
  *  - http://apache.org/xml/properties/internal/entity-resolver
- * 
+ *
  */
 class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent with XMLEntityResolver {
 
@@ -633,12 +633,12 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
   /**
    Entities.
    */
-  protected val fEntities = new mutable.HashMap[String, Entity]()
+  protected val fEntities = new ju.HashMap[String, Entity]()
 
   /**
    Entity stack.
    */
-  protected val fEntityStack = new mutable.Stack[Entity]()
+  protected val fEntityStack = new ju.LinkedList[Entity]()
 
   /**
    Current entity.
@@ -732,10 +732,10 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
 
   /**
    * Adds an internal entity declaration.
-   * 
+   *
    * *Note:* This method ignores subsequent entity
    * declarations.
-   * 
+   *
    * *Note:* The name should be a unique symbol. The
    * SymbolTable can be used for this purpose.
    *
@@ -743,12 +743,12 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    * @param text The text of the entity.
    */
   def addInternalEntity(name: String, text: String): Unit = {
-    if (!fEntities.contains(name)) {
+    if (!fEntities.containsKey(name)) {
       val entity = new InternalEntity(name, text, fInExternalSubset)
       fEntities.put(name, entity)
     } else {
       if (fWarnDuplicateEntityDef) {
-        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "MSG_DUPLICATE_ENTITY_DEFINITION", 
+        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "MSG_DUPLICATE_ENTITY_DEFINITION",
           Array(name), XMLErrorReporter.SEVERITY_WARNING)
       }
     }
@@ -756,10 +756,10 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
 
   /**
    * Adds an external entity declaration.
-   * 
+   *
    * *Note:* This method ignores subsequent entity
    * declarations.
-   * 
+   *
    * *Note:* The name should be a unique symbol. The
    * SymbolTable can be used for this purpose.
    *
@@ -774,12 +774,12 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    *                     When null the system identifier of the first
    *                     external entity on the stack is used instead.
    */
-  def addExternalEntity(name: String, 
-      publicId: String, 
-      literalSystemId: String, 
+  def addExternalEntity(name: String,
+      publicId: String,
+      literalSystemId: String,
       _baseSystemId: String): Unit = {
     var baseSystemId = _baseSystemId
-    if (!fEntities.contains(name)) {
+    if (!fEntities.containsKey(name)) {
       if (baseSystemId eq null) {
         val size = fEntityStack.size
         if (size == 0 && (fCurrentEntity ne null) && (fCurrentEntity.entityLocation ne null)) {
@@ -789,8 +789,8 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
         val whileBreaks = new Breaks
         whileBreaks.breakable {
           while (i >= 0) {
-            val externalEntity = fEntityStack(i).asInstanceOf[ScannedEntity]
-            if ((externalEntity.entityLocation ne null) && 
+            val externalEntity = fEntityStack.get(i).asInstanceOf[ScannedEntity]
+            if ((externalEntity.entityLocation ne null) &&
               (externalEntity.entityLocation.getExpandedSystemId ne null)) {
               baseSystemId = externalEntity.entityLocation.getExpandedSystemId
               whileBreaks.break()
@@ -799,12 +799,12 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
           }
         }
       }
-      val entity = new ExternalEntity(name, new XMLEntityDescriptionImpl(name, publicId, literalSystemId, 
+      val entity = new ExternalEntity(name, new XMLEntityDescriptionImpl(name, publicId, literalSystemId,
         baseSystemId, expandSystemId(literalSystemId, baseSystemId, strict = false)), null, fInExternalSubset)
       fEntities.put(name, entity)
     } else {
       if (fWarnDuplicateEntityDef) {
-        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "MSG_DUPLICATE_ENTITY_DEFINITION", 
+        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "MSG_DUPLICATE_ENTITY_DEFINITION",
           Array(name), XMLErrorReporter.SEVERITY_WARNING)
       }
     }
@@ -818,7 +818,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    * (including when the entity is not declared).
    */
   def isExternalEntity(entityName: String): Boolean = {
-    val entity = fEntities.get(entityName).orNull
+    val entity = fEntities.get(entityName)
     if (entity eq null) {
       return false
     }
@@ -834,7 +834,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    *           (including when the entity is not declared).
    */
   def isEntityDeclInExternalSubset(entityName: String): Boolean = {
-    val entity = fEntities.get(entityName).orNull
+    val entity = fEntities.get(entityName)
     if (entity eq null) {
       return false
     }
@@ -843,10 +843,10 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
 
   /**
    * Adds an unparsed entity declaration.
-   * 
+   *
    * *Note:* This method ignores subsequent entity
    * declarations.
-   * 
+   *
    * *Note:* The name should be a unique symbol. The
    * SymbolTable can be used for this purpose.
    *
@@ -855,18 +855,18 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    * @param systemId The system identifier of the entity.
    * @param notation The name of the notation.
    */
-  def addUnparsedEntity(name: String, 
-      publicId: String, 
-      systemId: String, 
-      baseSystemId: String, 
+  def addUnparsedEntity(name: String,
+      publicId: String,
+      systemId: String,
+      baseSystemId: String,
       notation: String): Unit = {
-    if (!fEntities.contains(name)) {
-      val entity = new ExternalEntity(name, new XMLEntityDescriptionImpl(name, publicId, systemId, baseSystemId, 
+    if (!fEntities.containsKey(name)) {
+      val entity = new ExternalEntity(name, new XMLEntityDescriptionImpl(name, publicId, systemId, baseSystemId,
         null), notation, fInExternalSubset)
       fEntities.put(name, entity)
     } else {
       if (fWarnDuplicateEntityDef) {
-        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "MSG_DUPLICATE_ENTITY_DEFINITION", 
+        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "MSG_DUPLICATE_ENTITY_DEFINITION",
           Array(name), XMLErrorReporter.SEVERITY_WARNING)
       }
     }
@@ -880,7 +880,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    *          (including when the entity is not declared).
    */
   def isUnparsedEntity(entityName: String): Boolean = {
-    val entity = fEntities.get(entityName).orNull
+    val entity = fEntities.get(entityName)
     if (entity eq null) {
       return false
     }
@@ -894,7 +894,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    * @return True if the entity is declared, false otherwise.
    */
   def isDeclaredEntity(entityName: String): Boolean = {
-    val entity = fEntities.get(entityName).orNull
+    val entity = fEntities.get(entityName)
     entity ne null
   }
 
@@ -955,7 +955,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    * @throws XNIException Thrown by entity handler to signal an error.
    */
   def startEntity(entityName: String, literal: Boolean): Unit = {
-    val entity = fEntities.get(entityName).orNull
+    val entity = fEntities.get(entityName)
     if (entity eq null) {
       if (fEntityHandler ne null) {
         val encoding: String = null
@@ -970,7 +970,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       return
     }
     val external = entity.isExternal
-    if (external && 
+    if (external &&
       ((fValidationManager eq null) || !fValidationManager.isCachedDTD)) {
       val unparsed = entity.isUnparsed
       val parameter = entityName.startsWith("%")
@@ -983,7 +983,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
           val extLitSysId = if (externalEntity.entityLocation ne null) externalEntity.entityLocation.getLiteralSystemId else null
           val extBaseSysId = if (externalEntity.entityLocation ne null) externalEntity.entityLocation.getBaseSystemId else null
           val expandedSystemId = expandSystemId(extLitSysId, extBaseSysId, strict = false)
-          fResourceIdentifier.setValues(if (externalEntity.entityLocation ne null) externalEntity.entityLocation.getPublicId else null, 
+          fResourceIdentifier.setValues(if (externalEntity.entityLocation ne null) externalEntity.entityLocation.getPublicId else null,
             extLitSysId, extBaseSysId, expandedSystemId)
           fEntityAugs.removeAllItems()
           fEntityAugs.putItem(Constants.ENTITY_SKIPPED, true)
@@ -998,11 +998,11 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
     val size = fEntityStack.size
     var i = size
     while (i >= 0) {
-      var activeEntity = if (i == size) fCurrentEntity else fEntityStack(i)
+      var activeEntity = if (i == size) fCurrentEntity else fEntityStack.get(i)
       if (activeEntity.name == entityName) {
         val path = new StringBuffer(entityName)
         for (j ← i + 1 until size) {
-          activeEntity = fEntityStack(j)
+          activeEntity = fEntityStack.get(j)
           path.append(" -> ")
           path.append(activeEntity.name)
         }
@@ -1010,7 +1010,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
         path.append(fCurrentEntity.name)
         path.append(" -> ")
         path.append(entityName)
-        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "RecursiveReference", Array(entityName, path.toString), 
+        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "RecursiveReference", Array(entityName, path.toString),
           XMLErrorReporter.SEVERITY_FATAL_ERROR)
         if (fEntityHandler ne null) {
           fResourceIdentifier.clear()
@@ -1020,7 +1020,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
             val extLitSysId = if (externalEntity.entityLocation ne null) externalEntity.entityLocation.getLiteralSystemId else null
             val extBaseSysId = if (externalEntity.entityLocation ne null) externalEntity.entityLocation.getBaseSystemId else null
             val expandedSystemId = expandSystemId(extLitSysId, extBaseSysId, strict = false)
-            fResourceIdentifier.setValues(if (externalEntity.entityLocation ne null) externalEntity.entityLocation.getPublicId else null, 
+            fResourceIdentifier.setValues(if (externalEntity.entityLocation ne null) externalEntity.entityLocation.getPublicId else null,
               extLitSysId, extBaseSysId, expandedSystemId)
           }
           fEntityAugs.removeAllItems()
@@ -1082,7 +1082,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
 
   /**
    * Starts an entity.
-   * 
+   *
    * This method can be used to insert an application defined XML
    * entity stream into the parsing stream.
    *
@@ -1095,13 +1095,13 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    * @throws IOException  Thrown on i/o error.
    * @throws XNIException Thrown by entity handler to signal an error.
    */
-  def startEntity(name: String, 
-      xmlInputSource: XMLInputSource, 
-      literal: Boolean, 
+  def startEntity(name: String,
+      xmlInputSource: XMLInputSource,
+      literal: Boolean,
       isExternal: Boolean): Unit = {
     val encoding = setupCurrentEntity(name, xmlInputSource, literal, isExternal)
     if ((fSecurityManager ne null) && fEntityExpansionCount > fEntityExpansionLimit) {
-      fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EntityExpansionLimitExceeded", Array(new java.lang.Integer(fEntityExpansionLimit)), 
+      fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EntityExpansionLimitExceeded", Array(new java.lang.Integer(fEntityExpansionLimit)),
         XMLErrorReporter.SEVERITY_FATAL_ERROR)
       fEntityExpansionCount = 0
     }
@@ -1114,7 +1114,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
   /**
    * This method uses the passed-in XMLInputSource to make
    * fCurrentEntity usable for reading.
-   * 
+   *
    * @param name            name of the entity (XML is it's the document entity)
    * @param xmlInputSource  the input source, with sufficient information
    *                        to begin scanning characters.
@@ -1126,9 +1126,9 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    * @return the encoding of the new entity or null if a character stream was employed
    */
   def setupCurrentEntity(
-    name           : String, 
-    xmlInputSource : XMLInputSource, 
-    literal        : Boolean, 
+    name           : String,
+    xmlInputSource : XMLInputSource,
+    literal        : Boolean,
     isExternal     : Boolean
   ): String = {
     val publicId = xmlInputSource.getPublicId
@@ -1278,11 +1278,11 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
         println("$$$ no longer wrapping reader in OneCharReader")
       }
     }
-    fReaderStack.push(reader)
+    fReaderStack.addLast(reader)
     if (fCurrentEntity ne null) {
-      fEntityStack.push(fCurrentEntity)
+      fEntityStack.addLast(fCurrentEntity)
     }
-    fCurrentEntity = new ScannedEntity(name, new XMLResourceIdentifierImpl(publicId, literalSystemId, 
+    fCurrentEntity = new ScannedEntity(name, new XMLResourceIdentifierImpl(publicId, literalSystemId,
       baseSystemId, expandedSystemId), stream, reader, fTempByteBuffer, encoding, literal, false, isExternal)
     fCurrentEntity.setEncodingExternallySpecified(encodingExternallySpecified)
     fEntityScanner.setCurrentEntity(fCurrentEntity)
@@ -1310,7 +1310,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
     fEntityScanner
   }
 
-  protected var fReaderStack = new mutable.Stack[Reader]()
+  protected var fReaderStack = new ju.LinkedList[Reader]()
 
   /**
    * Close all opened InputStreams and Readers opened by this parser.
@@ -1319,9 +1319,9 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
     var i = fReaderStack.size - 1
     while (i >= 0) {
       try {
-        fReaderStack.pop().close()
+        fReaderStack.removeLast().close()
       } catch {
-        case e: IOException ⇒ 
+        case e: IOException ⇒
       }
       i -= 1
     }
@@ -1423,7 +1423,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
         addExternalEntity("one", null, "ent/one.ent", "test/external-entity.xml")
         addExternalEntity("two", null, "ent/two.ent", "test/ent/one.xml")
       } catch {
-        case ex: IOException ⇒ 
+        case ex: IOException ⇒
       }
     }
     if (fDeclaredEntities ne null) {
@@ -1445,14 +1445,14 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
   /**
    * Sets the state of a feature. This method is called by the component
    * manager any time after reset when a feature changes state.
-   * 
+   *
    * *Note:* Components should silently ignore features
    * that do not affect the operation of the component.
    */
   def setFeature(featureId: String, state: Boolean): Unit = {
     if (featureId.startsWith(Constants.XERCES_FEATURE_PREFIX)) {
       val suffixLength = featureId.length - Constants.XERCES_FEATURE_PREFIX.length
-      if (suffixLength == Constants.ALLOW_JAVA_ENCODINGS_FEATURE.length && 
+      if (suffixLength == Constants.ALLOW_JAVA_ENCODINGS_FEATURE.length &&
         featureId.endsWith(Constants.ALLOW_JAVA_ENCODINGS_FEATURE)) {
         fAllowJavaEncodings = state
       }
@@ -1471,29 +1471,29 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
   /**
    * Sets the value of a property. This method is called by the component
    * manager any time after reset when a property changes value.
-   * 
+   *
    * *Note:* Components should silently ignore properties
    * that do not affect the operation of the component.
    */
   def setProperty(propertyId: String, value: AnyRef): Unit = {
     if (propertyId.startsWith(Constants.XERCES_PROPERTY_PREFIX)) {
       val suffixLength = propertyId.length - Constants.XERCES_PROPERTY_PREFIX.length
-      if (suffixLength == Constants.SYMBOL_TABLE_PROPERTY.length && 
+      if (suffixLength == Constants.SYMBOL_TABLE_PROPERTY.length &&
         propertyId.endsWith(Constants.SYMBOL_TABLE_PROPERTY)) {
         fSymbolTable = value.asInstanceOf[SymbolTable]
         return
       }
-      if (suffixLength == Constants.ERROR_REPORTER_PROPERTY.length && 
+      if (suffixLength == Constants.ERROR_REPORTER_PROPERTY.length &&
         propertyId.endsWith(Constants.ERROR_REPORTER_PROPERTY)) {
         fErrorReporter = value.asInstanceOf[XMLErrorReporter]
         return
       }
-      if (suffixLength == Constants.ENTITY_RESOLVER_PROPERTY.length && 
+      if (suffixLength == Constants.ENTITY_RESOLVER_PROPERTY.length &&
         propertyId.endsWith(Constants.ENTITY_RESOLVER_PROPERTY)) {
         fEntityResolver = value.asInstanceOf[XMLEntityResolver]
         return
       }
-      if (suffixLength == Constants.BUFFER_SIZE_PROPERTY.length && 
+      if (suffixLength == Constants.BUFFER_SIZE_PROPERTY.length &&
         propertyId.endsWith(Constants.BUFFER_SIZE_PROPERTY)) {
         val bufferSize = value.asInstanceOf[java.lang.Integer]
         if ((bufferSize ne null) && bufferSize.intValue() > DEFAULT_XMLDECL_BUFFER_SIZE) {
@@ -1504,7 +1504,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
           fCharacterBufferPool.setExternalBufferSize(fBufferSize)
         }
       }
-      if (suffixLength == Constants.SECURITY_MANAGER_PROPERTY.length && 
+      if (suffixLength == Constants.SECURITY_MANAGER_PROPERTY.length &&
         propertyId.endsWith(Constants.SECURITY_MANAGER_PROPERTY)) {
         fSecurityManager = value.asInstanceOf[SecurityManager]
         fEntityExpansionLimit = if (fSecurityManager ne null) fSecurityManager.entityExpansionLimit else 0
@@ -1549,10 +1549,10 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
     try {
       fCurrentEntity.reader.close()
     } catch {
-      case e: IOException ⇒ 
+      case e: IOException ⇒
     }
-    if (fReaderStack.nonEmpty) {
-      fReaderStack.pop()
+    if (! fReaderStack.isEmpty) {
+      fReaderStack.removeLast()
     }
     fCharacterBufferPool.returnBuffer(fCurrentEntity.fCharacterBuffer)
     if (fCurrentEntity.fByteBuffer ne null) {
@@ -1562,7 +1562,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
         fLargeByteBufferPool.returnBuffer(fCurrentEntity.fByteBuffer)
       }
     }
-    fCurrentEntity = if (fEntityStack.nonEmpty) fEntityStack.pop().asInstanceOf[ScannedEntity] else null
+    fCurrentEntity = if (! fEntityStack.isEmpty) fEntityStack.removeLast().asInstanceOf[ScannedEntity] else null
     fEntityScanner.setCurrentEntity(fCurrentEntity)
     if (DEBUG_BUFFER) {
       System.out.print(")endEntity: ")
@@ -1668,7 +1668,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
           return new UCSReader(inputStream, UCSReader.UCS4LE)
         }
       } else {
-        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EncodingByteOrderUnsupported", Array(encoding), 
+        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EncodingByteOrderUnsupported", Array(encoding),
           XMLErrorReporter.SEVERITY_FATAL_ERROR)
       }
     }
@@ -1681,14 +1681,14 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
           return new UCSReader(inputStream, UCSReader.UCS2LE)
         }
       } else {
-        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EncodingByteOrderUnsupported", Array(encoding), 
+        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EncodingByteOrderUnsupported", Array(encoding),
           XMLErrorReporter.SEVERITY_FATAL_ERROR)
       }
     }
     val validIANA = XMLChar.isValidIANAEncoding(encoding)
     val validJava = XMLChar.isValidJavaEncoding(encoding)
     if (!validIANA || (fAllowJavaEncodings && !validJava)) {
-      fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EncodingDeclInvalid", Array(encoding), 
+      fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EncodingDeclInvalid", Array(encoding),
         XMLErrorReporter.SEVERITY_FATAL_ERROR)
       return createLatin1Reader(inputStream)
     }
@@ -1697,7 +1697,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       if (fAllowJavaEncodings) {
         javaEncoding = encoding
       } else {
-        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EncodingDeclInvalid", Array(encoding), 
+        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EncodingDeclInvalid", Array(encoding),
           XMLErrorReporter.SEVERITY_FATAL_ERROR)
         return createLatin1Reader(inputStream)
       }
@@ -1773,26 +1773,26 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
 
   /**
    * Returns the hash map of declared entities.
-   * 
+   *
    * *REVISIT:*
    * This should be done the "right" way by designing a better way to
    * enumerate the declared entities. For now, this method is needed
    * by the constructor that takes an XMLEntityManager parameter.
    */
-  def getDeclaredEntities: mutable.HashMap[String, Entity] = fEntities
+  def getDeclaredEntities: ju.HashMap[String, Entity] = fEntities
 
   /**
    * Entity state.
    */
   class ScannedEntity(
-    name               : String, 
-    var entityLocation : XMLResourceIdentifier, 
-    var stream         : InputStream, 
-    var reader         : Reader, 
-    byteBuffer         : Array[Byte], 
-    var encoding       : String, 
-    var literal        : Boolean, 
-    var mayReadChunks  : Boolean, 
+    name               : String,
+    var entityLocation : XMLResourceIdentifier,
+    var stream         : InputStream,
+    var reader         : Reader,
+    byteBuffer         : Array[Byte],
+    var encoding       : String,
+    var literal        : Boolean,
+    var mayReadChunks  : Boolean,
     var isExternal     : Boolean
   ) extends Entity(name, XMLEntityManager.this.fInExternalSubset) {
 
@@ -1804,7 +1804,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
      * using a SAX InputSource or a DOM LSInput.
      */
     var externallySpecifiedEncoding: Boolean = false
-    
+
     var xmlVersion: String = "1.0"
 
     /**
@@ -1836,7 +1836,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
      Byte buffer.
      */
     private[impl] var fByteBuffer: Array[Byte] = byteBuffer
-    
+
     /**
      Character buffer.
      */
@@ -1862,8 +1862,8 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       val size = fEntityStack.size
       var i = size - 1
       while (i >= 0) {
-        val externalEntity = fEntityStack(i).asInstanceOf[ScannedEntity]
-        if ((externalEntity.entityLocation ne null) && 
+        val externalEntity = fEntityStack.get(i).asInstanceOf[ScannedEntity]
+        if ((externalEntity.entityLocation ne null) &&
           (externalEntity.entityLocation.getExpandedSystemId ne null)) {
           return externalEntity.entityLocation.getExpandedSystemId
         }
@@ -1876,8 +1876,8 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       val size = fEntityStack.size
       var i = size - 1
       while (i >= 0) {
-        val externalEntity = fEntityStack(i).asInstanceOf[ScannedEntity]
-        if ((externalEntity.entityLocation ne null) && 
+        val externalEntity = fEntityStack.get(i).asInstanceOf[ScannedEntity]
+        if ((externalEntity.entityLocation ne null) &&
           (externalEntity.entityLocation.getLiteralSystemId ne null)) {
           return externalEntity.entityLocation.getLiteralSystemId
         }
@@ -1890,7 +1890,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       val size = fEntityStack.size
       var i = size - 1
       while (i >= 0) {
-        val firstExternalEntity = fEntityStack(i).asInstanceOf[ScannedEntity]
+        val firstExternalEntity = fEntityStack.get(i).asInstanceOf[ScannedEntity]
         if (firstExternalEntity.isExternal) {
           return firstExternalEntity.lineNumber
         }
@@ -1903,7 +1903,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       val size = fEntityStack.size
       var i = size - 1
       while (i >= 0) {
-        val firstExternalEntity = fEntityStack(i).asInstanceOf[ScannedEntity]
+        val firstExternalEntity = fEntityStack.get(i).asInstanceOf[ScannedEntity]
         if (firstExternalEntity.isExternal) {
           return firstExternalEntity.columnNumber
         }
@@ -1916,9 +1916,9 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       val size = fEntityStack.size
       var i = size - 1
       while (i >= 0) {
-        val firstExternalEntity = fEntityStack(i).asInstanceOf[ScannedEntity]
+        val firstExternalEntity = fEntityStack.get(i).asInstanceOf[ScannedEntity]
         if (firstExternalEntity.isExternal) {
-          return firstExternalEntity.baseCharOffset + 
+          return firstExternalEntity.baseCharOffset +
             (firstExternalEntity.position - firstExternalEntity.startPosition)
         }
         i -= 1
@@ -1930,7 +1930,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       val size = fEntityStack.size
       var i = size - 1
       while (i >= 0) {
-        val firstExternalEntity = fEntityStack(i).asInstanceOf[ScannedEntity]
+        val firstExternalEntity = fEntityStack.get(i).asInstanceOf[ScannedEntity]
         if (firstExternalEntity.isExternal) {
           return firstExternalEntity.encoding
         }
@@ -1943,7 +1943,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       val size = fEntityStack.size
       var i = size - 1
       while (i >= 0) {
-        val firstExternalEntity = fEntityStack(i).asInstanceOf[ScannedEntity]
+        val firstExternalEntity = fEntityStack.get(i).asInstanceOf[ScannedEntity]
         if (firstExternalEntity.isExternal) {
           return firstExternalEntity.xmlVersion
         }
@@ -1993,7 +1993,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    * This class allows rewinding an inputStream by allowing a mark
    * to be set, and the stream reset to that position.  *The
    * class assumes that it needs to read one character per
-   * invocation when it's read() method is invked, but uses the
+   * invocation when it's read() method is invoked, but uses the
    * underlying InputStream's read(char[], offset length) method--it
    * won't buffer data read this way!*
    */

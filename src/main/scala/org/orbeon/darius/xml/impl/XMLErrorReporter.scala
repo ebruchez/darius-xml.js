@@ -17,6 +17,8 @@
 
 package org.orbeon.darius.xml.impl
 
+import java.{util ⇒ ju}
+
 import org.orbeon.darius.xml.impl.XMLErrorReporter._
 import org.orbeon.darius.xml.util.DefaultErrorHandler
 import org.orbeon.darius.xml.util.MessageFormatter
@@ -26,8 +28,6 @@ import org.orbeon.darius.xml.xni.parser.XMLComponent
 import org.orbeon.darius.xml.xni.parser.XMLComponentManager
 import org.orbeon.darius.xml.xni.parser.XMLErrorHandler
 import org.orbeon.darius.xml.xni.parser.XMLParseException
-
-import scala.collection.mutable
 
 object XMLErrorReporter {
 
@@ -50,7 +50,7 @@ object XMLErrorReporter {
    * XML document or invalid byte sequences for a given encoding. The
    * XML 1.0 Specification mandates that errors of this type are not
    * recoverable.
-   * 
+   *
    * *Note:* The parser does have a "continue after fatal
    * error" feature but it should be used with extreme caution and care.
    */
@@ -92,9 +92,9 @@ object XMLErrorReporter {
  * used to report errors that occur. This component can be queried by
  * parser components from the component manager using the following
  * property ID:
- * 
+ *
  *   http://apache.org/xml/properties/internal/error-reporter
- * 
+ *
  * Errors are separated into domains that categorize a class of errors.
  * In a parser configuration, the parser would register a
  * `MessageFormatter` for each domain that is capable of
@@ -102,16 +102,16 @@ object XMLErrorReporter {
  * about the error. Any parser component can invent new error domains
  * and register additional message formatters to localize messages in
  * those domains.
- * 
+ *
  * This component requires the following features and properties from the
  * component manager that uses it:
- * 
+ *
  *  - http://apache.org/xml/properties/internal/error-handler
- * 
- * 
+ *
+ *
  * This component can use the following features and properties but they
  * are not required:
- * 
+ *
  *  - http://apache.org/xml/features/continue-after-fatal-error
  */
 class XMLErrorReporter extends XMLComponent {
@@ -119,7 +119,7 @@ class XMLErrorReporter extends XMLComponent {
   /**
    Mapping of Message formatters for domains.
    */
-  protected var fMessageFormatters = new mutable.HashMap[String, MessageFormatter]()
+  protected var fMessageFormatters = new ju.HashMap[String, MessageFormatter]()
 
   /**
    Error handler.
@@ -155,7 +155,7 @@ class XMLErrorReporter extends XMLComponent {
 
   /**
    * Registers a message formatter for the specified domain.
-   * 
+   *
    * *Note:* Registering a message formatter for a domain
    * when there is already a formatter registered will cause the previous
    * formatter to be lost. This method replaces any previously registered
@@ -172,7 +172,7 @@ class XMLErrorReporter extends XMLComponent {
    * @param domain The domain of the message formatter.
    */
   def getMessageFormatter(domain: String): MessageFormatter = {
-    fMessageFormatters.get(domain).orNull
+    fMessageFormatters.get(domain)
   }
 
   /**
@@ -182,7 +182,7 @@ class XMLErrorReporter extends XMLComponent {
    * @param domain The domain of the message formatter.
    */
   def removeMessageFormatter(domain: String): MessageFormatter = {
-    fMessageFormatters.remove(domain).orNull
+    fMessageFormatters.remove(domain)
   }
 
   /**
@@ -195,9 +195,9 @@ class XMLErrorReporter extends XMLComponent {
    * @param severity  The severity of the error.
    * @return          The formatted error message.
    */
-  def reportError(domain: String, 
-      key: String, 
-      arguments: Array[Any], 
+  def reportError(domain: String,
+      key: String,
+      arguments: Array[Any],
       severity: Short): String = {
     reportError(fLocator, domain, key, arguments, severity)
   }
@@ -213,10 +213,10 @@ class XMLErrorReporter extends XMLComponent {
    * @param exception The exception to wrap.
    * @return          The formatted error message.
    */
-  def reportError(domain: String, 
-      key: String, 
-      arguments: Array[Any], 
-      severity: Short, 
+  def reportError(domain: String,
+      key: String,
+      arguments: Array[Any],
+      severity: Short,
       exception: Exception): String = {
     reportError(fLocator, domain, key, arguments, severity, exception)
   }
@@ -232,10 +232,10 @@ class XMLErrorReporter extends XMLComponent {
    * @param severity  The severity of the error.
    * @return          The formatted error message.
    */
-  def reportError(location: XMLLocator, 
-      domain: String, 
-      key: String, 
-      arguments: Array[Any], 
+  def reportError(location: XMLLocator,
+      domain: String,
+      key: String,
+      arguments: Array[Any],
       severity: Short): String = {
     reportError(location, domain, key, arguments, severity, null)
   }
@@ -252,11 +252,11 @@ class XMLErrorReporter extends XMLComponent {
    * @param exception The exception to wrap.
    * @return          The formatted error message.
    */
-  def reportError(location: XMLLocator, 
-      domain: String, 
-      key: String, 
-      arguments: Array[Any], 
-      severity: Short, 
+  def reportError(location: XMLLocator,
+      domain: String,
+      key: String,
+      arguments: Array[Any],
+      severity: Short,
       exception: Exception): String = {
     val messageFormatter = getMessageFormatter(domain)
     var message: String = null
@@ -279,7 +279,7 @@ class XMLErrorReporter extends XMLComponent {
       }
       message = str.toString
     }
-    val parseException = if (exception ne null) new XMLParseException(location, message, exception) else new XMLParseException(location, 
+    val parseException = if (exception ne null) new XMLParseException(location, message, exception) else new XMLParseException(location,
       message)
     var errorHandler = fErrorHandler
     if (errorHandler eq null) {
@@ -328,15 +328,15 @@ class XMLErrorReporter extends XMLComponent {
   /**
    * Sets the state of a feature. This method is called by the component
    * manager any time after reset when a feature changes state.
-   * 
+   *
    * *Note:* Components should silently ignore features
    * that do not affect the operation of the component.
    */
   def setFeature(featureId: String, state: Boolean): Unit = {
     if (featureId.startsWith(Constants.XERCES_FEATURE_PREFIX)) {
       val suffixLength = featureId.length - Constants.XERCES_FEATURE_PREFIX.length
-      if (suffixLength == 
-        Constants.CONTINUE_AFTER_FATAL_ERROR_FEATURE.length && 
+      if (suffixLength ==
+        Constants.CONTINUE_AFTER_FATAL_ERROR_FEATURE.length &&
         featureId.endsWith(Constants.CONTINUE_AFTER_FATAL_ERROR_FEATURE)) {
         fContinueAfterFatalError = state
       }
@@ -346,8 +346,8 @@ class XMLErrorReporter extends XMLComponent {
   def getFeature(featureId: String): Boolean = {
     if (featureId.startsWith(Constants.XERCES_FEATURE_PREFIX)) {
       val suffixLength = featureId.length - Constants.XERCES_FEATURE_PREFIX.length
-      if (suffixLength == 
-        Constants.CONTINUE_AFTER_FATAL_ERROR_FEATURE.length && 
+      if (suffixLength ==
+        Constants.CONTINUE_AFTER_FATAL_ERROR_FEATURE.length &&
         featureId.endsWith(Constants.CONTINUE_AFTER_FATAL_ERROR_FEATURE)) {
         return fContinueAfterFatalError
       }
@@ -367,14 +367,14 @@ class XMLErrorReporter extends XMLComponent {
   /**
    * Sets the value of a property. This method is called by the component
    * manager any time after reset when a property changes value.
-   * 
+   *
    * *Note:* Components should silently ignore properties
    * that do not affect the operation of the component.
    */
   def setProperty(propertyId: String, value: AnyRef): Unit = {
     if (propertyId.startsWith(Constants.XERCES_PROPERTY_PREFIX)) {
       val suffixLength = propertyId.length - Constants.XERCES_PROPERTY_PREFIX.length
-      if (suffixLength == Constants.ERROR_HANDLER_PROPERTY.length && 
+      if (suffixLength == Constants.ERROR_HANDLER_PROPERTY.length &&
         propertyId.endsWith(Constants.ERROR_HANDLER_PROPERTY)) {
         fErrorHandler = value.asInstanceOf[XMLErrorHandler]
       }

@@ -17,11 +17,11 @@
 
 package org.orbeon.darius.xml.util
 
+import java.{util ⇒ ju}
+
 import org.orbeon.darius.xml.impl.Constants
 import org.orbeon.darius.xml.xni.parser.XMLComponentManager
 import org.orbeon.darius.xml.xni.parser.XMLConfigurationException
-
-import scala.collection.mutable
 
 object ParserConfigurationSettings {
   protected[darius] val PARSER_SETTINGS = Constants.XERCES_FEATURE_PREFIX + Constants.PARSER_SETTINGS
@@ -33,7 +33,7 @@ object ParserConfigurationSettings {
  * be used as a base class for parser configurations or separately
  * to encapsulate a number of parser settings as a component
  * manager.
- * 
+ *
  * This class can be constructed with a "parent" settings object
  * (in the form of an `XMLComponentManager`) that allows
  * parser configuration settings to be "chained" together.
@@ -44,22 +44,22 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
   /**
    Recognized properties.
    */
-  protected var fRecognizedProperties = new mutable.ArrayBuffer[String]()
+  protected var fRecognizedProperties = new ju.ArrayList[String]()
 
   /**
    Properties.
    */
-  protected var fProperties = new mutable.HashMap[String, Any]()
+  protected var fProperties = new ju.HashMap[String, Any]()
 
   /**
    Recognized features.
    */
-  protected var fRecognizedFeatures = new mutable.ArrayBuffer[String]()
+  protected var fRecognizedFeatures = new ju.ArrayList[String]()
 
   /**
    Features.
    */
-  protected var fFeatures = new mutable.HashMap[String, Any]()
+  protected var fFeatures = new ju.HashMap[String, Any]()
 
   def this() {
     this(null)
