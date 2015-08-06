@@ -14,7 +14,7 @@
     <orderEntry type="module-library">
       <library name="SBT: sbt-and-plugins">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-js/scalajs-sbt-test-adapter_2.10/jars/scalajs-sbt-test-adapter_2.10-0.6.2.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-js/scalajs-tools_2.10/jars/scalajs-tools_2.10-0.6.4.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/json4s-ast_2.10-3.2.10.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/persist-0.13.7.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/com.google.javascript/closure-compiler/jars/closure-compiler-v20130603.jar!/" />
@@ -37,14 +37,15 @@
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/compiler-ivy-integration-0.13.7.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/actions-0.13.7.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/json4s-core_2.10-3.2.10.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-js/scalajs-sbt-test-adapter_2.10/jars/scalajs-sbt-test-adapter_2.10-0.6.4.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/compile-0.13.7.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-js/scalajs-js-envs_2.10/jars/scalajs-js-envs_2.10-0.6.2.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/compiler-integration-0.13.7.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/args4j/args4j/jars/args4j-2.0.16.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-js/scalajs-ir_2.10/jars/scalajs-ir_2.10-0.6.4.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/logging-0.13.7.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/ivy-2.3.0-sbt-fccfbd44c9f64523b61398a0155784dcbaeae28f.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/junit/junit/jars/junit-4.10.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/scala_2.10/sbt_0.13/org.scala-js/sbt-scalajs/jars/sbt-scalajs-0.6.2.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-js/scalajs-js-envs_2.10/jars/scalajs-js-envs_2.10-0.6.4.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.hamcrest/hamcrest-core/jars/hamcrest-core-1.1.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/run-0.13.7.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/testing-0.13.7.jar!/" />
@@ -54,6 +55,7 @@
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/cross-0.13.7.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/lib/jansi.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/incremental-compiler-0.13.7.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/scala_2.10/sbt_0.13/org.scala-js/sbt-scalajs/jars/sbt-scalajs-0.6.4.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/scalap-2.10.0.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/tracking-0.13.7.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/classfile-0.13.7.jar!/" />
@@ -65,7 +67,6 @@
           <root url="jar://$USER_HOME$/.ivy2/cache/org.webjars/envjs/jars/envjs-1.2.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/com.google.protobuf/protobuf-java/jars/protobuf-java-2.4.1.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/relation-0.13.7.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-js/scalajs-tools_2.10/jars/scalajs-tools_2.10-0.6.2.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/test-agent-0.13.7.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/lib/scala-library.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/api-0.13.7.jar!/" />
@@ -76,7 +77,6 @@
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/cache-0.13.7.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/main-0.13.7.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/json4s-support_2.10-0.6.0.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-js/scalajs-ir_2.10/jars/scalajs-ir_2.10-0.6.2.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/collections-0.13.7.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/json4s-native_2.10-3.2.10.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.10.4/org.scala-sbt/sbt/0.13.7/paranamer-2.6.jar!/" />
