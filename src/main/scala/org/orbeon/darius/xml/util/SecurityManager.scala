@@ -48,15 +48,17 @@ object SecurityManager {
  */
 class SecurityManager {
 
+  import SecurityManager._
+
   /**
    * Entity expansion limit.
    */
-  var entityExpansionLimit: Int = _
+  var entityExpansionLimit: Int = DEFAULT_ENTITY_EXPANSION_LIMIT
 
   /**
    * W3C XML Schema maxOccurs limit.
    */
-  private var maxOccurLimit: Int = _
+  private var maxOccurLimit: Int = DEFAULT_MAX_OCCUR_NODE_LIMIT
 
   /**
    * Sets the limit of the number of content model nodes
