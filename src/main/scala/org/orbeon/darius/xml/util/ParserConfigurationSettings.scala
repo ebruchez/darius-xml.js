@@ -74,7 +74,7 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
     for (i ← 0 until featureIdsCount) {
       val featureId = featureIds(i)
       if (!fRecognizedFeatures.contains(featureId)) {
-        fRecognizedFeatures += featureId
+        fRecognizedFeatures.add(featureId)
       }
     }
   }
@@ -109,7 +109,7 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
     for (i ← 0 until propertyIdsCount) {
       val propertyId = propertyIds(i)
       if (!fRecognizedProperties.contains(propertyId)) {
-        fRecognizedProperties += propertyId
+        fRecognizedProperties.add(propertyId)
       }
     }
   }

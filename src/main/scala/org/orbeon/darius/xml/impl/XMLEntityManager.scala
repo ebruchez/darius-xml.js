@@ -49,6 +49,7 @@ import org.orbeon.darius.xml.xni.parser.XMLEntityResolver
 import org.orbeon.darius.xml.xni.parser.XMLInputSource
 
 import scala.util.control.Breaks
+import scala.collection.JavaConverters._
 
 object XMLEntityManager {
 
@@ -1427,7 +1428,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       }
     }
     if (fDeclaredEntities ne null) {
-      for ((key, value) ← fDeclaredEntities)
+      for ((key, value) ← fDeclaredEntities.asScala)
         fEntities.put(key, value)
     }
     fEntityHandler = null

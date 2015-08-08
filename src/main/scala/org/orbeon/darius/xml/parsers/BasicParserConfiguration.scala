@@ -38,6 +38,8 @@ import org.orbeon.darius.xml.xni.parser.XMLErrorHandler
 import org.orbeon.darius.xml.xni.parser.XMLInputSource
 import org.orbeon.darius.xml.xni.parser.XMLParserConfiguration
 
+import scala.collection.JavaConverters._
+
 protected[parsers] object BasicParserConfiguration {
 
   /**
@@ -377,14 +379,14 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
    *            requested feature is not known.
    */
   override def setFeature(featureId: String, state: Boolean): Unit = {
-    for (c ← fComponents) {
+    for (c ← fComponents.asScala) {
       c.setFeature(featureId, state)
     }
     super.setFeature(featureId, state)
   }
 
   override def setProperty(propertyId: String, value: AnyRef): Unit = {
-    for (c ← fComponents) {
+    for (c ← fComponents.asScala) {
       c.setProperty(propertyId, value)
     }
     super.setProperty(propertyId, value)
@@ -394,7 +396,7 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
    * reset all components before parsing and namespace context
    */
   protected def reset(): Unit = {
-    for (c ← fComponents) {
+    for (c ← fComponents.asScala) {
       c.reset(this)
     }
   }

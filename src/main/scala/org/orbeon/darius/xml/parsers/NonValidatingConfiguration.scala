@@ -149,7 +149,7 @@ protected[parsers] object NonValidatingConfiguration {
  * This is the non validating parser configuration. It extends the basic
  * configuration with the set of following parser components:
  * Document scanner, DTD scanner, namespace binder, document handler.
- * 
+ *
  * Parser that uses this configuration is *not* [conformant](http://www.w3.org/TR/REC-xml#sec-conformance)
  * non-validating XML processor, since conformant non-validating processor is required
  * to process "all the declarations they read in the internal DTD subset ... must use the information in those declarations to normalize attribute values,
@@ -157,7 +157,7 @@ protected[parsers] object NonValidatingConfiguration {
  */
 class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGrammarPool: XMLGrammarPool, parentSettings: XMLComponentManager)
     extends BasicParserConfiguration(symbolTable, parentSettings) with XMLPullParserConfiguration {
-  
+
   import BasicParserConfiguration._
   import NonValidatingConfiguration._
   import ParserConfigurationSettings._
@@ -217,28 +217,28 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
   override val recognizedFeatures = Array(PARSER_SETTINGS, NAMESPACES, CONTINUE_AFTER_FATAL_ERROR)
 
   override val recognizedProperties = Array(ERROR_REPORTER, ENTITY_MANAGER, DOCUMENT_SCANNER, DTD_SCANNER, DTD_VALIDATOR, NAMESPACE_BINDER, XMLGRAMMAR_POOL, DATATYPE_VALIDATOR_FACTORY, VALIDATION_MANAGER)
-  
+
   locally {
     addRecognizedFeatures(recognizedFeatures)
-  
+
     fFeatures.put(CONTINUE_AFTER_FATAL_ERROR, false)
     fFeatures.put(PARSER_SETTINGS, true)
     fFeatures.put(NAMESPACES, true)
-    
+
     addRecognizedProperties(recognizedProperties)
-  
+
     if (fGrammarPool ne null) {
       fProperties.put(XMLGRAMMAR_POOL, fGrammarPool)
     }
-  
+
     fProperties.put(ENTITY_MANAGER, fEntityManager)
     addComponent(fEntityManager)
-  
+
     fErrorReporter.setDocumentLocator(fEntityManager.getEntityScanner)
-  
+
     fProperties.put(ERROR_REPORTER, fErrorReporter)
     addComponent(fErrorReporter)
-  
+
     if (fDTDScanner ne null) {
       fProperties.put(DTD_SCANNER, fDTDScanner)
       fDTDScanner match {
@@ -246,11 +246,11 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
         case _ ⇒
       }
     }
-  
+
     if (fValidationManager ne null) {
       fProperties.put(VALIDATION_MANAGER, fValidationManager)
     }
-  
+
     if (fErrorReporter.getMessageFormatter(XMLMessageFormatter.XML_DOMAIN) eq null) {
       val xmft = new XMLMessageFormatter()
       fErrorReporter.putMessageFormatter(XMLMessageFormatter.XML_DOMAIN, xmft)
@@ -373,7 +373,7 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
   }
 
   protected def configurePipeline(): Unit = {
-    if (fFeatures.get(NAMESPACES).contains(true)) {
+    if (fFeatures.get(NAMESPACES) == true) {
       if (fNamespaceScanner eq null) {
         fNamespaceScanner = new XMLNSDocumentScannerImpl()
         addComponent(fNamespaceScanner.asInstanceOf[XMLComponent])
@@ -400,29 +400,29 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
   override protected def checkFeature(featureId: String): Unit = {
     if (featureId.startsWith(Constants.XERCES_FEATURE_PREFIX)) {
       val suffixLength = featureId.length - Constants.XERCES_FEATURE_PREFIX.length
-      if (suffixLength == Constants.DYNAMIC_VALIDATION_FEATURE.length && 
+      if (suffixLength == Constants.DYNAMIC_VALIDATION_FEATURE.length &&
         featureId.endsWith(Constants.DYNAMIC_VALIDATION_FEATURE)) {
         return
       }
-      if (suffixLength == Constants.DEFAULT_ATTRIBUTE_VALUES_FEATURE.length && 
+      if (suffixLength == Constants.DEFAULT_ATTRIBUTE_VALUES_FEATURE.length &&
         featureId.endsWith(Constants.DEFAULT_ATTRIBUTE_VALUES_FEATURE)) {
         val `type` = XMLConfigurationException.NOT_SUPPORTED
         throw new XMLConfigurationException(`type`, featureId)
       }
-      if (suffixLength == Constants.VALIDATE_CONTENT_MODELS_FEATURE.length && 
+      if (suffixLength == Constants.VALIDATE_CONTENT_MODELS_FEATURE.length &&
         featureId.endsWith(Constants.VALIDATE_CONTENT_MODELS_FEATURE)) {
         val `type` = XMLConfigurationException.NOT_SUPPORTED
         throw new XMLConfigurationException(`type`, featureId)
       }
-      if (suffixLength == Constants.LOAD_DTD_GRAMMAR_FEATURE.length && 
+      if (suffixLength == Constants.LOAD_DTD_GRAMMAR_FEATURE.length &&
         featureId.endsWith(Constants.LOAD_DTD_GRAMMAR_FEATURE)) {
         return
       }
-      if (suffixLength == Constants.LOAD_EXTERNAL_DTD_FEATURE.length && 
+      if (suffixLength == Constants.LOAD_EXTERNAL_DTD_FEATURE.length &&
         featureId.endsWith(Constants.LOAD_EXTERNAL_DTD_FEATURE)) {
         return
       }
-      if (suffixLength == Constants.VALIDATE_DATATYPES_FEATURE.length && 
+      if (suffixLength == Constants.VALIDATE_DATATYPES_FEATURE.length &&
         featureId.endsWith(Constants.VALIDATE_DATATYPES_FEATURE)) {
         val `type` = XMLConfigurationException.NOT_SUPPORTED
         throw new XMLConfigurationException(`type`, featureId)
@@ -434,7 +434,7 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
   override protected def checkProperty(propertyId: String): Unit = {
     if (propertyId.startsWith(Constants.XERCES_PROPERTY_PREFIX)) {
       val suffixLength = propertyId.length - Constants.XERCES_PROPERTY_PREFIX.length
-      if (suffixLength == Constants.DTD_SCANNER_PROPERTY.length && 
+      if (suffixLength == Constants.DTD_SCANNER_PROPERTY.length &&
         propertyId.endsWith(Constants.DTD_SCANNER_PROPERTY)) {
         return
       }
