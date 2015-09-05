@@ -139,9 +139,9 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
    */
   def getFeature(featureId: String): Boolean = {
     fFeatures.get(featureId) match {
-      case Some(state) ⇒
-        state.asInstanceOf[java.lang.Boolean]
-      case None ⇒
+      case state: java.lang.Boolean ⇒
+        state
+      case _ ⇒
         checkFeature(featureId)
         false
     }
@@ -161,11 +161,11 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
    */
   def getProperty(propertyId: String): Any = {
     fProperties.get(propertyId) match {
-      case Some(propertyValue) ⇒
-        propertyValue
-      case None ⇒
+      case null ⇒
         checkProperty(propertyId)
         null
+      case propertyValue ⇒
+        propertyValue
     }
   }
 
