@@ -19,12 +19,11 @@ package org.orbeon.darius.xml
 import org.orbeon.darius.xml.api.API
 import org.orbeon.darius.xml.demo.XMLEventCollector
 import utest._
-import utest.framework.TestSuite
 
 object ParseTest extends TestSuite {
 
-  override def tests = TestSuite {
-    'SimpleParse {
+  override def tests = Tests {
+    test("SimpleParse") {
       val collector = new XMLEventCollector
       API.parseString("""<simple foo="bar" xml:x="y" baz:gaga="aaa" xmlns:baz="http://baz.com/"/>""", collector)
       println(collector.events map (_.toString) mkString "\n")

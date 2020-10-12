@@ -10,7 +10,8 @@ lazy val supportedScalaVersions = List(scala212, scala213)
 val ScalaJsStubsVersion          = "1.0.0" // can be different from Scala.js version
 val ScalaJsDomVersion            = "0.9.8"
 val ScalaJsJQueryVersion         = "0.9.6"
-val ScalaTestVersion             = "3.2.1"
+val UTestVersion                 = "0.7.5"
+//val ScalaTestVersion             = "3.2.1"
 val ScalaCollectionCompatVersion = "2.2.0"
 
 ThisBuild / githubOwner       := "orbeon"
@@ -19,10 +20,6 @@ ThisBuild / githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
 ThisBuild / traceLevel        := 0
 
 //jsDependencies      += RuntimeDOM
-
-//libraryDependencies += "com.lihaoyi"  %%% "utest"          % "0.3.0" % "test"
-
-//testFrameworks      += new TestFramework("utest.runner.Framework")
 
 lazy val xerces = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full) in file("xerces"))
   .settings(
@@ -40,11 +37,11 @@ lazy val xerces = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Ful
     ),
 
     libraryDependencies += "org.scala-lang.modules"  %%% "scala-collection-compat" % ScalaCollectionCompatVersion,
+    libraryDependencies += "com.lihaoyi"             %%% "utest"                   % UTestVersion % Test,
 
-//    libraryDependencies += "org.scalactic" %%% "scalactic"     % ScalaTestVersion    % Test,
-//    libraryDependencies += "org.scalatest" %%% "scalatest"     % ScalaTestVersion    % Test,
+    testFrameworks      += new TestFramework("utest.runner.Framework")
 
-    testOptions       in Test          += Tests.Argument(TestFrameworks.ScalaTest, "-oF")
+//    testOptions       in Test          += Tests.Argument(TestFrameworks.ScalaTest, "-oF")
   )
   .jsSettings(
     libraryDependencies ++= Seq("org.xml" %%% "sax"% "2.0.2.2-SNAPSHOT")
