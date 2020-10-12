@@ -17,31 +17,28 @@ package org.orbeon.darius.xml.api
 
 import java.io.ByteArrayInputStream
 
-import org.orbeon.darius.xml.parsers.AbstractXMLDocumentParser
-import org.orbeon.darius.xml.parsers.NonValidatingConfiguration
+import org.orbeon.darius.xml.parsers.{AbstractXMLDocumentParser, NonValidatingConfiguration}
 import org.orbeon.darius.xml.util.SymbolTable
 import org.orbeon.darius.xml.xni._
-import org.orbeon.darius.xml.xni.parser.XMLErrorHandler
-import org.orbeon.darius.xml.xni.parser.XMLInputSource
-import org.orbeon.darius.xml.xni.parser.XMLParseException
+import org.orbeon.darius.xml.xni.parser.{XMLErrorHandler, XMLInputSource, XMLParseException}
 
-import scala.scalajs.js.annotation.JSExport
+import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 
-@JSExport
+@JSExportTopLevel("XercesApi")
 object API {
-  
+
   @JSExport
   def parseString(xml: String, handler: XMLDocumentHandler): Unit = {
-    
+
     val baseDir  = null
     val fileName = "test.xml"
     val encoding = "UTF-8"
-    
+
     val source  = new XMLInputSource(null, fileName, baseDir, new ByteArrayInputStream(xml.getBytes("UTF-8")), encoding)
     val symbols = new SymbolTable
     val config  = new NonValidatingConfiguration(symbols)
     val parser  = new AbstractXMLDocumentParser(config) {}
-    
+
     config.setDocumentHandler(handler)
     config.setErrorHandler(new XMLErrorHandler {
       def warning(domain: String, key: String, exception: XMLParseException): Unit =

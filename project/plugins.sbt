@@ -1,2 +1,3 @@
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.5")
-addSbtPlugin("com.orrsella" % "sbt-sound"   % "1.0.4")
+addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.0.0")
+addSbtPlugin("org.scala-js"       % "sbt-scalajs"              % "1.2.0")
+addSbtPlugin("com.codecommit"     % "sbt-github-packages"      % "0.5.2")
