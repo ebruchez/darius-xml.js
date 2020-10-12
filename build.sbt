@@ -24,7 +24,7 @@ ThisBuild / traceLevel        := 0
 lazy val xerces = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full) in file("xerces"))
   .settings(
     organization := "org.orbeon",
-    name         := "darius-xml",
+    name         := "xerces",
     version      := "2.11.0.1-SNAPSHOT",
 
     scalaVersion       := scala212,
