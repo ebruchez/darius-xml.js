@@ -222,6 +222,11 @@ object XMLEntityManager {
     if (systemURI.isAbsolute) {
       return systemId
     }
+
+    // ORBEON
+    if (baseSystemId eq null)
+      return null
+
     val baseURI = new URI(baseSystemId)//, true
     baseURI.resolve(systemURI).toString
   }
