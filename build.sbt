@@ -25,7 +25,7 @@ lazy val xerces = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Ful
   .settings(
     organization := "org.orbeon",
     name         := "darius-xml",
-    version      := "1.0.1-SNAPSHOT",
+    version      := "2.11.0.1-SNAPSHOT",
 
     scalaVersion       := scala212,
     crossScalaVersions := supportedScalaVersions,
