@@ -16,7 +16,7 @@ If you need to process XML documents, you need an XML parser. Web browsers all e
 API for this][domparser], but:
  
 - there is no support for any XML parsing or XML DOM within Web workers
-- standard error handling is awkward and varies between browsers
+- error handling is awkward and varies between browsers
 - each browser has its own implementation, so parsing behavior might vary
   
 There are a numbers of XML parsers for JavaScript, but as of April 2015 I have found none that can pretends to a minimum
