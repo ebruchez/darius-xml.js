@@ -33,11 +33,11 @@ import scala.util.Try
 
 @JSExport
 object Demo {
-  
+
   private val DebounceDelay = 200.millis
-  
+
   implicit val scheduler = new DomScheduler
-  
+
   private object UI {
 
     def xmlInput  = jQuery("#input-textarea")
@@ -58,13 +58,13 @@ object Demo {
         rx() = newValue
     }
   }
-  
+
   private def parseXML(s: String): Try[List[String]] = Try {
     val collector = new XMLEventCollector
     API.parseString(s, collector)
     collector.events map (_.toString)
   }
-  
+
   @JSExport
   def initialize(): Unit = {
     // Model
