@@ -75,7 +75,7 @@ class XMLGrammarPoolImpl extends XMLGrammarPool {
   /**
    Constructs a grammar pool with a specified number of buckets.
    */
-  def this(initialCapacity: Int) {
+  def this(initialCapacity: Int) = {
     this()
     fGrammars = new Array[Entry](initialCapacity)
     fPoolIsLocked = false

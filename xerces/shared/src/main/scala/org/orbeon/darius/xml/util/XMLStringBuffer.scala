@@ -35,10 +35,10 @@ object XMLStringBuffer {
  * expecting an XMLString object. This is a safe operation because
  * it is assumed that any callee will *not* modify
  * the contents of the XMLString structure.
- * 
+ *
  * The contents of the string are managed by the string buffer. As
  * characters are appended, the string buffer will grow as needed.
- * 
+ *
  * *Note:* Never set the `ch`,
  * `offset`, and `length` fields directly.
  * These fields are managed by the string buffer. In order to reset
@@ -48,14 +48,14 @@ class XMLStringBuffer(size: Int) extends XMLString {
 
   ch = new Array[Char](size)
 
-  def this() {
+  def this() = {
     this(DEFAULT_SIZE)
   }
 
   /**
    Constructs a string buffer from a char.
    */
-  def this(c: Char) {
+  def this(c: Char) = {
     this(1)
     append(c)
   }
@@ -63,7 +63,7 @@ class XMLStringBuffer(size: Int) extends XMLString {
   /**
    Constructs a string buffer from a String.
    */
-  def this(s: String) {
+  def this(s: String) = {
     this(s.length)
     append(s)
   }
@@ -71,7 +71,7 @@ class XMLStringBuffer(size: Int) extends XMLString {
   /**
    Constructs a string buffer from the specified character array.
    */
-  def this(ch: Array[Char], offset: Int, length: Int) {
+  def this(ch: Array[Char], offset: Int, length: Int) = {
     this(length)
     append(ch, offset, length)
   }
@@ -79,7 +79,7 @@ class XMLStringBuffer(size: Int) extends XMLString {
   /**
    Constructs a string buffer from the specified XMLString.
    */
-  def this(s: XMLString) {
+  def this(s: XMLString) = {
     this(s.length)
     append(s)
   }

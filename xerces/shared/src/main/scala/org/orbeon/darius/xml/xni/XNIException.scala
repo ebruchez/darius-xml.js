@@ -21,7 +21,7 @@ package org.orbeon.darius.xml.xni
  * This exception is the base exception of all XNI exceptions. It
  * can be constructed with an error message or used to wrap another
  * exception object.
- * 
+ *
  * *Note:* By extending the Java
  * `RuntimeException`, XNI handlers and components are
  * not required to catch XNI exceptions but may explicitly catch
@@ -39,7 +39,7 @@ class XNIException(message: String) extends RuntimeException(message) {
    *
    * @param exception The wrapped exception.
    */
-  def this(exception: Exception) {
+  def this(exception: Exception) = {
     this(exception.getMessage)
     fException = exception
   }
@@ -50,7 +50,7 @@ class XNIException(message: String) extends RuntimeException(message) {
    * @param message The exception message.
    * @param exception The wrapped exception.
    */
-  def this(message: String, exception: Exception) {
+  def this(message: String, exception: Exception) = {
     this(message)
     fException = exception
   }

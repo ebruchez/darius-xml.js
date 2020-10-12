@@ -56,9 +56,8 @@ class UCSReader(protected val fInputStream: InputStream, protected val fBuffer: 
    * @param size        The initial buffer size.
    * @param encoding One of UCS2LE, UCS2BE, UCS4LE or UCS4BE.
    */
-  def this(inputStream: InputStream, size: Int, encoding: Short) {
+  def this(inputStream: InputStream, size: Int, encoding: Short) =
     this(inputStream, new Array[Byte](size), encoding)
-  }
 
   /**
    * Constructs a UCS reader from the specified input stream
@@ -68,9 +67,8 @@ class UCSReader(protected val fInputStream: InputStream, protected val fBuffer: 
    * @param inputStream The input stream.
    * @param encoding One of UCS2LE, UCS2BE, UCS4LE or UCS4BE.
    */
-  def this(inputStream: InputStream, encoding: Short) {
+  def this(inputStream: InputStream, encoding: Short) =
     this(inputStream, UCSReader.DEFAULT_BUFFER_SIZE, encoding)
-  }
 
   /**
    * Read a single character.  This method will block until a character is

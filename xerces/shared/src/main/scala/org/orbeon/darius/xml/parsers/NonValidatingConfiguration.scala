@@ -258,17 +258,14 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
     }
   }
 
-  def this() {
+  def this() =
     this(null, null, null)
-  }
 
-  def this(symbolTable: SymbolTable) {
+  def this(symbolTable: SymbolTable) =
     this(symbolTable, null, null)
-  }
 
-  def this(symbolTable: SymbolTable, grammarPool: XMLGrammarPool) {
+  def this(symbolTable: SymbolTable, grammarPool: XMLGrammarPool) =
     this(symbolTable, grammarPool, null)
-  }
 
   override def setFeature(featureId: String, state: Boolean): Unit = {
     fConfigUpdated = true

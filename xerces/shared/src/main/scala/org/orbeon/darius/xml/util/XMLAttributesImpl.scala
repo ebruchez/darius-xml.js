@@ -123,9 +123,8 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
   /**
    Default constructor.
    */
-  def this() {
+  def this() =
     this(TABLE_SIZE)
-  }
 
   /**
    * Sets whether namespace processing is being performed. This state

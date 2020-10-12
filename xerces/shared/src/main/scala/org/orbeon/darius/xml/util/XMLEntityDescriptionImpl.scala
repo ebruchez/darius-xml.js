@@ -34,11 +34,11 @@ class XMLEntityDescriptionImpl extends XMLResourceIdentifierImpl with XMLEntityD
    * @param baseSystemId The base system identifier.
    * @param expandedSystemId The expanded system identifier.
    */
-  def this(entityName: String, 
-      publicId: String, 
-      literalSystemId: String, 
-      baseSystemId: String, 
-      expandedSystemId: String) {
+  def this(entityName: String,
+      publicId: String,
+      literalSystemId: String,
+      baseSystemId: String,
+      expandedSystemId: String) = {
     this()
     setDescription(entityName, publicId, literalSystemId, baseSystemId, expandedSystemId)
   }
@@ -53,12 +53,12 @@ class XMLEntityDescriptionImpl extends XMLResourceIdentifierImpl with XMLEntityD
    * @param expandedSystemId The expanded system identifier.
    * @param namespace The namespace.
    */
-  def this(entityName: String, 
-      publicId: String, 
-      literalSystemId: String, 
-      baseSystemId: String, 
-      expandedSystemId: String, 
-      namespace: String) {
+  def this(entityName: String,
+      publicId: String,
+      literalSystemId: String,
+      baseSystemId: String,
+      expandedSystemId: String,
+      namespace: String) = {
     this()
     setDescription(entityName, publicId, literalSystemId, baseSystemId, expandedSystemId, namespace)
   }
@@ -93,10 +93,10 @@ class XMLEntityDescriptionImpl extends XMLResourceIdentifierImpl with XMLEntityD
    * @param baseSystemId The base system identifier.
    * @param expandedSystemId The expanded system identifier.
    */
-  def setDescription(entityName: String, 
-      publicId: String, 
-      literalSystemId: String, 
-      baseSystemId: String, 
+  def setDescription(entityName: String,
+      publicId: String,
+      literalSystemId: String,
+      baseSystemId: String,
       expandedSystemId: String): Unit = {
     setDescription(entityName, publicId, literalSystemId, baseSystemId, expandedSystemId, null)
   }
@@ -111,11 +111,11 @@ class XMLEntityDescriptionImpl extends XMLResourceIdentifierImpl with XMLEntityD
    * @param expandedSystemId The expanded system identifier.
    * @param namespace The namespace.
    */
-  def setDescription(entityName: String, 
-      publicId: String, 
-      literalSystemId: String, 
-      baseSystemId: String, 
-      expandedSystemId: String, 
+  def setDescription(entityName: String,
+      publicId: String,
+      literalSystemId: String,
+      baseSystemId: String,
+      expandedSystemId: String,
       namespace: String): Unit = {
     fEntityName = entityName
     setValues(publicId, literalSystemId, baseSystemId, expandedSystemId, namespace)

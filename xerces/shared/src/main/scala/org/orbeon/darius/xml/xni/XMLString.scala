@@ -61,7 +61,7 @@ class XMLString {
    * @param offset The offset into the character array.
    * @param length The length of characters from the offset.
    */
-  def this(ch: Array[Char], offset: Int, length: Int) {
+  def this(ch: Array[Char], offset: Int, length: Int) = {
     this()
     setValues(ch, offset, length)
   }
@@ -75,7 +75,7 @@ class XMLString {
    *
    * @param string The XMLString to copy.
    */
-  def this(string: XMLString) {
+  def this(string: XMLString) = {
     this()
     setValues(string)
   }

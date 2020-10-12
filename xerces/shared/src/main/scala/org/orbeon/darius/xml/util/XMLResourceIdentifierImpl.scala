@@ -59,10 +59,10 @@ class XMLResourceIdentifierImpl extends XMLResourceIdentifier {
    * @param baseSystemId The base system identifier.
    * @param expandedSystemId The expanded system identifier.
    */
-  def this(publicId: String, 
-      literalSystemId: String, 
-      baseSystemId: String, 
-      expandedSystemId: String) {
+  def this(publicId: String,
+      literalSystemId: String,
+      baseSystemId: String,
+      expandedSystemId: String) = {
     this()
     setValues(publicId, literalSystemId, baseSystemId, expandedSystemId, null)
   }
@@ -76,11 +76,11 @@ class XMLResourceIdentifierImpl extends XMLResourceIdentifier {
    * @param expandedSystemId The expanded system identifier.
    * @param namespace The namespace.
    */
-  def this(publicId: String, 
-      literalSystemId: String, 
-      baseSystemId: String, 
-      expandedSystemId: String, 
-      namespace: String) {
+  def this(publicId: String,
+      literalSystemId: String,
+      baseSystemId: String,
+      expandedSystemId: String,
+      namespace: String) = {
     this()
     setValues(publicId, literalSystemId, baseSystemId, expandedSystemId, namespace)
   }
@@ -88,9 +88,9 @@ class XMLResourceIdentifierImpl extends XMLResourceIdentifier {
   /**
    Sets the values of the resource identifier.
    */
-  def setValues(publicId: String, 
-      literalSystemId: String, 
-      baseSystemId: String, 
+  def setValues(publicId: String,
+      literalSystemId: String,
+      baseSystemId: String,
       expandedSystemId: String): Unit = {
     setValues(publicId, literalSystemId, baseSystemId, expandedSystemId, null)
   }
@@ -98,10 +98,10 @@ class XMLResourceIdentifierImpl extends XMLResourceIdentifier {
   /**
    Sets the values of the resource identifier.
    */
-  def setValues(publicId: String, 
-      literalSystemId: String, 
-      baseSystemId: String, 
-      expandedSystemId: String, 
+  def setValues(publicId: String,
+      literalSystemId: String,
+      baseSystemId: String,
+      expandedSystemId: String,
       namespace: String): Unit = {
     fPublicId = publicId
     fLiteralSystemId = literalSystemId

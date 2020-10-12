@@ -16,16 +16,10 @@
 
 package org.orbeon.darius.xml.demo
 
-import org.orbeon.darius.xml.xni.Augmentations
-import org.orbeon.darius.xml.xni.NamespaceContext
-import org.orbeon.darius.xml.xni.QName
-import org.orbeon.darius.xml.xni.XMLAttributes
-import org.orbeon.darius.xml.xni.XMLDocumentHandler
-import org.orbeon.darius.xml.xni.XMLLocator
-import org.orbeon.darius.xml.xni.XMLResourceIdentifier
-import org.orbeon.darius.xml.xni.XMLString
+import org.orbeon.darius.xml.xni._
 import org.orbeon.darius.xml.xni.parser.XMLDocumentSource
 
+import scala.collection.compat._
 import scala.collection.mutable.ListBuffer
 
 sealed trait XMLEvent
@@ -66,10 +60,10 @@ class XMLEventCollector extends XMLDocumentHandler {
       } yield qName -> value
 
   def startElement(element: QName, attributes: XMLAttributes, augs: Augmentations): Unit =
-    _events += StartElement(element.rawname, collectAttributes(attributes).to[List])
+    _events += StartElement(element.rawname, collectAttributes(attributes).to(List))
 
   def emptyElement(element: QName, attributes: XMLAttributes, augs: Augmentations): Unit = {
-    _events += StartElement(element.rawname, collectAttributes(attributes).to[List])
+    _events += StartElement(element.rawname, collectAttributes(attributes).to(List))
     _events += EndElement(element.rawname)
   }
 

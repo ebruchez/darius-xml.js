@@ -32,9 +32,8 @@ class DefaultErrorHandler(protected var fOut: PrintWriter) extends XMLErrorHandl
    * Constructs an error handler that prints error messages to
    * `System.err`.
    */
-  def this() {
+  def this() =
     this(new PrintWriter(System.err))
-  }
 
   /**
    Warning.

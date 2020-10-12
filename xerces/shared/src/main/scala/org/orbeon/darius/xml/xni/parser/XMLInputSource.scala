@@ -25,16 +25,16 @@ import org.orbeon.darius.xml.xni.XMLResourceIdentifier
 /**
  * This class represents an input source for an XML document. The
  * basic properties of an input source are the following:
- * 
+ *
  *  - public identifier
  *  - system identifier
  *  - byte stream or character stream
- *  - 
- * 
+ *  -
+ *
  */
 class XMLInputSource(
-  protected var fPublicId     : String, 
-  protected var fSystemId     : String, 
+  protected var fPublicId     : String,
+  protected var fSystemId     : String,
   protected var fBaseSystemId : String
 ) {
 
@@ -82,11 +82,11 @@ class XMLInputSource(
    * @param byteStream   The byte stream.
    * @param encoding     The encoding of the byte stream, if known.
    */
-  def this(publicId: String, 
-      systemId: String, 
-      baseSystemId: String, 
-      byteStream: InputStream, 
-      encoding: String) {
+  def this(publicId: String,
+      systemId: String,
+      baseSystemId: String,
+      byteStream: InputStream,
+      encoding: String) = {
     this(
       fPublicId     = publicId,
       fSystemId     = systemId,
@@ -112,11 +112,11 @@ class XMLInputSource(
    * @param encoding     The original encoding of the byte stream
    *                     used by the reader, if known.
    */
-  def this(publicId: String, 
-      systemId: String, 
-      baseSystemId: String, 
-      charStream: Reader, 
-      encoding: String) {
+  def this(publicId: String,
+      systemId: String,
+      baseSystemId: String,
+      charStream: Reader,
+      encoding: String) = {
     this(
       fPublicId     = publicId,
       fSystemId     = systemId,

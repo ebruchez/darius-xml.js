@@ -38,7 +38,7 @@ import org.orbeon.darius.xml.xni.parser.XMLErrorHandler
 import org.orbeon.darius.xml.xni.parser.XMLInputSource
 import org.orbeon.darius.xml.xni.parser.XMLParserConfiguration
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 protected[parsers] object BasicParserConfiguration {
 
@@ -191,18 +191,16 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
   /**
    Default Constructor.
    */
-  protected def this() {
+  protected def this() =
     this(null, null)
-  }
 
   /**
    * Constructs a parser configuration using the specified symbol table.
    *
    * @param symbolTable The symbol table to use.
    */
-  protected def this(symbolTable: SymbolTable) {
+  protected def this(symbolTable: SymbolTable) =
     this(symbolTable, null)
-  }
 
   /**
    * Adds a component to the parser configuration. This method will

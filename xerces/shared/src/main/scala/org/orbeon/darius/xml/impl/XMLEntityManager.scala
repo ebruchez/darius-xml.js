@@ -49,7 +49,7 @@ import org.orbeon.darius.xml.xni.parser.XMLEntityResolver
 import org.orbeon.darius.xml.xni.parser.XMLInputSource
 
 import scala.util.control.Breaks
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object XMLEntityManager {
 
@@ -389,9 +389,8 @@ object XMLEntityManager {
 
     private var fDepth: Int = 0
 
-    def this(bufferSize: Int) {
+    def this(bufferSize: Int) =
       this(ByteBufferPool.DEFAULT_POOL_SIZE, bufferSize)
-    }
 
     /**
      Retrieves a byte buffer from the pool. *
@@ -451,9 +450,8 @@ object XMLEntityManager {
     private var fInternalTop = -1
     private var fExternalTop = -1
 
-    def this(externalBufferSize: Int, internalBufferSize: Int) {
+    def this(externalBufferSize: Int, internalBufferSize: Int) =
       this(CharacterBufferPool.DEFAULT_POOL_SIZE, externalBufferSize, internalBufferSize)
-    }
 
     /**
      Retrieves buffer from pool. *
@@ -686,9 +684,8 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
   /**
    Default constructor.
    */
-  def this() {
+  def this() =
     this(null)
-  }
 
   /**
    * Sets whether the document entity is standalone.

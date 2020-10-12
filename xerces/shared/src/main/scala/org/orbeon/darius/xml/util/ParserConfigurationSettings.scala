@@ -61,9 +61,8 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
    */
   protected var fFeatures = new ju.HashMap[String, Any]()
 
-  def this() {
+  def this() =
     this(null)
-  }
 
   /**
    * Allows a parser to add parser specific features to be recognized

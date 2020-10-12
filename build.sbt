@@ -39,7 +39,7 @@ lazy val xerces = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Ful
       "-unchecked"
     ),
 
-//    libraryDependencies += "org.scala-lang.modules"  %%% "scala-collection-compat" % ScalaCollectionCompatVersion,
+    libraryDependencies += "org.scala-lang.modules"  %%% "scala-collection-compat" % ScalaCollectionCompatVersion,
 
 //    libraryDependencies += "org.scalactic" %%% "scalactic"     % ScalaTestVersion    % Test,
 //    libraryDependencies += "org.scalatest" %%% "scalatest"     % ScalaTestVersion    % Test,

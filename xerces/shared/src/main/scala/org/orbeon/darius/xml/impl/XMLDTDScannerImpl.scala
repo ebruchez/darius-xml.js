@@ -250,7 +250,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
   /**
    Constructor for he use of non-XMLComponentManagers.
    */
-  def this(symbolTable: SymbolTable, errorReporter: XMLErrorReporter, entityManager: XMLEntityManager) {
+  def this(symbolTable: SymbolTable, errorReporter: XMLErrorReporter, entityManager: XMLEntityManager) = {
     this()
     fSymbolTable = symbolTable
     fErrorReporter = errorReporter

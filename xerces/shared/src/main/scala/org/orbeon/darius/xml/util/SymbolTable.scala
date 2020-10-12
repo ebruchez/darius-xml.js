@@ -159,9 +159,8 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
    * @throws    IllegalArgumentException if the initial capacity is less
    *            than zero.
    */
-  def this(initialCapacity: Int) {
+  def this(initialCapacity: Int) =
     this(initialCapacity, 0.75f)
-  }
 
   /**
    * Constructs a new, empty SymbolTable with a default initial capacity (101)

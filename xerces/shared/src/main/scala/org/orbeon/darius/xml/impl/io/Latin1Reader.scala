@@ -42,9 +42,8 @@ class Latin1Reader(protected val fInputStream: InputStream, protected val fBuffe
    * @param inputStream The input stream.
    * @param size        The initial buffer size.
    */
-  def this(inputStream: InputStream, size: Int) {
+  def this(inputStream: InputStream, size: Int) =
     this(inputStream, new Array[Byte](size))
-  }
 
   /**
    * Constructs an ISO-8859-1 reader from the specified input stream
@@ -52,9 +51,8 @@ class Latin1Reader(protected val fInputStream: InputStream, protected val fBuffe
    *
    * @param inputStream The input stream.
    */
-  def this(inputStream: InputStream) {
+  def this(inputStream: InputStream) =
     this(inputStream, Latin1Reader.DEFAULT_BUFFER_SIZE)
-  }
 
   /**
    * Read a single character. This method will block until a character is

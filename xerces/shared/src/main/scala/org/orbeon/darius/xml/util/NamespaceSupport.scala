@@ -61,7 +61,7 @@ class NamespaceSupport extends NamespaceContext {
    * Constructs a namespace context object and initializes it with
    * the prefixes declared in the specified context.
    */
-  def this(context: NamespaceContext) {
+  def this(context: NamespaceContext) = {
     this()
     pushContext()
     for {

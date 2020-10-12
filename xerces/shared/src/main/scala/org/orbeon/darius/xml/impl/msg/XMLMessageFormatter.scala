@@ -19,6 +19,8 @@ package org.orbeon.darius.xml.impl.msg
 
 import org.orbeon.darius.xml.util.MessageFormatter
 
+import scala.collection.compat._
+
 object XMLMessageFormatter {
   val XML_DOMAIN   = "http://www.w3.org/TR/1998/REC-xml-19980210"
   val XMLNS_DOMAIN = "http://www.w3.org/TR/1999/REC-xml-names-19990114"
@@ -33,8 +35,8 @@ class XMLMessageFormatter extends MessageFormatter {
 
         var res = message
 
-        for ((value, index) <- Option(argsOrNull).to[List] flatMap { _ map String.valueOf } zipWithIndex)
-          res = res.replaceAllLiterally(s"{$index}", value)
+        for ((value, index) <- (Option(argsOrNull).to(List) flatMap { _ map String.valueOf }).zipWithIndex)
+          res = res.replace(s"{$index}", value)
 
         res
 
