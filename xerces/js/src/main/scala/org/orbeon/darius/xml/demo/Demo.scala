@@ -14,10 +14,10 @@
 // * limitations under the License.
 // */
 //
-//package org.orbeon.darius.xml.demo
+//package org.orbeon.apache.xerces.demo
 //
 //
-//import org.orbeon.darius.xml.api.API
+//import org.orbeon.apache.xerces.api.API
 //import org.scalajs.jquery.JQuery
 //import org.scalajs.jquery.JQueryEventObject
 //import org.scalajs.jquery._

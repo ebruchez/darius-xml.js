@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.orbeon.darius.xml
+package org.orbeon.apache.xerces
 
-import org.orbeon.darius.xml.api.API
-import org.orbeon.darius.xml.demo.XMLEventCollector
+import org.orbeon.apache.xerces.api.API
+import org.orbeon.apache.xerces.demo.XMLEventCollector
 import utest._
 
 object ParseTest extends TestSuite {
