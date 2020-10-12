@@ -17,7 +17,7 @@
 
 package org.orbeon.darius.xml.util
 
-import java.{util ⇒ ju}
+import java.{util => ju}
 
 import org.orbeon.darius.xml.impl.Constants
 import org.orbeon.darius.xml.xni.parser.XMLComponentManager
@@ -71,7 +71,7 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
    */
   def addRecognizedFeatures(featureIds: Array[String]): Unit = {
     val featureIdsCount = if (featureIds ne null) featureIds.length else 0
-    for (i ← 0 until featureIdsCount) {
+    for (i <- 0 until featureIdsCount) {
       val featureId = featureIds(i)
       if (!fRecognizedFeatures.contains(featureId)) {
         fRecognizedFeatures.add(featureId)
@@ -106,7 +106,7 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
    */
   def addRecognizedProperties(propertyIds: Array[String]): Unit = {
     val propertyIdsCount = if (propertyIds ne null) propertyIds.length else 0
-    for (i ← 0 until propertyIdsCount) {
+    for (i <- 0 until propertyIdsCount) {
       val propertyId = propertyIds(i)
       if (!fRecognizedProperties.contains(propertyId)) {
         fRecognizedProperties.add(propertyId)
@@ -139,9 +139,9 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
    */
   def getFeature(featureId: String): Boolean = {
     fFeatures.get(featureId) match {
-      case state: java.lang.Boolean ⇒
+      case state: java.lang.Boolean =>
         state
-      case _ ⇒
+      case _ =>
         checkFeature(featureId)
         false
     }
@@ -161,10 +161,10 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
    */
   def getProperty(propertyId: String): Any = {
     fProperties.get(propertyId) match {
-      case null ⇒
+      case null =>
         checkProperty(propertyId)
         null
-      case propertyValue ⇒
+      case propertyValue =>
         propertyValue
     }
   }

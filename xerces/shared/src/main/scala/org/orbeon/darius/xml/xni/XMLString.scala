@@ -21,13 +21,13 @@ package org.orbeon.darius.xml.xni
  * This class is used as a structure to pass text contained in the underlying
  * character buffer of the scanner. The offset and length fields allow the
  * buffer to be re-used without creating new character arrays.
- * 
+ *
  * *Note:* Methods that are passed an XMLString structure
  * should consider the contents read-only and not make any modifications
  * to the contents of the buffer. The method receiving this structure
  * should also not modify the offset and length if this structure (or
  * the values of this structure) are passed to another method.
- * 
+ *
  * *Note:* Methods that are passed an XMLString structure
  * are required to copy the information out of the buffer if it is to be
  * saved for use beyond the scope of the method. The contents of the
@@ -69,7 +69,7 @@ class XMLString {
   /**
    * Constructs an XMLString structure with copies of the values in
    * the given structure.
-   * 
+   *
    * *Note:* This does not copy the character array;
    * only the reference to the array is copied.
    *
@@ -97,7 +97,7 @@ class XMLString {
   /**
    * Initializes the contents of the XMLString structure with copies
    * of the given string structure.
-   * 
+   *
    * *Note:* This does not copy the character array;
    * only the reference to the array is copied.
    */
@@ -129,7 +129,7 @@ class XMLString {
     if (this.length != length) {
       return false
     }
-    for (i ← 0 until length if this.ch(this.offset + i) != ch(offset + i)) {
+    for (i <- 0 until length if this.ch(this.offset + i) != ch(offset + i)) {
       return false
     }
     true
@@ -146,7 +146,7 @@ class XMLString {
     if (length != s.length) {
       return false
     }
-    for (i ← 0 until length if ch(offset + i) != s.charAt(i)) {
+    for (i <- 0 until length if ch(offset + i) != s.charAt(i)) {
       return false
     }
     true

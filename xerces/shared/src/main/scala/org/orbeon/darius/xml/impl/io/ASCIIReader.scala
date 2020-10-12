@@ -37,11 +37,11 @@ object ASCIIReader {
  * byte streams that only contain 7-bit ASCII characters.
  */
 class ASCIIReader(
-  protected val fInputStream : InputStream, 
-  protected val fBuffer      : Array[Byte], 
-  val fFormatter             : MessageFormatter 
+  protected val fInputStream : InputStream,
+  protected val fBuffer      : Array[Byte],
+  val fFormatter             : MessageFormatter
 ) extends Reader {
-  
+
   /**
    * Constructs an ASCII reader from the specified input stream
    * and buffer size.
@@ -51,12 +51,12 @@ class ASCIIReader(
    * @param messageFormatter  the MessageFormatter to use to message reporting.
    */
   def this(
-    inputStream      : InputStream, 
-    size             : Int, 
-    messageFormatter : MessageFormatter 
+    inputStream      : InputStream,
+    size             : Int,
+    messageFormatter : MessageFormatter
   ) =
     this(inputStream, new Array[Byte](size), messageFormatter)
-  
+
   /**
    * Constructs an ASCII reader from the specified input stream
    * using the default buffer size.
@@ -84,9 +84,9 @@ class ASCIIReader(
     val b0 = fInputStream.read()
     if (b0 >= 0x80) {
       throw new MalformedByteSequenceException(
-        fFormatter, 
+        fFormatter,
         XMLMessageFormatter.XML_DOMAIN,
-        "InvalidASCII", 
+        "InvalidASCII",
         Array(b0.toString)
       )
     }
@@ -108,17 +108,17 @@ class ASCIIReader(
    * @throws  IOException  If an I/O error occurs
    */
   def read(ch: Array[Char], offset: Int, _length: Int): Int = {
-    
+
     var length = _length
-    
+
     if (length > fBuffer.length) {
       length = fBuffer.length
     }
     val count = fInputStream.read(fBuffer, 0, length)
-    for (i ← 0 until count) {
+    for (i <- 0 until count) {
       val b0 = fBuffer(i)
       if (b0 < 0) {
-        throw new MalformedByteSequenceException(fFormatter, XMLMessageFormatter.XML_DOMAIN, 
+        throw new MalformedByteSequenceException(fFormatter, XMLMessageFormatter.XML_DOMAIN,
           "InvalidASCII", Array(Integer toString b0 & 0x0FF))
       }
       ch(offset + i) = b0.toChar

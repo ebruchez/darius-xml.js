@@ -20,7 +20,7 @@ package org.orbeon.darius.xml.xni
 /**
  * A structure that holds the components of an XML Namespaces qualified
  * name.
- * 
+ *
  * To be used correctly, the strings must be identical references for
  * equal strings. Within the parser, these values are considered symbols
  * and should always be retrieved from the `SymbolTable`.
@@ -57,9 +57,9 @@ class QName extends Cloneable {
    Constructs a QName with the specified values.
    */
   def this(
-    prefix    : String, 
-    localpart : String, 
-    rawname   : String, 
+    prefix    : String,
+    localpart : String,
+    rawname   : String,
     uri       : String) = {
     this()
     setValues(prefix, localpart, rawname, uri)
@@ -94,9 +94,9 @@ class QName extends Cloneable {
    * @param uri       The URI binding. (e.g. "http://foo.com/mybinding")
    */
   def setValues(
-    prefix    : String, 
-    localpart : String, 
-    rawname   : String, 
+    prefix    : String,
+    localpart : String,
+    rawname   : String,
     uri       : String
   ): Unit = {
     this.prefix    = prefix
@@ -134,11 +134,11 @@ class QName extends Cloneable {
    */
   override def equals(other: Any): Boolean =
     other match {
-      case qname: QName if qname.uri ne null ⇒
+      case qname: QName if qname.uri ne null =>
         uri == qname.uri && localpart == qname.localpart
-      case qname: QName ⇒
+      case qname: QName =>
         rawname == qname.rawname
-      case _ ⇒
+      case _ =>
         false
     }
 

@@ -58,7 +58,7 @@ object XMLChar {
    * be considered the start of markup, such as '<' and '&'.
    * The various newline characters are considered special as well.
    * All other valid XML characters can be considered content.
-   * 
+   *
    * This is an optimization for the inner loop of character scanning.
    */
   val MASK_CONTENT = 0x20
@@ -1364,7 +1364,7 @@ object XMLChar {
   /**
    * Returns true if the specified character is valid. This method
    * also checks the surrogate character range from 0x10000 to 0x10FFFF.
-   * 
+   *
    * If the program chooses to apply the mask directly to the
    * `CHARS` array, then they are responsible for checking
    * the surrogate character range.
@@ -1480,7 +1480,7 @@ object XMLChar {
     if (!isNameStart(ch)) {
       return false
     }
-    for (i ← 1 until length) {
+    for (i <- 1 until length) {
       ch = name.charAt(i)
       if (!isName(ch)) {
         return false
@@ -1505,7 +1505,7 @@ object XMLChar {
     if (!isNCNameStart(ch)) {
       return false
     }
-    for (i ← 1 until length) {
+    for (i <- 1 until length) {
       ch = ncName.charAt(i)
       if (!isNCName(ch)) {
         return false
@@ -1526,7 +1526,7 @@ object XMLChar {
     if (length == 0) {
       return false
     }
-    for (i ← 0 until length) {
+    for (i <- 0 until length) {
       val ch = nmtoken.charAt(i)
       if (!isName(ch)) {
         return false
@@ -1549,11 +1549,11 @@ object XMLChar {
       if (length > 0) {
         var c = ianaEncoding.charAt(0)
         if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
-          for (i ← 1 until length) {
+          for (i <- 1 until length) {
             c = ianaEncoding.charAt(i)
-            if ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') && (c < '0' || c > '9') && 
-              c != '.' && 
-              c != '_' && 
+            if ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') && (c < '0' || c > '9') &&
+              c != '.' &&
+              c != '_' &&
               c != '-') {
               return false
             }
@@ -1577,11 +1577,11 @@ object XMLChar {
     if (javaEncoding ne null) {
       val length = javaEncoding.length
       if (length > 0) {
-        for (i ← 1 until length) {
+        for (i <- 1 until length) {
           val c = javaEncoding.charAt(i)
-          if ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') && (c < '0' || c > '9') && 
-            c != '.' && 
-            c != '_' && 
+          if ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') && (c < '0' || c > '9') &&
+            c != '.' &&
+            c != '_' &&
             c != '-') {
             return false
           }

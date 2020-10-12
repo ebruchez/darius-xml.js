@@ -119,20 +119,20 @@ protected[darius] object XMLScanner {
  * structure and content. Both XMLDocumentScanner and XMLDTDScanner inherit
  * from this base class.
  *
- * 
+ *
  * This component requires the following features and properties from the
  * component manager that uses it:
- * 
+ *
  *  - http://xml.org/sax/features/validation
  *  - http://xml.org/sax/features/namespaces
  *  - http://apache.org/xml/features/scanner/notify-char-refs
  *  - http://apache.org/xml/properties/internal/symbol-table
  *  - http://apache.org/xml/properties/internal/error-reporter
  *  - http://apache.org/xml/properties/internal/entity-manager
- * 
+ *
  */
 abstract class XMLScanner extends XMLComponent {
-  
+
   import XMLScanner._
 
   /**
@@ -208,7 +208,7 @@ abstract class XMLScanner extends XMLComponent {
       try {
         componentManager.getFeature(PARSER_SETTINGS)
       } catch {
-        case e: XMLConfigurationException ⇒ true
+        case e: XMLConfigurationException => true
       }
 		if (! fParserSettings) {
 			init()
@@ -220,17 +220,17 @@ abstract class XMLScanner extends XMLComponent {
     try {
       fValidation = componentManager.getFeature(VALIDATION)
     } catch {
-      case e: XMLConfigurationException ⇒ fValidation = false
+      case e: XMLConfigurationException => fValidation = false
     }
     try {
       fNamespaces = componentManager.getFeature(NAMESPACES)
     } catch {
-      case e: XMLConfigurationException ⇒ fNamespaces = true
+      case e: XMLConfigurationException => fNamespaces = true
     }
     try {
       fNotifyCharRefs = componentManager.getFeature(NOTIFY_CHAR_REFS)
     } catch {
-      case e: XMLConfigurationException ⇒ fNotifyCharRefs = false
+      case e: XMLConfigurationException => fNotifyCharRefs = false
     }
     init()
   }
@@ -241,13 +241,13 @@ abstract class XMLScanner extends XMLComponent {
   def setProperty(propertyId: String, value: AnyRef): Unit = {
     if (propertyId.startsWith(Constants.XERCES_PROPERTY_PREFIX)) {
       val suffixLength = propertyId.length - Constants.XERCES_PROPERTY_PREFIX.length
-      if (suffixLength == Constants.SYMBOL_TABLE_PROPERTY.length && 
+      if (suffixLength == Constants.SYMBOL_TABLE_PROPERTY.length &&
         propertyId.endsWith(Constants.SYMBOL_TABLE_PROPERTY)) {
         fSymbolTable = value.asInstanceOf[SymbolTable]
-      } else if (suffixLength == Constants.ERROR_REPORTER_PROPERTY.length && 
+      } else if (suffixLength == Constants.ERROR_REPORTER_PROPERTY.length &&
         propertyId.endsWith(Constants.ERROR_REPORTER_PROPERTY)) {
         fErrorReporter = value.asInstanceOf[XMLErrorReporter]
-      } else if (suffixLength == Constants.ENTITY_MANAGER_PROPERTY.length && 
+      } else if (suffixLength == Constants.ENTITY_MANAGER_PROPERTY.length &&
         propertyId.endsWith(Constants.ENTITY_MANAGER_PROPERTY)) {
         fEntityManager = value.asInstanceOf[XMLEntityManager]
       }
@@ -279,14 +279,14 @@ abstract class XMLScanner extends XMLComponent {
 
   /**
    * Scans an XML or text declaration.
-   * 
+   *
    *  [23] XMLDecl ::= '<?xml' VersionInfo EncodingDecl? SDDecl? S? '?>'
    *  [24] VersionInfo ::= S 'version' Eq (' VersionNum ' | " VersionNum ")
    *  [80] EncodingDecl ::= S 'encoding' Eq ('"' EncName '"' |  "'" EncName "'" )
    *  [81] EncName ::= [A-Za-z] ([A-Za-z0-9._] | '-')*
    *  [32] SDDecl ::= S 'standalone' Eq (("'" ('yes' | 'no') "'")
    *                  | ('"' ('yes' | 'no') '"'))
-   *  
+   *
    *  [77] TextDecl ::= '<?xml' VersionInfo? EncodingDecl S? '?>'
    *
    * @param scanningTextDecl True if a text declaration is to
@@ -317,10 +317,10 @@ abstract class XMLScanner extends XMLComponent {
       dataFoundForTarget = true
       val name = scanPseudoAttribute(scanningTextDecl, fString)
       state match {
-        case STATE_VERSION ⇒
+        case STATE_VERSION =>
           if (name == fVersionSymbol) {
             if (!sawSpace) {
-              reportFatalError(if (scanningTextDecl) "SpaceRequiredBeforeVersionInTextDecl" else "SpaceRequiredBeforeVersionInXMLDecl", 
+              reportFatalError(if (scanningTextDecl) "SpaceRequiredBeforeVersionInTextDecl" else "SpaceRequiredBeforeVersionInXMLDecl",
                 null)
             }
             version = fString.toString
@@ -333,7 +333,7 @@ abstract class XMLScanner extends XMLComponent {
               reportFatalError("VersionInfoRequired", null)
             }
             if (!sawSpace) {
-              reportFatalError(if (scanningTextDecl) "SpaceRequiredBeforeEncodingInTextDecl" else "SpaceRequiredBeforeEncodingInXMLDecl", 
+              reportFatalError(if (scanningTextDecl) "SpaceRequiredBeforeEncodingInTextDecl" else "SpaceRequiredBeforeEncodingInXMLDecl",
                 null)
             }
             encoding = fString.toString
@@ -345,10 +345,10 @@ abstract class XMLScanner extends XMLComponent {
               reportFatalError("VersionInfoRequired", null)
             }
           }
-        case STATE_ENCODING ⇒
+        case STATE_ENCODING =>
           if (name == fEncodingSymbol) {
             if (!sawSpace) {
-              reportFatalError(if (scanningTextDecl) "SpaceRequiredBeforeEncodingInTextDecl" else "SpaceRequiredBeforeEncodingInXMLDecl", 
+              reportFatalError(if (scanningTextDecl) "SpaceRequiredBeforeEncodingInTextDecl" else "SpaceRequiredBeforeEncodingInXMLDecl",
                 null)
             }
             encoding = fString.toString
@@ -365,7 +365,7 @@ abstract class XMLScanner extends XMLComponent {
           } else {
             reportFatalError("EncodingDeclRequired", null)
           }
-        case STATE_STANDALONE ⇒
+        case STATE_STANDALONE =>
           if (name == fStandaloneSymbol) {
             if (!sawSpace) {
               reportFatalError("SpaceRequiredBeforeStandalone", null)
@@ -378,7 +378,7 @@ abstract class XMLScanner extends XMLComponent {
           } else {
             reportFatalError("EncodingDeclRequired", null)
           }
-        case _ ⇒
+        case _ =>
           reportFatalError("NoMorePseudoAttributes", null)
       }
       sawSpace = fEntityScanner.skipDeclSpaces()
@@ -435,7 +435,7 @@ abstract class XMLScanner extends XMLComponent {
     fEntityScanner.skipDeclSpaces()
     val quote = fEntityScanner.peekChar()
     if (quote != '\'' && quote != '"') {
-      reportFatalError(if (scanningTextDecl) "QuoteRequiredInTextDecl" else "QuoteRequiredInXMLDecl", 
+      reportFatalError(if (scanningTextDecl) "QuoteRequiredInTextDecl" else "QuoteRequiredInXMLDecl",
         Array(name))
     }
     fEntityScanner.scanChar()
@@ -461,7 +461,7 @@ abstract class XMLScanner extends XMLComponent {
       value.setValues(fStringBuffer2)
     }
     if (!fEntityScanner.skipChar(quote)) {
-      reportFatalError(if (scanningTextDecl) "CloseQuoteMissingInTextDecl" else "CloseQuoteMissingInXMLDecl", 
+      reportFatalError(if (scanningTextDecl) "CloseQuoteMissingInTextDecl" else "CloseQuoteMissingInXMLDecl",
         Array(name))
     }
     name
@@ -469,10 +469,10 @@ abstract class XMLScanner extends XMLComponent {
 
   /**
    * Scans a processing instruction.
-   * 
+   *
    *  [16] PI ::= '<?' PITarget (S (Char* - (Char* '?>' Char*)))? '?>'
    *  [17] PITarget ::= Name - (('X' | 'x') ('M' | 'm') ('L' | 'l'))
-   * 
+   *
    * *Note:* This method uses fString, anything in it
    * at the time of calling is lost.
    */
@@ -544,9 +544,9 @@ abstract class XMLScanner extends XMLComponent {
 
   /**
    * Scans a comment.
-   * 
+   *
    *  [15] Comment ::= '<!--' ((Char - '-') | ('-' (Char - '-')))* '-->'
-   * 
+   *
    * *Note:* Called after scanning past '<!--'
    * *Note:* This method uses fString, anything in it
    * at the time of calling is lost.
@@ -591,10 +591,10 @@ abstract class XMLScanner extends XMLComponent {
    * at the time of calling is lost.
    *
    */
-  protected def scanAttributeValue(value: XMLString, 
-      nonNormalizedValue: XMLString, 
-      atName: String, 
-      checkEntities: Boolean, 
+  protected def scanAttributeValue(value: XMLString,
+      nonNormalizedValue: XMLString,
+      atName: String,
+      checkEntities: Boolean,
       eleName: String): Boolean = {
     val quote = fEntityScanner.peekChar()
     if (quote != '\'' && quote != '"') {
@@ -688,7 +688,7 @@ abstract class XMLScanner extends XMLComponent {
                 if (!fEntityManager.isDeclaredEntity(entityName)) {
                   if (checkEntities) {
                     if (fValidation) {
-                      fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EntityNotDeclared", 
+                      fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EntityNotDeclared",
                         Array(entityName), XMLErrorReporter.SEVERITY_ERROR)
                     }
                   } else {
@@ -887,7 +887,7 @@ abstract class XMLScanner extends XMLComponent {
    */
   protected def normalizeWhitespace(value: XMLString): Unit = {
     val end = value.offset + value.length
-    for (i ← value.offset until end) {
+    for (i <- value.offset until end) {
       val c = value.ch(i)
       if (c < 0x20) {
         value.ch(i) = ' '
@@ -901,7 +901,7 @@ abstract class XMLScanner extends XMLComponent {
    */
   protected def normalizeWhitespace(value: XMLString, fromIndex: Int): Unit = {
     val end = value.offset + value.length
-    for (i ← value.offset + fromIndex until end) {
+    for (i <- value.offset + fromIndex until end) {
       val c = value.ch(i)
       if (c < 0x20) {
         value.ch(i) = ' '
@@ -918,7 +918,7 @@ abstract class XMLScanner extends XMLComponent {
    */
   protected def isUnchangedByNormalization(value: XMLString): Int = {
     val end = value.offset + value.length
-    for (i ← value.offset until end) {
+    for (i <- value.offset until end) {
       val c = value.ch(i)
       if (c < 0x20) {
         return i - value.offset
@@ -944,9 +944,9 @@ abstract class XMLScanner extends XMLComponent {
    *
    * @throws XNIException Thrown by handler to signal an error.
    */
-  def startEntity(name: String, 
-      identifier: XMLResourceIdentifier, 
-      encoding: String, 
+  def startEntity(name: String,
+      identifier: XMLResourceIdentifier,
+      encoding: String,
       augs: Augmentations): Unit = {
     fEntityDepth += 1
     fEntityScanner = fEntityManager.getEntityScanner
@@ -1054,7 +1054,7 @@ abstract class XMLScanner extends XMLComponent {
         reportFatalError("InvalidCharRef", Array(errorBuf.toString))
       }
     } catch {
-      case e: NumberFormatException ⇒
+      case e: NumberFormatException =>
         val errorBuf = new StringBuffer(fStringBuffer3.length + 1)
         if (hex) errorBuf.append('x')
         errorBuf.append(fStringBuffer3.ch, fStringBuffer3.offset, fStringBuffer3.length)
@@ -1093,7 +1093,7 @@ abstract class XMLScanner extends XMLComponent {
 
   /**
    * Scans surrogates and append them to the specified buffer.
-   * 
+   *
    * *Note:* This assumes the current char has already been
    * identified as a high surrogate.
    *

@@ -44,7 +44,7 @@ object UCSReader {
  */
 class UCSReader(protected val fInputStream: InputStream, protected val fBuffer: Array[Byte], protected val fEncoding: Short)
     extends Reader {
-  
+
   import UCSReader._
 
   /**
@@ -59,7 +59,7 @@ class UCSReader(protected val fInputStream: InputStream, protected val fBuffer: 
   def this(inputStream: InputStream, size: Int, encoding: Short) {
     this(inputStream, new Array[Byte](size), encoding)
   }
-  
+
   /**
    * Constructs a UCS reader from the specified input stream
    * using the default buffer size.  The Endian-ness and whether this is
@@ -139,10 +139,10 @@ class UCSReader(protected val fInputStream: InputStream, protected val fBuffer: 
       val numToRead = 4 - (count & 3) & 3
       val forBreaks = new Breaks
       forBreaks.breakable {
-        for (i ← 0 until numToRead) {
+        for (i <- 0 until numToRead) {
           val charRead = fInputStream.read()
           if (charRead == -1) {
-            for (j ← i until numToRead) {
+            for (j <- i until numToRead) {
               fBuffer(count + j) = 0
             }
             forBreaks.break()
@@ -161,7 +161,7 @@ class UCSReader(protected val fInputStream: InputStream, protected val fBuffer: 
     }
     val numChars = count >> (if (fEncoding >= 4) 2 else 1)
     var curPos = 0
-    for (i ← 0 until numChars) {
+    for (i <- 0 until numChars) {
       val b0 = fBuffer(curPos) & 0xff
       curPos += 1
       val b1 = fBuffer(curPos) & 0xff

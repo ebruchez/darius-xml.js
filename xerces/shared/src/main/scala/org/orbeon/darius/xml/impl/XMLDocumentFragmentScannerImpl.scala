@@ -168,13 +168,13 @@ protected[impl] object XMLDocumentFragmentScannerImpl {
      */
     protected var fSize: Int = _
 
-    for (i ← fElements.indices) {
+    for (i <- fElements.indices) {
       fElements(i) = new QName()
     }
 
     /**
      * Pushes an element on the stack.
-     * 
+     *
      * *Note:* The QName values are copied into the
      * stack. In other words, the caller does *not* orphan
      * the element to the stack. Also, the QName object returned
@@ -190,7 +190,7 @@ protected[impl] object XMLDocumentFragmentScannerImpl {
         val array = new Array[QName](fElements.length * 2)
         System.arraycopy(fElements, 0, array, 0, fSize)
         fElements = array
-        for (i ← fSize until fElements.length) {
+        for (i <- fSize until fElements.length) {
           fElements(i) = new QName()
         }
       }
@@ -203,7 +203,7 @@ protected[impl] object XMLDocumentFragmentScannerImpl {
     /**
      * Pops an element off of the stack by setting the values of
      * the specified QName.
-     * 
+     *
      * *Note:* The object returned is *not*
      * orphaned to the caller. Therefore, the caller should consider
      * the object to be read-only.
@@ -248,10 +248,10 @@ protected[impl] object XMLDocumentFragmentScannerImpl {
  * This class is responsible for scanning the structure and content
  * of document fragments. The scanner acts as the source for the
  * document information which is communicated to the document handler.
- * 
+ *
  * This component requires the following features and properties from the
  * component manager that uses it:
- * 
+ *
  *  - http://xml.org/sax/features/validation
  *  - http://apache.org/xml/features/scanner/notify-char-refs
  *  - http://apache.org/xml/features/scanner/notify-builtin-refs
@@ -260,7 +260,7 @@ protected[impl] object XMLDocumentFragmentScannerImpl {
  *  - http://apache.org/xml/properties/internal/entity-manager
  */
 class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner with XMLComponent with XMLEntityHandler {
-  
+
   import XMLScanner._
 
   /**
@@ -457,17 +457,17 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
         try {
           componentManager.getFeature(NOTIFY_BUILTIN_REFS)
         } catch {
-          case e: XMLConfigurationException ⇒ false
+          case e: XMLConfigurationException => false
         }
       fExternalSubsetResolver =
         try {
           val resolver = componentManager.getProperty(ENTITY_RESOLVER)
           resolver match {
-            case externalResolver: ExternalSubsetResolver ⇒ externalResolver
-            case _ ⇒ null
+            case externalResolver: ExternalSubsetResolver => externalResolver
+            case _ => null
           }
         } catch {
-          case e: XMLConfigurationException ⇒ null
+          case e: XMLConfigurationException => null
         }
     }
   }
@@ -484,7 +484,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
   /**
    * Sets the state of a feature. This method is called by the component
    * manager any time after reset when a feature changes state.
-   * 
+   *
    * *Note:* Components should silently ignore features
    * that do not affect the operation of the component.
    *
@@ -495,7 +495,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
     super.setFeature(featureId, state)
     if (featureId.startsWith(Constants.XERCES_FEATURE_PREFIX)) {
       val suffixLength = featureId.length - Constants.XERCES_FEATURE_PREFIX.length
-      if (suffixLength == Constants.NOTIFY_BUILTIN_REFS_FEATURE.length && 
+      if (suffixLength == Constants.NOTIFY_BUILTIN_REFS_FEATURE.length &&
         featureId.endsWith(Constants.NOTIFY_BUILTIN_REFS_FEATURE)) {
         fNotifyBuiltInRefs = state
       }
@@ -514,7 +514,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
   /**
    * Sets the value of a property. This method is called by the component
    * manager any time after reset when a property changes value.
-   * 
+   *
    * *Note:* Components should silently ignore properties
    * that do not affect the operation of the component.
    *
@@ -525,16 +525,16 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
     super.setProperty(propertyId, value)
     if (propertyId.startsWith(Constants.XERCES_PROPERTY_PREFIX)) {
       val suffixLength = propertyId.length - Constants.XERCES_PROPERTY_PREFIX.length
-      if (suffixLength == Constants.ENTITY_MANAGER_PROPERTY.length && 
+      if (suffixLength == Constants.ENTITY_MANAGER_PROPERTY.length &&
         propertyId.endsWith(Constants.ENTITY_MANAGER_PROPERTY)) {
         fEntityManager = value.asInstanceOf[XMLEntityManager]
         return
       }
-      if (suffixLength == Constants.ENTITY_RESOLVER_PROPERTY.length && 
+      if (suffixLength == Constants.ENTITY_RESOLVER_PROPERTY.length &&
         propertyId.endsWith(Constants.ENTITY_RESOLVER_PROPERTY)) {
         fExternalSubsetResolver = value match {
-          case resolver: ExternalSubsetResolver ⇒ resolver
-          case _ ⇒ null
+          case resolver: ExternalSubsetResolver => resolver
+          case _ => null
         }
         return
       }
@@ -586,9 +586,9 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
    *
    * @throws XNIException Thrown by handler to signal an error.
    */
-  override def startEntity(name: String, 
-      identifier: XMLResourceIdentifier, 
-      encoding: String, 
+  override def startEntity(name: String,
+      identifier: XMLResourceIdentifier,
+      encoding: String,
       augs: Augmentations): Unit = {
     if (fEntityDepth == fEntityStack.length) {
       val entityarray = new Array[Int](fEntityStack.length * 2)
@@ -640,14 +640,14 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
 
   /**
    * Scans an XML or text declaration.
-   * 
+   *
    *    [23] XMLDecl ::= '<?xml' VersionInfo EncodingDecl? SDDecl? S? '?>'
    *    [24] VersionInfo ::= S 'version' Eq (' VersionNum ' | " VersionNum ")
    *    [80] EncodingDecl ::= S 'encoding' Eq ('"' EncName '"' |  "'" EncName "'" )
    *    [81] EncName ::= [A-Za-z] ([A-Za-z0-9._] | '-')*
    *    [32] SDDecl ::= S 'standalone' Eq (("'" ('yes' | 'no') "'")
    *                    | ('"' ('yes' | 'no') '"'))
-   *    
+   *
    *    [77] TextDecl ::= '<?xml' VersionInfo? EncodingDecl S? '?>'
    *
    * @param scanningTextDecl True if a text declaration is to
@@ -693,9 +693,9 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
 
   /**
    * Scans a comment.
-   * 
+   *
    *  [15] Comment ::= '<!--' ((Char - '-') | ('-' (Char - '-')))* '-->'
-   * 
+   *
    * *Note:* Called after scanning past '<!--'
    */
   protected def scanComment(): Unit = {
@@ -710,13 +710,13 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
    * Scans a start element. This method will handle the binding of
    * namespace information and notifying the handler of the start
    * of the element.
-   * 
+   *
    *  [44] EmptyElemTag ::= '<' Name (S Attribute)* S? '/>'
    *  [40] STag ::= '<' Name (S Attribute)* S? '>'
-   * 
+   *
    * *Note:* This method assumes that the leading
    * '<' character has been consumed.
-   * 
+   *
    * *Note:* This method uses the fElementQName and
    * fAttributes variables. The contents of these variables will be
    * destroyed. The caller should copy important information out of
@@ -840,13 +840,13 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
 
   /**
    * Scans an attribute.
-   * 
+   *
    *  [41] Attribute ::= Name Eq AttValue
-   * 
+   *
    * *Note:* This method assumes that the next
    * character on the stream is the first character of the attribute
    * name.
-   * 
+   *
    * *Note:* This method uses the fAttributeQName and
    * fQName variables. The contents of these variables will be
    * destroyed.
@@ -871,7 +871,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
     if (oldLen == attributes.getLength) {
       reportFatalError("AttributeNotUnique", Array(fCurrentElement.rawname, fAttributeQName.rawname))
     }
-    val isSameNormalizedAttr = scanAttributeValue(fTempString, fTempString2, fAttributeQName.rawname, 
+    val isSameNormalizedAttr = scanAttributeValue(fTempString, fTempString2, fAttributeQName.rawname,
       fIsEntityDeclaredVC, fCurrentElement.rawname)
     attributes.setValue(attrIndex, fTempString.toString)
     if (!isSameNormalizedAttr) {
@@ -924,7 +924,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
 
   /**
    * Scans a CDATA section.
-   * 
+   *
    * *Note:* This method uses the fTempString and
    * fStringBuffer variables.
    *
@@ -954,10 +954,10 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
             if (brackets > XMLEntityManager.DEFAULT_BUFFER_SIZE) {
               val chunks = brackets / XMLEntityManager.DEFAULT_BUFFER_SIZE
               val remainder = brackets % XMLEntityManager.DEFAULT_BUFFER_SIZE
-              for (i ← 0 until XMLEntityManager.DEFAULT_BUFFER_SIZE) {
+              for (i <- 0 until XMLEntityManager.DEFAULT_BUFFER_SIZE) {
                 fStringBuffer.append(']')
               }
-              for (i ← 0 until chunks) {
+              for (i <- 0 until chunks) {
                 fDocumentHandler.characters(fStringBuffer, null)
               }
               if (remainder != 0) {
@@ -965,7 +965,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
                 fDocumentHandler.characters(fStringBuffer, null)
               }
             } else {
-              for (i ← 0 until brackets) {
+              for (i <- 0 until brackets) {
                 fStringBuffer.append(']')
               }
               fDocumentHandler.characters(fStringBuffer, null)
@@ -1008,9 +1008,9 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
 
   /**
    * Scans an end element.
-   * 
+   *
    *  [42] ETag ::= '</' Name S? '>'
-   * 
+   *
    * *Note:* This method uses the fElementQName variable.
    * The contents of this variable will be destroyed. The caller should
    * copy the needed information out of this variable before calling
@@ -1041,7 +1041,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
 
   /**
    * Scans a character reference.
-   * 
+   *
    *  [66] CharRef ::= '&#' [0-9]+ ';' | '&#x' [0-9a-fA-F]+ ';'
    */
   protected def scanCharReference(): Unit = {
@@ -1103,7 +1103,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
     } else {
       if (!fEntityManager.isDeclaredEntity(name)) {
         if (fIsEntityDeclaredVC) {
-          if (fValidation) fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EntityNotDeclared", 
+          if (fValidation) fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EntityNotDeclared",
             Array(name), XMLErrorReporter.SEVERITY_ERROR)
         } else {
           reportFatalError("EntityNotDeclared", Array(name))
@@ -1184,17 +1184,17 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
    Returns the scanner state name.
    */
   protected def getScannerStateName(state: Int): String = state match {
-    case SCANNER_STATE_DOCTYPE ⇒ "SCANNER_STATE_DOCTYPE"
-    case SCANNER_STATE_ROOT_ELEMENT ⇒ "SCANNER_STATE_ROOT_ELEMENT"
-    case SCANNER_STATE_START_OF_MARKUP ⇒ "SCANNER_STATE_START_OF_MARKUP"
-    case SCANNER_STATE_COMMENT ⇒ "SCANNER_STATE_COMMENT"
-    case SCANNER_STATE_PI ⇒ "SCANNER_STATE_PI"
-    case SCANNER_STATE_CONTENT ⇒ "SCANNER_STATE_CONTENT"
-    case SCANNER_STATE_REFERENCE ⇒ "SCANNER_STATE_REFERENCE"
-    case SCANNER_STATE_END_OF_INPUT ⇒ "SCANNER_STATE_END_OF_INPUT"
-    case SCANNER_STATE_TERMINATED ⇒ "SCANNER_STATE_TERMINATED"
-    case SCANNER_STATE_CDATA ⇒ "SCANNER_STATE_CDATA"
-    case SCANNER_STATE_TEXT_DECL ⇒ "SCANNER_STATE_TEXT_DECL"
+    case SCANNER_STATE_DOCTYPE => "SCANNER_STATE_DOCTYPE"
+    case SCANNER_STATE_ROOT_ELEMENT => "SCANNER_STATE_ROOT_ELEMENT"
+    case SCANNER_STATE_START_OF_MARKUP => "SCANNER_STATE_START_OF_MARKUP"
+    case SCANNER_STATE_COMMENT => "SCANNER_STATE_COMMENT"
+    case SCANNER_STATE_PI => "SCANNER_STATE_PI"
+    case SCANNER_STATE_CONTENT => "SCANNER_STATE_CONTENT"
+    case SCANNER_STATE_REFERENCE => "SCANNER_STATE_REFERENCE"
+    case SCANNER_STATE_END_OF_INPUT => "SCANNER_STATE_END_OF_INPUT"
+    case SCANNER_STATE_TERMINATED => "SCANNER_STATE_TERMINATED"
+    case SCANNER_STATE_CDATA => "SCANNER_STATE_CDATA"
+    case SCANNER_STATE_TEXT_DECL => "SCANNER_STATE_TEXT_DECL"
   }
 
   /**
@@ -1241,7 +1241,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
         do {
           again = false
           fScannerState match {
-            case SCANNER_STATE_CONTENT ⇒
+            case SCANNER_STATE_CONTENT =>
               if (fEntityScanner.skipChar('<')) {
                 setScannerState(SCANNER_STATE_START_OF_MARKUP)
                 again = true
@@ -1277,7 +1277,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
                   } while (complete)
                 }
               }
-            case SCANNER_STATE_START_OF_MARKUP ⇒
+            case SCANNER_STATE_START_OF_MARKUP =>
               fMarkupDepth += 1
               if (fEntityScanner.skipChar('/')) {
                 if (scanEndElement() == 0) {
@@ -1312,16 +1312,16 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
                 reportFatalError("MarkupNotRecognizedInContent", null)
                 setScannerState(SCANNER_STATE_CONTENT)
               }
-            case SCANNER_STATE_COMMENT ⇒
+            case SCANNER_STATE_COMMENT =>
               scanComment()
               setScannerState(SCANNER_STATE_CONTENT)
-            case SCANNER_STATE_PI ⇒
+            case SCANNER_STATE_PI =>
               scanPI()
               setScannerState(SCANNER_STATE_CONTENT)
-            case SCANNER_STATE_CDATA ⇒
+            case SCANNER_STATE_CDATA =>
               scanCDATASection(complete)
               setScannerState(SCANNER_STATE_CONTENT)
-            case SCANNER_STATE_REFERENCE ⇒
+            case SCANNER_STATE_REFERENCE =>
               fMarkupDepth += 1
               setScannerState(SCANNER_STATE_CONTENT)
               if (fEntityScanner.skipChar('#')) {
@@ -1329,7 +1329,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
               } else {
                 scanEntityReference()
               }
-            case SCANNER_STATE_TEXT_DECL ⇒
+            case SCANNER_STATE_TEXT_DECL =>
               if (fEntityScanner.skipString("<?xml")) {
                 fMarkupDepth += 1
                 if (isValidNameChar(fEntityScanner.peekChar())) {
@@ -1352,27 +1352,27 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
               }
               fEntityManager.fCurrentEntity.mayReadChunks = true
               setScannerState(SCANNER_STATE_CONTENT)
-            case SCANNER_STATE_ROOT_ELEMENT ⇒
+            case SCANNER_STATE_ROOT_ELEMENT =>
               if (scanRootElementHook()) {
                 return true
               }
               setScannerState(SCANNER_STATE_CONTENT)
-            case SCANNER_STATE_DOCTYPE ⇒
+            case SCANNER_STATE_DOCTYPE =>
               reportFatalError("DoctypeIllegalInContent", null)
               setScannerState(SCANNER_STATE_CONTENT)
           }
         } while (complete || again)
       } catch {
-        case e: MalformedByteSequenceException ⇒
-          fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR, 
+        case e: MalformedByteSequenceException =>
+          fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR,
             e)
           return false
 // @ebruchez: not supported in Scala.js
-//        case e: CharConversionException ⇒
-//          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "CharConversionFailure", null, XMLErrorReporter.SEVERITY_FATAL_ERROR, 
+//        case e: CharConversionException =>
+//          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "CharConversionFailure", null, XMLErrorReporter.SEVERITY_FATAL_ERROR,
 //            e)
 //          return false
-        case e: EOFException ⇒
+        case e: EOFException =>
           endOfFileHook(e)
           return false
       }

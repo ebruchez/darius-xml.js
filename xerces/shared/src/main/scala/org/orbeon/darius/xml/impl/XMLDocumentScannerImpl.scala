@@ -121,10 +121,10 @@ protected[impl] object XMLDocumentScannerImpl {
  * This class is responsible for scanning XML document structure
  * and content. The scanner acts as the source for the document
  * information which is communicated to the document handler.
- * 
+ *
  * This component requires the following features and properties from the
  * component manager that uses it:
- * 
+ *
  *  - http://xml.org/sax/features/namespaces
  *  - http://xml.org/sax/features/validation
  *  - http://apache.org/xml/features/nonvalidating/load-external-dtd
@@ -134,10 +134,10 @@ protected[impl] object XMLDocumentScannerImpl {
  *  - http://apache.org/xml/properties/internal/error-reporter
  *  - http://apache.org/xml/properties/internal/entity-manager
  *  - http://apache.org/xml/properties/internal/dtd-scanner
- * 
+ *
  */
 class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
-  
+
   import XMLDocumentFragmentScannerImpl._
 
   /**
@@ -269,23 +269,23 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
     try {
       fLoadExternalDTD = componentManager.getFeature(LOAD_EXTERNAL_DTD)
     } catch {
-      case e: XMLConfigurationException ⇒ fLoadExternalDTD = true
+      case e: XMLConfigurationException => fLoadExternalDTD = true
     }
     try {
       fDisallowDoctype = componentManager.getFeature(DISALLOW_DOCTYPE_DECL_FEATURE)
     } catch {
-      case e: XMLConfigurationException ⇒ fDisallowDoctype = false
+      case e: XMLConfigurationException => fDisallowDoctype = false
     }
     fDTDScanner = componentManager.getProperty(DTD_SCANNER).asInstanceOf[XMLDTDScanner]
     try {
       fValidationManager = componentManager.getProperty(VALIDATION_MANAGER).asInstanceOf[ValidationManager]
     } catch {
-      case e: XMLConfigurationException ⇒ fValidationManager = null
+      case e: XMLConfigurationException => fValidationManager = null
     }
     try {
       fNamespaceContext = componentManager.getProperty(NAMESPACE_CONTEXT).asInstanceOf[NamespaceContext]
     } catch {
-      case e: XMLConfigurationException ⇒ 
+      case e: XMLConfigurationException =>
     }
     if (fNamespaceContext eq null) {
       fNamespaceContext = new NamespaceSupport()
@@ -314,7 +314,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
   /**
    * Sets the state of a feature. This method is called by the component
    * manager any time after reset when a feature changes state.
-   * 
+   *
    * *Note:* Components should silently ignore features
    * that do not affect the operation of the component.
    */
@@ -322,11 +322,11 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
     super.setFeature(featureId, state)
     if (featureId.startsWith(Constants.XERCES_FEATURE_PREFIX)) {
       val suffixLength = featureId.length - Constants.XERCES_FEATURE_PREFIX.length
-      if (suffixLength == Constants.LOAD_EXTERNAL_DTD_FEATURE.length && 
+      if (suffixLength == Constants.LOAD_EXTERNAL_DTD_FEATURE.length &&
         featureId.endsWith(Constants.LOAD_EXTERNAL_DTD_FEATURE)) {
         fLoadExternalDTD = state
         return
-      } else if (suffixLength == Constants.DISALLOW_DOCTYPE_DECL_FEATURE.length && 
+      } else if (suffixLength == Constants.DISALLOW_DOCTYPE_DECL_FEATURE.length &&
         featureId.endsWith(Constants.DISALLOW_DOCTYPE_DECL_FEATURE)) {
         fDisallowDoctype = state
         return
@@ -353,7 +353,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
   /**
    * Sets the value of a property. This method is called by the component
    * manager any time after reset when a property changes value.
-   * 
+   *
    * *Note:* Components should silently ignore properties
    * that do not affect the operation of the component.
    */
@@ -361,11 +361,11 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
     super.setProperty(propertyId, value)
     if (propertyId.startsWith(Constants.XERCES_PROPERTY_PREFIX)) {
       val suffixLength = propertyId.length - Constants.XERCES_PROPERTY_PREFIX.length
-      if (suffixLength == Constants.DTD_SCANNER_PROPERTY.length && 
+      if (suffixLength == Constants.DTD_SCANNER_PROPERTY.length &&
         propertyId.endsWith(Constants.DTD_SCANNER_PROPERTY)) {
         fDTDScanner = value.asInstanceOf[XMLDTDScanner]
       }
-      if (suffixLength == Constants.NAMESPACE_CONTEXT_PROPERTY.length && 
+      if (suffixLength == Constants.NAMESPACE_CONTEXT_PROPERTY.length &&
         propertyId.endsWith(Constants.NAMESPACE_CONTEXT_PROPERTY)) {
         if (value ne null) {
           fNamespaceContext = value.asInstanceOf[NamespaceContext]
@@ -412,9 +412,9 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
    *
    * @throws XNIException Thrown by handler to signal an error.
    */
-  override def startEntity(name: String, 
-      identifier: XMLResourceIdentifier, 
-      encoding: String, 
+  override def startEntity(name: String,
+      identifier: XMLResourceIdentifier,
+      encoding: String,
       augs: Augmentations): Unit = {
     super.startEntity(name, identifier, encoding, augs)
     if (name != "[xml]" && fEntityScanner.isExternal) {
@@ -465,7 +465,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
     }
     fHasExternalDTD = fDoctypeSystemId ne null
     if (! fHasExternalDTD && (fExternalSubsetResolver ne null)) {
-      fDTDDescription.setValues(null, null, fEntityManager.getCurrentResourceIdentifier.getExpandedSystemId, 
+      fDTDDescription.setValues(null, null, fEntityManager.getCurrentResourceIdentifier.getExpandedSystemId,
         null)
       fDTDDescription.setRootName(fDoctypeName)
       fExternalSubsetSource = fExternalSubsetResolver.getExternalSubset(fDTDDescription)
@@ -475,7 +475,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
       if (fExternalSubsetSource eq null) {
         fDocumentHandler.doctypeDecl(fDoctypeName, fDoctypePublicId, fDoctypeSystemId, null)
       } else {
-        fDocumentHandler.doctypeDecl(fDoctypeName, fExternalSubsetSource.getPublicId, fExternalSubsetSource.getSystemId, 
+        fDocumentHandler.doctypeDecl(fDoctypeName, fExternalSubsetSource.getPublicId, fExternalSubsetSource.getSystemId,
           null)
       }
     }
@@ -495,12 +495,12 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
    Returns the scanner state name.
    */
   override protected def getScannerStateName(state: Int): String = state match {
-    case SCANNER_STATE_XML_DECL ⇒ "SCANNER_STATE_XML_DECL"
-    case SCANNER_STATE_PROLOG ⇒ "SCANNER_STATE_PROLOG"
-    case SCANNER_STATE_TRAILING_MISC ⇒ "SCANNER_STATE_TRAILING_MISC"
-    case SCANNER_STATE_DTD_INTERNAL_DECLS ⇒ "SCANNER_STATE_DTD_INTERNAL_DECLS"
-    case SCANNER_STATE_DTD_EXTERNAL ⇒ "SCANNER_STATE_DTD_EXTERNAL"
-    case SCANNER_STATE_DTD_EXTERNAL_DECLS ⇒ "SCANNER_STATE_DTD_EXTERNAL_DECLS"
+    case SCANNER_STATE_XML_DECL => "SCANNER_STATE_XML_DECL"
+    case SCANNER_STATE_PROLOG => "SCANNER_STATE_PROLOG"
+    case SCANNER_STATE_TRAILING_MISC => "SCANNER_STATE_TRAILING_MISC"
+    case SCANNER_STATE_DTD_INTERNAL_DECLS => "SCANNER_STATE_DTD_INTERNAL_DECLS"
+    case SCANNER_STATE_DTD_EXTERNAL => "SCANNER_STATE_DTD_EXTERNAL"
+    case SCANNER_STATE_DTD_EXTERNAL_DECLS => "SCANNER_STATE_DTD_EXTERNAL_DECLS"
   }
 
   /**
@@ -547,16 +547,16 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
         fEntityManager.fCurrentEntity.mayReadChunks = true
         true
       } catch {
-        case e: MalformedByteSequenceException ⇒
-          fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR, 
+        case e: MalformedByteSequenceException =>
+          fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR,
             e)
           false
 // @ebruchez: not supported in Scala.js
-//        case e: CharConversionException ⇒
-//          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "CharConversionFailure", null, XMLErrorReporter.SEVERITY_FATAL_ERROR, 
+//        case e: CharConversionException =>
+//          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "CharConversionFailure", null, XMLErrorReporter.SEVERITY_FATAL_ERROR,
 //            e)
 //          false
-        case e: EOFException ⇒
+        case e: EOFException =>
           reportFatalError("PrematureEOF", null)
           false
       }
@@ -586,7 +586,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
         do {
           again = false
           fScannerState match {
-            case SCANNER_STATE_PROLOG ⇒
+            case SCANNER_STATE_PROLOG =>
               fEntityScanner.skipSpaces()
               if (fEntityScanner.skipChar('<')) {
                 setScannerState(SCANNER_STATE_START_OF_MARKUP)
@@ -598,7 +598,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
                 setScannerState(SCANNER_STATE_CONTENT)
                 again = true
               }
-            case SCANNER_STATE_START_OF_MARKUP ⇒
+            case SCANNER_STATE_START_OF_MARKUP =>
               fMarkupDepth += 1
               if (fEntityScanner.skipChar('!')) {
                 if (fEntityScanner.skipChar('-')) {
@@ -627,13 +627,13 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
               } else {
                 reportFatalError("MarkupNotRecognizedInProlog", null)
               }
-            case SCANNER_STATE_COMMENT ⇒
+            case SCANNER_STATE_COMMENT =>
               scanComment()
               setScannerState(SCANNER_STATE_PROLOG)
-            case SCANNER_STATE_PI ⇒
+            case SCANNER_STATE_PI =>
               scanPI()
               setScannerState(SCANNER_STATE_PROLOG)
-            case SCANNER_STATE_DOCTYPE ⇒
+            case SCANNER_STATE_DOCTYPE =>
               if (fDisallowDoctype) {
                 reportFatalError("DoctypeNotAllowed", null)
               }
@@ -667,11 +667,11 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
               }
               fDTDScanner.setInputSource(null)
               setScannerState(SCANNER_STATE_PROLOG)
-            case SCANNER_STATE_CONTENT ⇒
+            case SCANNER_STATE_CONTENT =>
               reportFatalError("ContentIllegalInProlog", null)
               fEntityScanner.scanChar()
               // @ebruchez: unclear in original Java code if fall-through to next case was intended!
-            case SCANNER_STATE_REFERENCE ⇒
+            case SCANNER_STATE_REFERENCE =>
               reportFatalError("ReferenceIllegalInProlog", null)
           }
         } while (complete || again)
@@ -683,16 +683,16 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
           setDispatcher(fContentDispatcher)
         }
       } catch {
-        case e: MalformedByteSequenceException ⇒
-          fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR, 
+        case e: MalformedByteSequenceException =>
+          fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR,
             e)
           return false
 // @ebruchez: not supported in Scala.js
-//        case e: CharConversionException ⇒
-//          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "CharConversionFailure", null, XMLErrorReporter.SEVERITY_FATAL_ERROR, 
+//        case e: CharConversionException =>
+//          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "CharConversionFailure", null, XMLErrorReporter.SEVERITY_FATAL_ERROR,
 //            e)
 //          return false
-        case e: EOFException ⇒
+        case e: EOFException =>
           reportFatalError("PrematureEOF", null)
           return false
       }
@@ -724,11 +724,11 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
         do {
           again = false
           fScannerState match {
-            case SCANNER_STATE_DTD_INTERNAL_DECLS ⇒
+            case SCANNER_STATE_DTD_INTERNAL_DECLS =>
               val caseBreaks = new Breaks
               caseBreaks.breakable {
                 val completeDTD = true
-                val readExternalSubset = (fValidation || fLoadExternalDTD) && 
+                val readExternalSubset = (fValidation || fLoadExternalDTD) &&
                   ((fValidationManager eq null) || !fValidationManager.isCachedDTD)
                 val moreToScan = fDTDScanner.scanDTDInternalSubset(completeDTD, fStandalone, fHasExternalDTD && readExternalSubset)
                 if (!moreToScan) {
@@ -763,14 +763,14 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
                   return true
                 }
               }
-            case SCANNER_STATE_DTD_EXTERNAL ⇒
+            case SCANNER_STATE_DTD_EXTERNAL =>
               fDTDDescription.setValues(fDoctypePublicId, fDoctypeSystemId, null, null)
               fDTDDescription.setRootName(fDoctypeName)
               val xmlInputSource = fEntityManager.resolveEntity(fDTDDescription)
               fDTDScanner.setInputSource(xmlInputSource)
               setScannerState(SCANNER_STATE_DTD_EXTERNAL_DECLS)
               again = true
-            case SCANNER_STATE_DTD_EXTERNAL_DECLS ⇒
+            case SCANNER_STATE_DTD_EXTERNAL_DECLS =>
               val completeDTD = true
               val moreToScan = fDTDScanner.scanDTDExternalSubset(completeDTD)
               if (!moreToScan) {
@@ -779,24 +779,24 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
                 fEntityManager.setEntityHandler(XMLDocumentScannerImpl.this)
                 return true
               }
-            case _ ⇒
-              throw new XNIException("DTDDispatcher#dispatch: scanner state=" + fScannerState + 
-                " (" + 
-                getScannerStateName(fScannerState) + 
+            case _ =>
+              throw new XNIException("DTDDispatcher#dispatch: scanner state=" + fScannerState +
+                " (" +
+                getScannerStateName(fScannerState) +
                 ')')
           }
         } while (complete || again);
       } catch {
-        case e: MalformedByteSequenceException ⇒
-          fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR, 
+        case e: MalformedByteSequenceException =>
+          fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR,
             e)
           return false
 // @ebruchez: not supported in Scala.js
-//        case e: CharConversionException ⇒
-//          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "CharConversionFailure", null, XMLErrorReporter.SEVERITY_FATAL_ERROR, 
+//        case e: CharConversionException =>
+//          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "CharConversionFailure", null, XMLErrorReporter.SEVERITY_FATAL_ERROR,
 //            e)
 //          return false
-        case e: EOFException ⇒
+        case e: EOFException =>
           reportFatalError("PrematureEOF", null)
           return false
       } finally {
@@ -859,7 +859,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
      *          the content dispatcher should continue as normal.
      */
     override protected def scanRootElementHook(): Boolean = {
-      if ((fExternalSubsetResolver ne null) && ! fSeenDoctypeDecl && 
+      if ((fExternalSubsetResolver ne null) && ! fSeenDoctypeDecl &&
         ! fDisallowDoctype && (fValidation || fLoadExternalDTD)) {
         scanStartElementName()
         resolveExternalSubsetAndRead()
@@ -892,7 +892,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
      * have one. If an external subset is located, then it is scanned.
      */
     protected def resolveExternalSubsetAndRead(): Unit = {
-      fDTDDescription.setValues(null, null, fEntityManager.getCurrentResourceIdentifier.getExpandedSystemId, 
+      fDTDDescription.setValues(null, null, fEntityManager.getCurrentResourceIdentifier.getExpandedSystemId,
         null)
       fDTDDescription.setRootName(fElementQName.rawname)
       val src = fExternalSubsetResolver.getExternalSubset(fDTDDescription)
@@ -940,7 +940,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
         do {
           again = false
           fScannerState match {
-            case SCANNER_STATE_TRAILING_MISC ⇒
+            case SCANNER_STATE_TRAILING_MISC =>
               fEntityScanner.skipSpaces()
               if (fEntityScanner.skipChar('<')) {
                 setScannerState(SCANNER_STATE_START_OF_MARKUP)
@@ -949,7 +949,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
                 setScannerState(SCANNER_STATE_CONTENT)
                 again = true
               }
-            case SCANNER_STATE_START_OF_MARKUP ⇒
+            case SCANNER_STATE_START_OF_MARKUP =>
               fMarkupDepth += 1
               if (fEntityScanner.skipChar('?')) {
                 setScannerState(SCANNER_STATE_PI)
@@ -971,16 +971,16 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
               } else {
                 reportFatalError("MarkupNotRecognizedInMisc", null)
               }
-            case SCANNER_STATE_PI ⇒
+            case SCANNER_STATE_PI =>
               scanPI()
               setScannerState(SCANNER_STATE_TRAILING_MISC)
-            case SCANNER_STATE_COMMENT ⇒
+            case SCANNER_STATE_COMMENT =>
               if (!fEntityScanner.skipString("--")) {
                 reportFatalError("InvalidCommentStart", null)
               }
               scanComment()
               setScannerState(SCANNER_STATE_TRAILING_MISC)
-            case SCANNER_STATE_CONTENT ⇒
+            case SCANNER_STATE_CONTENT =>
               val ch = fEntityScanner.peekChar()
               if (ch == -1) {
                 setScannerState(SCANNER_STATE_TERMINATED)
@@ -990,24 +990,24 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
               reportFatalError("ContentIllegalInTrailingMisc", null)
               fEntityScanner.scanChar()
               setScannerState(SCANNER_STATE_TRAILING_MISC)
-            case SCANNER_STATE_REFERENCE ⇒
+            case SCANNER_STATE_REFERENCE =>
               reportFatalError("ReferenceIllegalInTrailingMisc", null)
               setScannerState(SCANNER_STATE_TRAILING_MISC)
-            case SCANNER_STATE_TERMINATED ⇒
+            case SCANNER_STATE_TERMINATED =>
               return false
           }
         } while (complete || again);
       } catch {
-        case e: MalformedByteSequenceException ⇒
-          fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR, 
+        case e: MalformedByteSequenceException =>
+          fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR,
             e)
           return false
 // @ebruchez: not supported in Scala.js
-//        case e: CharConversionException ⇒
-//          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "CharConversionFailure", null, XMLErrorReporter.SEVERITY_FATAL_ERROR, 
+//        case e: CharConversionException =>
+//          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "CharConversionFailure", null, XMLErrorReporter.SEVERITY_FATAL_ERROR,
 //            e)
 //          return false
-        case e: EOFException ⇒
+        case e: EOFException =>
           if (fMarkupDepth != 0) {
             reportFatalError("PrematureEOF", null)
             return false

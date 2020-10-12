@@ -17,7 +17,7 @@
 
 package org.orbeon.darius.xml.util
 
-import java.{util ⇒ ju}
+import java.{util => ju}
 
 /**
  * EncodingMap is a convenience class which handles conversions between

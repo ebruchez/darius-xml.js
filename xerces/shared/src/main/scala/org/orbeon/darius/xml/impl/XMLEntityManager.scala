@@ -23,7 +23,7 @@ import java.io.InputStreamReader
 import java.io.Reader
 import java.io.StringReader
 import java.net.URI
-import java.{util ⇒ ju}
+import java.{util => ju}
 
 import org.orbeon.darius.xml.impl.XMLEntityManager._
 import org.orbeon.darius.xml.impl.io.ASCIIReader
@@ -193,7 +193,7 @@ object XMLEntityManager {
 
     var ch: Char = 0
 
-    for (i ← 0 until len) {
+    for (i <- 0 until len) {
       ch = escChs(i)
       gNeedEscaping(ch) = true
       gAfterEscaping1(ch) = gHexChs(ch >> 4)
@@ -238,21 +238,21 @@ object XMLEntityManager {
         System.out.print(currentEntity.position)
         if (currentEntity.count > 0) {
           System.out.print(" \"")
-          for (i ← 0 until currentEntity.count) {
+          for (i <- 0 until currentEntity.count) {
             if (i == currentEntity.position) {
               System.out.print('^')
             }
             val c = currentEntity.ch(i)
             c match {
-              case '\n' ⇒
+              case '\n' =>
                 System.out.print("\\n")
-              case '\r' ⇒
+              case '\r' =>
                 System.out.print("\\r")
-              case '\t' ⇒
+              case '\t' =>
                 System.out.print("\\t")
-              case '\\' ⇒
+              case '\\' =>
                 System.out.print("\\\\")
-              case _ ⇒
+              case _ =>
                 System.out.print(c)
             }
           }
@@ -1002,7 +1002,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       var activeEntity = if (i == size) fCurrentEntity else fEntityStack.get(i)
       if (activeEntity.name == entityName) {
         val path = new StringBuffer(entityName)
-        for (j ← i + 1 until size) {
+        for (j <- i + 1 until size) {
           activeEntity = fEntityStack.get(j)
           path.append(" -> ")
           path.append(activeEntity.name)
@@ -1322,7 +1322,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       try {
         fReaderStack.removeLast().close()
       } catch {
-        case e: IOException ⇒
+        case e: IOException =>
       }
       i -= 1
     }
@@ -1338,7 +1338,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
     try {
       parser_settings = componentManager.getFeature(PARSER_SETTINGS)
     } catch {
-      case e: XMLConfigurationException ⇒ parser_settings = true
+      case e: XMLConfigurationException => parser_settings = true
     }
 		if (! parser_settings) {
 			reset()
@@ -1347,49 +1347,49 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
     try {
       fValidation = componentManager.getFeature(VALIDATION)
     } catch {
-      case e: XMLConfigurationException ⇒ fValidation = false
+      case e: XMLConfigurationException => fValidation = false
     }
     try {
       fExternalGeneralEntities = componentManager.getFeature(EXTERNAL_GENERAL_ENTITIES)
     } catch {
-      case e: XMLConfigurationException ⇒ fExternalGeneralEntities = true
+      case e: XMLConfigurationException => fExternalGeneralEntities = true
     }
     try {
       fExternalParameterEntities = componentManager.getFeature(EXTERNAL_PARAMETER_ENTITIES)
     } catch {
-      case e: XMLConfigurationException ⇒ fExternalParameterEntities = true
+      case e: XMLConfigurationException => fExternalParameterEntities = true
     }
     try {
       fAllowJavaEncodings = componentManager.getFeature(ALLOW_JAVA_ENCODINGS)
     } catch {
-      case e: XMLConfigurationException ⇒ fAllowJavaEncodings = false
+      case e: XMLConfigurationException => fAllowJavaEncodings = false
     }
     try {
       fWarnDuplicateEntityDef = componentManager.getFeature(WARN_ON_DUPLICATE_ENTITYDEF)
     } catch {
-      case e: XMLConfigurationException ⇒ fWarnDuplicateEntityDef = false
+      case e: XMLConfigurationException => fWarnDuplicateEntityDef = false
     }
     try {
       fStrictURI = componentManager.getFeature(STANDARD_URI_CONFORMANT)
     } catch {
-      case e: XMLConfigurationException ⇒ fStrictURI = false
+      case e: XMLConfigurationException => fStrictURI = false
     }
     fSymbolTable = componentManager.getProperty(SYMBOL_TABLE).asInstanceOf[SymbolTable]
     fErrorReporter = componentManager.getProperty(ERROR_REPORTER).asInstanceOf[XMLErrorReporter]
     try {
       fEntityResolver = componentManager.getProperty(ENTITY_RESOLVER).asInstanceOf[XMLEntityResolver]
     } catch {
-      case e: XMLConfigurationException ⇒ fEntityResolver = null
+      case e: XMLConfigurationException => fEntityResolver = null
     }
     try {
       fValidationManager = componentManager.getProperty(VALIDATION_MANAGER).asInstanceOf[ValidationManager]
     } catch {
-      case e: XMLConfigurationException ⇒ fValidationManager = null
+      case e: XMLConfigurationException => fValidationManager = null
     }
     try {
       fSecurityManager = componentManager.getProperty(SECURITY_MANAGER).asInstanceOf[SecurityManager]
     } catch {
-      case e: XMLConfigurationException ⇒ fSecurityManager = null
+      case e: XMLConfigurationException => fSecurityManager = null
     }
     reset()
   }
@@ -1424,11 +1424,11 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
         addExternalEntity("one", null, "ent/one.ent", "test/external-entity.xml")
         addExternalEntity("two", null, "ent/two.ent", "test/ent/one.xml")
       } catch {
-        case ex: IOException ⇒
+        case ex: IOException =>
       }
     }
     if (fDeclaredEntities ne null) {
-      for ((key, value) ← fDeclaredEntities.asScala)
+      for ((key, value) <- fDeclaredEntities.asScala)
         fEntities.put(key, value)
     }
     fEntityHandler = null
@@ -1550,7 +1550,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
     try {
       fCurrentEntity.reader.close()
     } catch {
-      case e: IOException ⇒
+      case e: IOException =>
     }
     if (! fReaderStack.isEmpty) {
       fReaderStack.removeLast()
@@ -2093,7 +2093,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
         return fInputStream.skip(n)
       }
       if (n <= bytesLeft) {
-        fOffset += n.toInt // @ebruchez: Long ⇒ Int can lose precision! Was like this in Java code.
+        fOffset += n.toInt // @ebruchez: Long => Int can lose precision! Was like this in Java code.
         return n
       }
       fOffset += bytesLeft

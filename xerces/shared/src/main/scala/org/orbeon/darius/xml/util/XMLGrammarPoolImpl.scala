@@ -36,9 +36,9 @@ object XMLGrammarPoolImpl {
    * in a linked list.
    */
   protected class Entry protected[XMLGrammarPoolImpl] (
-    var hash    : Int, 
-    var desc    : XMLGrammarDescription, 
-    var grammar : Grammar, 
+    var hash    : Int,
+    var desc    : XMLGrammarDescription,
+    var grammar : Grammar,
     var next    : Entry
   ) {
 
@@ -86,7 +86,7 @@ class XMLGrammarPoolImpl extends XMLGrammarPool {
       val grammarSize = fGrammars.length
       val tempGrammars = new Array[Grammar](fGrammarCount)
       var pos = 0
-      for (i ← 0 until grammarSize) {
+      for (i <- 0 until grammarSize) {
         var e = fGrammars(i)
         while (e ne null) {
           if (e.desc.getGrammarType == grammarType) {
@@ -105,7 +105,7 @@ class XMLGrammarPoolImpl extends XMLGrammarPool {
 
   def cacheGrammars(grammarType: String, grammars: Array[Grammar]): Unit = {
     if (!fPoolIsLocked) {
-      for (i ← grammars.indices) {
+      for (i <- grammars.indices) {
         if (DEBUG) {
           println("CACHED GRAMMAR " + (i + 1))
           val temp = grammars(i)
@@ -243,7 +243,7 @@ class XMLGrammarPoolImpl extends XMLGrammarPool {
   }
 
   def clear(): Unit = {
-    for (i ← fGrammars.indices if fGrammars(i) ne null) {
+    for (i <- fGrammars.indices if fGrammars(i) ne null) {
       fGrammars(i).clear()
       fGrammars(i) = null
     }

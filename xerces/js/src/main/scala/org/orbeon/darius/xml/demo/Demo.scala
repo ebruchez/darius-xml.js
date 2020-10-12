@@ -54,7 +54,7 @@
 //      UI.exprAlert(field).toggleClass("hidden", text.isEmpty)
 //    }
 //
-//    def keyChange(getValue: ⇒ String, rx: Var[String])(x: JQueryEventObject) = {
+//    def keyChange(getValue: => String, rx: Var[String])(x: JQueryEventObject) = {
 //      val newValue = getValue
 //      if (rx() != newValue)
 //        rx() = newValue
@@ -76,15 +76,15 @@
 //
 //    // Alerts
 //    parsedXMLRx foreach {
-//      case Success(_) ⇒ UI.toggleAlert(UI.xmlInput, None)
-//      case Failure(t) ⇒ UI.toggleAlert(UI.xmlInput, Some(t.getMessage))
+//      case Success(_) => UI.toggleAlert(UI.xmlInput, None)
+//      case Failure(t) => UI.toggleAlert(UI.xmlInput, Some(t.getMessage))
 //    }
 //
 //    // Result
-//    parsedXMLRx foreach { result ⇒
-//      result foreach { items ⇒
+//    parsedXMLRx foreach { result =>
+//      result foreach { items =>
 //        UI.results.children("li").detach()
-//        for (item ← items) {
+//        for (item <- items) {
 //          UI.results.append(s"""<li class="list-group-item">$item</li>""")
 //        }
 //      }

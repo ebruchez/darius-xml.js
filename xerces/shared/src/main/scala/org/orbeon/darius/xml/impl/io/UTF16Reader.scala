@@ -36,9 +36,9 @@ object UTF16Reader {
 /**
  * A UTF-16 reader. Can also be used for UCS-2 (i.e. ISO-10646-UCS-2).
  */
-class UTF16Reader(protected val fInputStream: InputStream, 
-  protected val fBuffer      : Array[Byte], 
-  protected val fIsBigEndian : Boolean, 
+class UTF16Reader(protected val fInputStream: InputStream,
+  protected val fBuffer      : Array[Byte],
+  protected val fIsBigEndian : Boolean,
   val fFormatter             : MessageFormatter
 ) extends Reader {
 
@@ -51,13 +51,13 @@ class UTF16Reader(protected val fInputStream: InputStream,
    * @param isBigEndian       The byte order.
    * @param messageFormatter  Given MessageFormatter
    */
-  def this(inputStream: InputStream, 
-      size             : Int, 
-      isBigEndian      : Boolean, 
+  def this(inputStream: InputStream,
+      size             : Int,
+      isBigEndian      : Boolean,
       messageFormatter : MessageFormatter
   ) =
     this(inputStream, new Array[Byte](size), isBigEndian, messageFormatter)
-  
+
   /**
    * Constructs a UTF-16 reader from the specified input stream
    * using the default buffer size. Primarily for testing.
@@ -75,8 +75,8 @@ class UTF16Reader(protected val fInputStream: InputStream,
    * @param inputStream The input stream.
    * @param isBigEndian The byte order.
    */
-  def this(inputStream : InputStream, 
-    isBigEndian        : Boolean, 
+  def this(inputStream : InputStream,
+    isBigEndian        : Boolean,
     messageFormatter   : MessageFormatter
   ) =
     this(inputStream, DEFAULT_BUFFER_SIZE, isBigEndian, messageFormatter)
@@ -237,7 +237,7 @@ class UTF16Reader(protected val fInputStream: InputStream,
   private def processBE(ch: Array[Char], _offset: Int, count: Int): Unit = {
     var offset = _offset
     var curPos = 0
-    for (i ← 0 until count) {
+    for (i <- 0 until count) {
       val b0 = fBuffer(curPos ) & 0xff
       curPos += 1
       val b1 = fBuffer(curPos) & 0xff
@@ -253,7 +253,7 @@ class UTF16Reader(protected val fInputStream: InputStream,
   private def processLE(ch: Array[Char], _offset: Int, count: Int): Unit = {
     var offset = _offset
     var curPos = 0
-    for (i ← 0 until count) {
+    for (i <- 0 until count) {
       val b0 = fBuffer(curPos) & 0xff
       curPos += 1
       val b1 = fBuffer(curPos) & 0xff
@@ -267,7 +267,7 @@ class UTF16Reader(protected val fInputStream: InputStream,
    Throws an exception for expected byte.
    */
   private def expectedTwoBytes(): Unit = {
-    throw new MalformedByteSequenceException(fFormatter, XMLMessageFormatter.XML_DOMAIN, "ExpectedByte", 
+    throw new MalformedByteSequenceException(fFormatter, XMLMessageFormatter.XML_DOMAIN, "ExpectedByte",
       Array("2", "2"))
   }
 }

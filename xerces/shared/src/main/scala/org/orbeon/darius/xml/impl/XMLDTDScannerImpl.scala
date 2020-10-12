@@ -51,7 +51,7 @@ import org.orbeon.darius.xml.xni.parser.XMLInputSource
 import scala.util.control.Breaks
 
 protected[impl] object XMLDTDScannerImpl {
-  
+
   import XMLScanner._
 
   /**
@@ -99,9 +99,9 @@ protected[impl] object XMLDTDScannerImpl {
    */
   private def getScannerStateName(state: Int): String = {
     if (DEBUG_SCANNER_STATE) state match {
-      case SCANNER_STATE_END_OF_INPUT ⇒ return "SCANNER_STATE_END_OF_INPUT"
-      case SCANNER_STATE_TEXT_DECL    ⇒ return "SCANNER_STATE_TEXT_DECL"
-      case SCANNER_STATE_MARKUP_DECL  ⇒ return "SCANNER_STATE_MARKUP_DECL"
+      case SCANNER_STATE_END_OF_INPUT => return "SCANNER_STATE_END_OF_INPUT"
+      case SCANNER_STATE_TEXT_DECL    => return "SCANNER_STATE_TEXT_DECL"
+      case SCANNER_STATE_MARKUP_DECL  => return "SCANNER_STATE_MARKUP_DECL"
     }
     "??? (" + state + ')'
   }
@@ -112,10 +112,10 @@ protected[impl] object XMLDTDScannerImpl {
  * in the internal and external subsets of a DTD in an XML document.
  * The scanner acts as the sources for the DTD information which is
  * communicated to the DTD handlers.
- * 
+ *
  * This component requires the following features and properties from the
  * component manager that uses it:
- * 
+ *
  *  - http://xml.org/sax/features/validation
  *  - http://apache.org/xml/features/scanner/notify-char-refs
  *  - http://apache.org/xml/properties/internal/symbol-table
@@ -125,7 +125,7 @@ protected[impl] object XMLDTDScannerImpl {
 class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent with XMLEntityHandler {
 
   import XMLScanner._
-  
+
   /**
    DTD handler.
    */
@@ -436,9 +436,9 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
    *
    * @throws XNIException Thrown by handler to signal an error.
    */
-  override def startEntity(name: String, 
-      identifier: XMLResourceIdentifier, 
-      encoding: String, 
+  override def startEntity(name: String,
+      identifier: XMLResourceIdentifier,
+      encoding: String,
       augs: Augmentations): Unit = {
     super.startEntity(name, identifier, encoding, augs)
     val dtdEntity = name == "[dtd]"
@@ -480,13 +480,13 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
       reportEntity = peekReportEntity()
       val startMarkUpDepth = popPEStack()
       if (startMarkUpDepth == 0 && startMarkUpDepth < fMarkUpDepth) {
-        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "ILL_FORMED_PARAMETER_ENTITY_WHEN_USED_IN_DECL", 
+        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "ILL_FORMED_PARAMETER_ENTITY_WHEN_USED_IN_DECL",
           Array(fEntityManager.fCurrentEntity.name), XMLErrorReporter.SEVERITY_FATAL_ERROR)
       }
       if (startMarkUpDepth != fMarkUpDepth) {
         reportEntity = false
         if (fValidation) {
-          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "ImproperDeclarationNesting", Array(name), 
+          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "ImproperDeclarationNesting", Array(name),
             XMLErrorReporter.SEVERITY_ERROR)
         }
       }
@@ -614,9 +614,9 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
 
   /**
    * Scans a comment.
-   * 
+   *
    *  [15] Comment ::= '<!--' ((Char - '-') | ('-' (Char - '-')))* '-->'
-   * 
+   *
    * *Note:* Called after scanning past '<!--'
    */
   protected def scanComment(): Unit = {
@@ -631,10 +631,10 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
 
   /**
    * Scans an element declaration
-   * 
+   *
    *  [45]    elementdecl    ::=    '<!ELEMENT' S Name S contentspec S? '>'
    *  [46]    contentspec    ::=    'EMPTY' | 'ANY' | Mixed | children
-   * 
+   *
    * *Note:* Called after scanning past '<!ELEMENT'
    */
   protected def scanElementDecl(): Unit = {
@@ -701,7 +701,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
    * scan Mixed content model
    * This assumes the content model has been parsed up to #PCDATA and
    * can simply append to fStringBuffer.
-   * 
+   *
    *  [51]    Mixed    ::=    '(' S? '#PCDATA' (S? '|' S? Name)* S? ')*'
    *                        | '(' S? '#PCDATA' S? ')'
    *
@@ -754,7 +754,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
   /**
    * scan children content model
    * This assumes it can simply append to fStringBuffer.
-   * 
+   *
    *  [47]    children  ::=    (choice | seq) ('?' | '*' | '+')?
    *  [48]    cp        ::=    (Name | choice | seq) ('?' | '*' | '+')?
    *  [49]    choice    ::=    '(' S? cp ( S? '|' S? cp )+ S? ')'
@@ -868,10 +868,10 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
 
   /**
    * Scans an attlist declaration
-   * 
+   *
    *  [52]  AttlistDecl    ::=   '<!ATTLIST' S Name AttDef* S? '>'
    *  [53]  AttDef         ::=   S Name S AttType S DefaultDecl
-   * 
+   *
    * *Note:* Called after scanning past '<!ATTLIST'
    */
   protected def scanAttlistDecl(): Unit = {
@@ -919,7 +919,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
         if ((defaultType ne null) && (defaultType == "#REQUIRED" || defaultType == "#IMPLIED")) {
           fDTDHandler.attributeDecl(elName, name, `type`, enumeration, defaultType, null, null, null)
         } else {
-          fDTDHandler.attributeDecl(elName, name, `type`, enumeration, defaultType, fLiteral, fLiteral2, 
+          fDTDHandler.attributeDecl(elName, name, `type`, enumeration, defaultType, fLiteral, fLiteral2,
             null)
         }
       }
@@ -934,7 +934,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
 
   /**
    * Scans an attribute type definition
-   * 
+   *
    *  [54]  AttType        ::=   StringType | TokenizedType | EnumeratedType
    *  [55]  StringType     ::=   'CDATA'
    *  [56]  TokenizedType  ::=   'ID'
@@ -947,7 +947,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
    *  [57]  EnumeratedType ::=    NotationType | Enumeration
    *  [58]  NotationType ::= 'NOTATION' S '(' S? Name (S? '|' S? Name)* S? ')'
    *  [59]  Enumeration    ::=    '(' S? Nmtoken (S? '|' S? Nmtoken)* S? ')'
-   * 
+   *
    * *Note:* Called after scanning past '<!ATTLIST'
    *
    * @param elName The element type name this declaration is about.
@@ -1041,16 +1041,16 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
 
   /**
    * Scans an attribute default declaration
-   * 
+   *
    *  [60] DefaultDecl ::= '#REQUIRED' | '#IMPLIED' | (('#FIXED' S)? AttValue)
    *
    * @param atName The name of the attribute being scanned.
    * @param defaultVal The string to fill in with the default value.
    */
-  protected def scanAttDefaultDecl(elName: String, 
-      atName                  : String, 
-      `type`                  : String, 
-      defaultVal              : XMLString, 
+  protected def scanAttDefaultDecl(elName: String,
+      atName                  : String,
+      `type`                  : String,
+      defaultVal              : XMLString,
       nonNormalizedDefaultVal : XMLString
   ): String = {
     var defaultType: String = null
@@ -1075,7 +1075,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
 
   /**
    * Scans an entity declaration
-   * 
+   *
    *  [70]    EntityDecl  ::=    GEDecl | PEDecl
    *  [71]    GEDecl      ::=    '<!ENTITY' S Name S EntityDef S? '>'
    *  [72]    PEDecl      ::=    '<!ENTITY' S '%' S Name S PEDef S? '>'
@@ -1084,7 +1084,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
    *  [75]    ExternalID  ::=    'SYSTEM' S SystemLiteral
    *                           | 'PUBLIC' S PubidLiteral S SystemLiteral
    *  [76]    NDataDecl   ::=    S 'NDATA' S Name
-   * 
+   *
    * *Note:* Called after scanning past '<!ENTITY'
    */
   private def scanEntityDecl(): Unit = {
@@ -1199,7 +1199,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
         fEntityManager.addExternalEntity(name, publicId, systemId, baseSystemId)
       }
       if (fDTDHandler ne null) {
-        fResourceIdentifier.setValues(publicId, systemId, baseSystemId, XMLEntityManager.expandSystemId(systemId, 
+        fResourceIdentifier.setValues(publicId, systemId, baseSystemId, XMLEntityManager.expandSystemId(systemId,
           baseSystemId, strict = false))
         if (notation ne null) {
           fDTDHandler.unparsedEntityDecl(name, fResourceIdentifier, notation, null)
@@ -1313,10 +1313,10 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
 
   /**
    * Scans a notation declaration
-   * 
+   *
    *  [82] NotationDecl ::= '<!NOTATION' S Name S (ExternalID|PublicID) S? '>'
    *  [83]  PublicID    ::= 'PUBLIC' S PubidLiteral
-   * 
+   *
    * *Note:* Called after scanning past '<!NOTATION'
    */
   private def scanNotationDecl(): Unit = {
@@ -1354,7 +1354,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
     }
     fMarkUpDepth -= 1
     if (fDTDHandler ne null) {
-      fResourceIdentifier.setValues(publicId, systemId, baseSystemId, XMLEntityManager.expandSystemId(systemId, 
+      fResourceIdentifier.setValues(publicId, systemId, baseSystemId, XMLEntityManager.expandSystemId(systemId,
         baseSystemId, strict = false))
       fDTDHandler.notationDecl(name, fResourceIdentifier, null)
     }
@@ -1367,13 +1367,13 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
    * closing bracket has been found. When it's an include section though, it
    * returns to let the main loop take care of scanning it. In that case the
    * end of the section if handled by the main loop (scanDecls).
-   * 
+   *
    *  [61] conditionalSect   ::= includeSect | ignoreSect
    *  [62] includeSect       ::= '<![' S? 'INCLUDE' S? '[' extSubsetDecl ']]>'
    *  [63] ignoreSect   ::= '<![' S? 'IGNORE' S? '[' ignoreSectContents* ']]>'
    *  [64] ignoreSectContents ::= Ignore ('<![' ignoreSectContents ']]>' Ignore)*
    *  [65] Ignore            ::=    Char* - (Char* ('<![' | ']]>') Char*)
-   * 
+   *
    * *Note:* Called after scanning past '<!['
    */
   private def scanConditionalSect(currPEDepth: Int): Unit = {
@@ -1382,7 +1382,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
     if (fEntityScanner.skipString("INCLUDE")) {
       skipSeparator(spaceRequired = false, lookForPERefs = !scanningInternalSubset())
       if (currPEDepth != fPEDepth && fValidation) {
-        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "INVALID_PE_IN_CONDITIONAL", Array(fEntityManager.fCurrentEntity.name), 
+        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "INVALID_PE_IN_CONDITIONAL", Array(fEntityManager.fCurrentEntity.name),
           XMLErrorReporter.SEVERITY_ERROR)
       }
       if (!fEntityScanner.skipChar('[')) {
@@ -1396,7 +1396,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
     } else if (fEntityScanner.skipString("IGNORE")) {
       skipSeparator(spaceRequired = false, lookForPERefs = !scanningInternalSubset())
       if (currPEDepth != fPEDepth && fValidation) {
-        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "INVALID_PE_IN_CONDITIONAL", Array(fEntityManager.fCurrentEntity.name), 
+        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "INVALID_PE_IN_CONDITIONAL", Array(fEntityManager.fCurrentEntity.name),
           XMLErrorReporter.SEVERITY_ERROR)
       }
       if (fDTDHandler ne null) {
@@ -1547,10 +1547,10 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
   /**
    * Skip separator. This is typically just whitespace but it can also be one
    * or more parameter entity references.
-   * 
+   *
    * If there are some it "expands them" by calling the corresponding entity
    * from the entity manager.
-   * 
+   *
    * This is recursive and will process has many refs as possible.
    *
    * @param spaceRequired Specify whether some leading whitespace should be

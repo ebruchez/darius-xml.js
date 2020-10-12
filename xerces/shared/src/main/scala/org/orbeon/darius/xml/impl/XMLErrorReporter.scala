@@ -17,7 +17,7 @@
 
 package org.orbeon.darius.xml.impl
 
-import java.{util ⇒ ju}
+import java.{util => ju}
 
 import org.orbeon.darius.xml.impl.XMLErrorReporter._
 import org.orbeon.darius.xml.util.DefaultErrorHandler
@@ -270,7 +270,7 @@ class XMLErrorReporter extends XMLComponent {
       val argCount = if (arguments ne null) arguments.length else 0
       if (argCount > 0) {
         str.append('?')
-        for (i ← 0 until argCount) {
+        for (i <- 0 until argCount) {
           str.append(arguments(i))
           if (i < argCount - 1) {
             str.append('&')
@@ -289,11 +289,11 @@ class XMLErrorReporter extends XMLComponent {
       errorHandler = fDefaultErrorHandler
     }
     severity match {
-      case SEVERITY_WARNING ⇒
+      case SEVERITY_WARNING =>
         errorHandler.warning(domain, key, parseException)
-      case SEVERITY_ERROR ⇒
+      case SEVERITY_ERROR =>
         errorHandler.error(domain, key, parseException)
-      case SEVERITY_FATAL_ERROR ⇒
+      case SEVERITY_FATAL_ERROR =>
         errorHandler.fatalError(domain, key, parseException)
         if (!fContinueAfterFatalError) {
           throw parseException
@@ -311,7 +311,7 @@ class XMLErrorReporter extends XMLComponent {
     try {
       fContinueAfterFatalError = componentManager.getFeature(CONTINUE_AFTER_FATAL_ERROR)
     } catch {
-      case e: XNIException ⇒ fContinueAfterFatalError = false
+      case e: XNIException => fContinueAfterFatalError = false
     }
     fErrorHandler = componentManager.getProperty(ERROR_HANDLER).asInstanceOf[XMLErrorHandler]
   }

@@ -242,8 +242,8 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
     if (fDTDScanner ne null) {
       fProperties.put(DTD_SCANNER, fDTDScanner)
       fDTDScanner match {
-        case component: XMLComponent ⇒ addComponent(component)
-        case _ ⇒
+        case component: XMLComponent => addComponent(component)
+        case _ =>
       }
     }
 
@@ -302,16 +302,16 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
         fScanner.setInputSource(fInputSource)
         fInputSource = null
       } catch {
-        case ex: XNIException ⇒
+        case ex: XNIException =>
           if (PRINT_EXCEPTION_STACK_TRACE) ex.printStackTrace()
           throw ex
-        case ex: IOException ⇒
+        case ex: IOException =>
           if (PRINT_EXCEPTION_STACK_TRACE) ex.printStackTrace()
           throw ex
-        case ex: RuntimeException ⇒
+        case ex: RuntimeException =>
           if (PRINT_EXCEPTION_STACK_TRACE) ex.printStackTrace()
           throw ex
-        case ex: Exception ⇒
+        case ex: Exception =>
           if (PRINT_EXCEPTION_STACK_TRACE) ex.printStackTrace()
           throw new XNIException(ex)
       }
@@ -319,16 +319,16 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
     try {
       fScanner.scanDocument(complete)
     } catch {
-      case ex: XNIException ⇒
+      case ex: XNIException =>
         if (PRINT_EXCEPTION_STACK_TRACE) ex.printStackTrace()
         throw ex
-      case ex: IOException ⇒
+      case ex: IOException =>
         if (PRINT_EXCEPTION_STACK_TRACE) ex.printStackTrace()
         throw ex
-      case ex: RuntimeException ⇒
+      case ex: RuntimeException =>
         if (PRINT_EXCEPTION_STACK_TRACE) ex.printStackTrace()
         throw ex
-      case ex: Exception ⇒
+      case ex: Exception =>
         if (PRINT_EXCEPTION_STACK_TRACE) ex.printStackTrace()
         throw new XNIException(ex)
     }
@@ -347,16 +347,16 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
       setInputSource(source)
       parse(complete = true)
     } catch {
-      case ex: XNIException ⇒
+      case ex: XNIException =>
         if (PRINT_EXCEPTION_STACK_TRACE) ex.printStackTrace()
         throw ex
-      case ex: IOException ⇒
+      case ex: IOException =>
         if (PRINT_EXCEPTION_STACK_TRACE) ex.printStackTrace()
         throw ex
-      case ex: RuntimeException ⇒
+      case ex: RuntimeException =>
         if (PRINT_EXCEPTION_STACK_TRACE) ex.printStackTrace()
         throw ex
-      case ex: Exception ⇒
+      case ex: Exception =>
         if (PRINT_EXCEPTION_STACK_TRACE) ex.printStackTrace()
         throw new XNIException(ex)
     } finally {

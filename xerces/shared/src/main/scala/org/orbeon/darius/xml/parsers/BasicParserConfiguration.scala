@@ -19,7 +19,7 @@ package org.orbeon.darius.xml.parsers
 
 import java.io.IOException
 
-import java.{util ⇒ ju}
+import java.{util => ju}
 
 import org.orbeon.darius.xml.impl.Constants
 import org.orbeon.darius.xml.impl.Constants._
@@ -221,7 +221,7 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
     val recognizedProperties = component.getRecognizedProperties
     addRecognizedProperties(recognizedProperties)
     if (recognizedFeatures ne null) {
-      for (featureId ← recognizedFeatures) {
+      for (featureId <- recognizedFeatures) {
         val state = component.getFeatureDefault(featureId)
         if (state ne null) {
           super.setFeature(featureId, state.booleanValue())
@@ -229,7 +229,7 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
       }
     }
     if (recognizedProperties ne null) {
-      for (propertyId ← recognizedProperties) {
+      for (propertyId <- recognizedProperties) {
         val value = component.getPropertyDefault(propertyId)
         if (value ne null) {
           super.setProperty(propertyId, value)
@@ -379,14 +379,14 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
    *            requested feature is not known.
    */
   override def setFeature(featureId: String, state: Boolean): Unit = {
-    for (c ← fComponents.asScala) {
+    for (c <- fComponents.asScala) {
       c.setFeature(featureId, state)
     }
     super.setFeature(featureId, state)
   }
 
   override def setProperty(propertyId: String, value: AnyRef): Unit = {
-    for (c ← fComponents.asScala) {
+    for (c <- fComponents.asScala) {
       c.setProperty(propertyId, value)
     }
     super.setProperty(propertyId, value)
@@ -396,7 +396,7 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
    * reset all components before parsing and namespace context
    */
   protected def reset(): Unit = {
-    for (c ← fComponents.asScala) {
+    for (c <- fComponents.asScala) {
       c.reset(this)
     }
   }

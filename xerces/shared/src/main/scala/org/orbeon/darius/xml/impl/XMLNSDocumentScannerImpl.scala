@@ -36,10 +36,10 @@ import scala.util.control.Breaks
  *
  * Note: This scanner should only be used when the namespace processing is on!
  *
- * 
+ *
  * This component requires the following features and properties from the
  * component manager that uses it:
- * 
+ *
  *  - http://xml.org/sax/features/namespaces {true} -- if the value of this
  *      feature is set to false this scanner must not be used.
  *  - http://xml.org/sax/features/validation
@@ -50,10 +50,10 @@ import scala.util.control.Breaks
  *  - http://apache.org/xml/properties/internal/error-reporter
  *  - http://apache.org/xml/properties/internal/entity-manager
  *  - http://apache.org/xml/properties/internal/dtd-scanner
- * 
+ *
  */
 class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
-  
+
   import XMLDocumentFragmentScannerImpl._
   import XMLDocumentScannerImpl._
 
@@ -97,13 +97,13 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
    * Scans a start element. This method will handle the binding of
    * namespace information and notifying the handler of the start
    * of the element.
-   * 
+   *
    *  [44] EmptyElemTag ::= '<' Name (S Attribute)* S? '/>'
    *  [40] STag ::= '<' Name (S Attribute)* S? '>'
-   * 
+   *
    * *Note:* This method assumes that the leading
    * '<' character has been consumed.
-   * 
+   *
    * *Note:* This method uses the fElementQName and
    * fAttributes variables. The contents of these variables will be
    * destroyed. The caller should copy important information out of
@@ -120,10 +120,10 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
       fNamespaceContext.pushContext()
       if (fScannerState == SCANNER_STATE_ROOT_ELEMENT) {
         if (fPerformValidation) {
-          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "MSG_GRAMMAR_NOT_FOUND", Array(rawname), 
+          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "MSG_GRAMMAR_NOT_FOUND", Array(rawname),
             XMLErrorReporter.SEVERITY_ERROR)
           if ((fDoctypeName eq null) || fDoctypeName != rawname) {
-            fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "RootElementTypeMustMatchDoctypedecl", 
+            fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "RootElementTypeMustMatchDoctypedecl",
               Array(fDoctypeName, rawname), XMLErrorReporter.SEVERITY_ERROR)
           }
         }
@@ -155,7 +155,7 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
     }
     if (fBindNamespaces) {
       if (fElementQName.prefix == XMLSymbols.PREFIX_XMLNS) {
-        fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "ElementXMLNSPrefix", Array(fElementQName.rawname), 
+        fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "ElementXMLNSPrefix", Array(fElementQName.rawname),
           XMLErrorReporter.SEVERITY_FATAL_ERROR)
       }
       val prefix = if (fElementQName.prefix ne null) fElementQName.prefix else XMLSymbols.EMPTY_STRING
@@ -166,11 +166,11 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
         fCurrentElement.prefix = XMLSymbols.EMPTY_STRING
       }
       if ((fElementQName.prefix ne null) && (fElementQName.uri eq null)) {
-        fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "ElementPrefixUnbound", Array(fElementQName.prefix, fElementQName.rawname), 
+        fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "ElementPrefixUnbound", Array(fElementQName.prefix, fElementQName.rawname),
           XMLErrorReporter.SEVERITY_FATAL_ERROR)
       }
       val length = fAttributes.getLength
-      for (i ← 0 until length) {
+      for (i <- 0 until length) {
         fAttributes.setNameFields(i, fAttributeQName)
         val aprefix = if (fAttributeQName.prefix ne null) fAttributeQName.prefix else XMLSymbols.EMPTY_STRING
         val uri = fNamespaceContext.getURI(aprefix)
@@ -178,7 +178,7 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
           if (aprefix != XMLSymbols.EMPTY_STRING) {
             fAttributeQName.uri = uri
             if (uri eq null) {
-              fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "AttributePrefixUnbound", Array(fElementQName.rawname, fAttributeQName.rawname, aprefix), 
+              fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "AttributePrefixUnbound", Array(fElementQName.rawname, fAttributeQName.rawname, aprefix),
                 XMLErrorReporter.SEVERITY_FATAL_ERROR)
             }
             fAttributes.setURI(i, uri)
@@ -189,10 +189,10 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
         val name = fAttributes.checkDuplicatesNS()
         if (name ne null) {
           if (name.uri ne null) {
-            fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "AttributeNSNotUnique", Array(fElementQName.rawname, name.localpart, name.uri), 
+            fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "AttributeNSNotUnique", Array(fElementQName.rawname, name.localpart, name.uri),
               XMLErrorReporter.SEVERITY_FATAL_ERROR)
           } else {
-            fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "AttributeNotUnique", Array(fElementQName.rawname, name.rawname), 
+            fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "AttributeNotUnique", Array(fElementQName.rawname, name.rawname),
               XMLErrorReporter.SEVERITY_FATAL_ERROR)
           }
         }
@@ -236,10 +236,10 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
       fNamespaceContext.pushContext()
       if (fScannerState == SCANNER_STATE_ROOT_ELEMENT) {
         if (fPerformValidation) {
-          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "MSG_GRAMMAR_NOT_FOUND", Array(rawname), 
+          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "MSG_GRAMMAR_NOT_FOUND", Array(rawname),
             XMLErrorReporter.SEVERITY_ERROR)
           if ((fDoctypeName eq null) || (fDoctypeName != rawname)) {
-            fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "RootElementTypeMustMatchDoctypedecl", 
+            fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "RootElementTypeMustMatchDoctypedecl",
               Array(fDoctypeName, rawname), XMLErrorReporter.SEVERITY_ERROR)
           }
         }
@@ -271,7 +271,7 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
     }
     if (fBindNamespaces) {
       if (fElementQName.prefix == XMLSymbols.PREFIX_XMLNS) {
-        fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "ElementXMLNSPrefix", Array(fElementQName.rawname), 
+        fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "ElementXMLNSPrefix", Array(fElementQName.rawname),
           XMLErrorReporter.SEVERITY_FATAL_ERROR)
       }
       val prefix = if (fElementQName.prefix ne null) fElementQName.prefix else XMLSymbols.EMPTY_STRING
@@ -282,11 +282,11 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
         fCurrentElement.prefix = XMLSymbols.EMPTY_STRING
       }
       if ((fElementQName.prefix ne null) && (fElementQName.uri eq null)) {
-        fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "ElementPrefixUnbound", Array(fElementQName.prefix, fElementQName.rawname), 
+        fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "ElementPrefixUnbound", Array(fElementQName.prefix, fElementQName.rawname),
           XMLErrorReporter.SEVERITY_FATAL_ERROR)
       }
       val length = fAttributes.getLength
-      for (i ← 0 until length) {
+      for (i <- 0 until length) {
         fAttributes.setNameFields(i, fAttributeQName)
         val aprefix = if (fAttributeQName.prefix ne null) fAttributeQName.prefix else XMLSymbols.EMPTY_STRING
         val uri = fNamespaceContext.getURI(aprefix)
@@ -294,7 +294,7 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
           if (aprefix != XMLSymbols.EMPTY_STRING) {
             fAttributeQName.uri = uri
             if (uri eq null) {
-              fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "AttributePrefixUnbound", Array(fElementQName.rawname, fAttributeQName.rawname, aprefix), 
+              fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "AttributePrefixUnbound", Array(fElementQName.rawname, fAttributeQName.rawname, aprefix),
                 XMLErrorReporter.SEVERITY_FATAL_ERROR)
             }
             fAttributes.setURI(i, uri)
@@ -305,10 +305,10 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
         val name = fAttributes.checkDuplicatesNS()
         if (name ne null) {
           if (name.uri ne null) {
-            fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "AttributeNSNotUnique", Array(fElementQName.rawname, name.localpart, name.uri), 
+            fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "AttributeNSNotUnique", Array(fElementQName.rawname, name.localpart, name.uri),
               XMLErrorReporter.SEVERITY_FATAL_ERROR)
           } else {
-            fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "AttributeNotUnique", Array(fElementQName.rawname, name.rawname), 
+            fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "AttributeNotUnique", Array(fElementQName.rawname, name.rawname),
               XMLErrorReporter.SEVERITY_FATAL_ERROR)
           }
         }
@@ -335,13 +335,13 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
 
   /**
    * Scans an attribute.
-   * 
+   *
    *  [41] Attribute ::= Name Eq AttValue
-   * 
+   *
    * *Note:* This method assumes that the next
    * character on the stream is the first character of the attribute
    * name.
-   * 
+   *
    * *Note:* This method uses the fAttributeQName and
    * fQName variables. The contents of these variables will be
    * destroyed.
@@ -367,7 +367,7 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
         reportFatalError("AttributeNotUnique", Array(fCurrentElement.rawname, fAttributeQName.rawname))
       }
     }
-    val isSameNormalizedAttr = scanAttributeValue(this.fTempString, fTempString2, fAttributeQName.rawname, 
+    val isSameNormalizedAttr = scanAttributeValue(this.fTempString, fTempString2, fAttributeQName.rawname,
       fIsEntityDeclaredVC, fCurrentElement.rawname)
     val value = fTempString.toString
     attributes.setValue(attrIndex, value)
@@ -378,31 +378,31 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
     if (fBindNamespaces) {
       val localpart = fAttributeQName.localpart
       var prefix = if (fAttributeQName.prefix ne null) fAttributeQName.prefix else XMLSymbols.EMPTY_STRING
-      if (prefix == XMLSymbols.PREFIX_XMLNS || 
+      if (prefix == XMLSymbols.PREFIX_XMLNS ||
         prefix == XMLSymbols.EMPTY_STRING && localpart == XMLSymbols.PREFIX_XMLNS) {
         val uri = fSymbolTable.addSymbol(value)
         if (prefix == XMLSymbols.PREFIX_XMLNS && localpart == XMLSymbols.PREFIX_XMLNS) {
-          fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "CantBindXMLNS", Array(fAttributeQName), 
+          fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "CantBindXMLNS", Array(fAttributeQName),
             XMLErrorReporter.SEVERITY_FATAL_ERROR)
         }
         if (uri == NamespaceContext.XMLNS_URI) {
-          fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "CantBindXMLNS", Array(fAttributeQName), 
+          fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "CantBindXMLNS", Array(fAttributeQName),
             XMLErrorReporter.SEVERITY_FATAL_ERROR)
         }
         if (localpart == XMLSymbols.PREFIX_XML) {
           if (uri != NamespaceContext.XML_URI) {
-            fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "CantBindXML", Array(fAttributeQName), 
+            fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "CantBindXML", Array(fAttributeQName),
               XMLErrorReporter.SEVERITY_FATAL_ERROR)
           }
         } else {
           if (uri == NamespaceContext.XML_URI) {
-            fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "CantBindXML", Array(fAttributeQName), 
+            fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "CantBindXML", Array(fAttributeQName),
               XMLErrorReporter.SEVERITY_FATAL_ERROR)
           }
         }
         prefix = if (localpart != XMLSymbols.PREFIX_XMLNS) localpart else XMLSymbols.EMPTY_STRING
         if (uri == XMLSymbols.EMPTY_STRING && localpart != XMLSymbols.PREFIX_XMLNS) {
-          fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "EmptyPrefixedAttName", Array(fAttributeQName), 
+          fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "EmptyPrefixedAttName", Array(fAttributeQName),
             XMLErrorReporter.SEVERITY_FATAL_ERROR)
         }
         fNamespaceContext.declarePrefix(prefix, if (uri.length != 0) uri else null)
@@ -418,9 +418,9 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
 
   /**
    * Scans an end element.
-   * 
+   *
    *  [42] ETag ::= '</' Name S? '>'
-   * 
+   *
    * *Note:* This method uses the fElementQName variable.
    * The contents of this variable will be destroyed. The caller should
    * copy the needed information out of this variable before calling
@@ -482,7 +482,7 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
      *          the content dispatcher should continue as normal.
      */
     override protected def scanRootElementHook(): Boolean = {
-      if ((fExternalSubsetResolver ne null) && !fSeenDoctypeDecl && 
+      if ((fExternalSubsetResolver ne null) && !fSeenDoctypeDecl &&
         !fDisallowDoctype && (fValidation || fLoadExternalDTD)) {
         scanStartElementName()
         resolveExternalSubsetAndRead()

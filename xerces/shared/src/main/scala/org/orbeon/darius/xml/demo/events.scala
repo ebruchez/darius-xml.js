@@ -45,9 +45,9 @@ class XMLEventCollector extends XMLDocumentHandler {
   def events = _events.toList
 
   def startDocument(
-    locator          : XMLLocator, 
-    encoding         : String, 
-    namespaceContext : NamespaceContext, 
+    locator          : XMLLocator,
+    encoding         : String,
+    namespaceContext : NamespaceContext,
     augs             : Augmentations
   ): Unit = {
     this.namespaceContext = namespaceContext
@@ -57,17 +57,17 @@ class XMLEventCollector extends XMLDocumentHandler {
   def endDocument(augs: Augmentations): Unit = {
     _events += EndDocument
   }
-  
+
   private def collectAttributes(attributes: XMLAttributes) =
     for {
-        i ← 0 until attributes.getLength
+        i <- 0 until attributes.getLength
         qName = attributes.getQName(i)
         value = attributes.getValue(i)
-      } yield qName → value
+      } yield qName -> value
 
   def startElement(element: QName, attributes: XMLAttributes, augs: Augmentations): Unit =
     _events += StartElement(element.rawname, collectAttributes(attributes).to[List])
-  
+
   def emptyElement(element: QName, attributes: XMLAttributes, augs: Augmentations): Unit = {
     _events += StartElement(element.rawname, collectAttributes(attributes).to[List])
     _events += EndElement(element.rawname)
@@ -86,23 +86,23 @@ class XMLEventCollector extends XMLDocumentHandler {
     _events += PI(target, data.toString)
 
   def xmlDecl(
-    version    : String, 
-    encoding   : String, 
-    standalone : String, 
+    version    : String,
+    encoding   : String,
+    standalone : String,
     augs       : Augmentations
   ): Unit = ()
 
   def doctypeDecl(
-    rootElement : String, 
-    publicId    : String, 
-    systemId    : String, 
+    rootElement : String,
+    publicId    : String,
+    systemId    : String,
     augs        : Augmentations
   ): Unit = ()
 
   def startGeneralEntity(
-    name: String, 
-    identifier: XMLResourceIdentifier, 
-    encoding: String, 
+    name: String,
+    identifier: XMLResourceIdentifier,
+    encoding: String,
     augs: Augmentations
   ): Unit = ()
 

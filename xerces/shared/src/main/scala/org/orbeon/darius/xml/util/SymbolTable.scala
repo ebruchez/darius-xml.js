@@ -33,13 +33,13 @@ private object SymbolTable {
    * in a linked list.
    */
   class Entry(val symbol: String, val characters: Array[Char], var next: Entry)
-  
+
   object Entry {
     def apply(symbol: String, next: Entry): Entry = {
-      
+
       val characters = new Array[Char](symbol.length)
       symbol.getChars(0, characters.length, characters, 0)
-      
+
       new Entry(
         symbol.intern(),
         characters,
@@ -52,15 +52,15 @@ private object SymbolTable {
      * next entry reference.
      */
     def apply(
-      ch     : Array[Char], 
-      offset : Int, 
-      length : Int, 
+      ch     : Array[Char],
+      offset : Int,
+      length : Int,
       next   : Entry
     ): Entry = {
-      
+
       val characters = new Array[Char](length)
       System.arraycopy(ch, offset, characters, 0, length)
-      
+
       new Entry(
         new String(characters).intern(),
         characters,
@@ -75,23 +75,23 @@ private object SymbolTable {
  * strings used as identifiers are unique references. Multiple calls
  * to `addSymbol` will always return the same string
  * reference.
- * 
+ *
  * The symbol table performs the same task as `String.intern()`
  * with the following differences:
- * 
- *  - 
+ *
+ *  -
  *   A new string object does not need to be created in order to
  *   retrieve a unique reference. Symbols can be added by using
  *   a series of characters in a character array.
- *  
- *  - 
+ *
+ *  -
  *   Users of the symbol table can provide their own symbol hashing
  *   implementation. For example, a simple string hashing algorithm
  *   may fail to produce a balanced set of hashcodes for symbols
  *   that are *mostly* unique. Strings with similar leading
  *   characters are especially prone to this poor hashing behavior.
- *  
- * 
+ *
+ *
  *
  * An instance of `SymbolTable` has two parameters that affect its
  * performance: *initial capacity* and *load factor*.  The
@@ -120,7 +120,7 @@ private object SymbolTable {
  * If many entries are to be made into a `SymbolTable`,
  * creating it with a sufficiently large capacity may allow the
  * entries to be inserted more efficiently than letting it perform
- * automatic rehashing as needed to grow the table. 
+ * automatic rehashing as needed to grow the table.
  */
 class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Float) {
 
@@ -141,11 +141,11 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
     if (fTableSize < 0) {
       throw new IllegalArgumentException("Illegal Capacity: " + fTableSize)
     }
-  
+
     if (fLoadFactor <= 0 || fLoadFactor.isNaN) {
       throw new IllegalArgumentException("Illegal Load: " + fLoadFactor)
     }
-  
+
     if (fTableSize == 0) {
       fTableSize = 1
     }
@@ -216,7 +216,7 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
       var entry = fBuckets(bucket)
       while (entry ne null) {
         if (length == entry.characters.length) {
-          for (i ← 0 until length if buffer(offset + i) != entry.characters(i)) {
+          for (i <- 0 until length if buffer(offset + i) != entry.characters(i)) {
             whileBreaks.break()
           }
           return entry.symbol
@@ -257,7 +257,7 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
    */
   def hash(buffer: Array[Char], offset: Int, length: Int): Int = {
     var code = 0
-    for (i ← 0 until length) {
+    for (i <- 0 until length) {
       code = code * 31 + buffer(offset + i)
     }
     code & 0x7FFFFFFF
@@ -306,7 +306,7 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
       var entry = fBuckets(bucket)
       while (entry ne null) {
         if (length == entry.characters.length) {
-          for (i ← 0 until length if symbol.charAt(i) != entry.characters(i)) {
+          for (i <- 0 until length if symbol.charAt(i) != entry.characters(i)) {
             whileBreaks.break()
           }
           return true
@@ -332,7 +332,7 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
       var entry = fBuckets(bucket)
       while (entry ne null) {
         if (length == entry.characters.length) {
-          for (i ← 0 until length if buffer(offset + i) != entry.characters(i)) {
+          for (i <- 0 until length if buffer(offset + i) != entry.characters(i)) {
             whileBreaks.break()
           }
           return true
@@ -342,12 +342,12 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
     }
     false
   }
-  
+
   // @ebruchez
   def dumpEntries(): Unit = {
     println("Symbol table contents:")
-    for (topLevelEntry ← fBuckets if topLevelEntry ne null) {
-      Iterator.iterate(topLevelEntry)(_.next) takeWhile (_ ne null) foreach { e ⇒
+    for (topLevelEntry <- fBuckets if topLevelEntry ne null) {
+      Iterator.iterate(topLevelEntry)(_.next) takeWhile (_ ne null) foreach { e =>
         println(s"""  ${e.symbol}""")
       }
     }

@@ -65,7 +65,7 @@ class NamespaceSupport extends NamespaceContext {
     this()
     pushContext()
     for {
-      prefix ← context.getAllPrefixes
+      prefix <- context.getAllPrefixes
       uri = context.getURI(prefix)
     } locally {
       declarePrefix(prefix, uri)
@@ -169,7 +169,7 @@ class NamespaceSupport extends NamespaceContext {
     whileBreaks.breakable {
       while (i < (fNamespaceSize - 2)) {
         prefix = fNamespace(i + 2)
-        for (k ← 0 until count if fPrefixes(k) == prefix) {
+        for (k <- 0 until count if fPrefixes(k) == prefix) {
           unique = false
           whileBreaks.break()
         }

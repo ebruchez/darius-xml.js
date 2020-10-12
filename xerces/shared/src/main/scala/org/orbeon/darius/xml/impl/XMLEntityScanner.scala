@@ -79,7 +79,7 @@ class XMLEntityScanner extends XMLLocator {
    * Sets the encoding of the scanner. This method is used by the
    * scanners if the XMLDecl or TextDecl line contains an encoding
    * pseudo-attribute.
-   * 
+   *
    * *Note:* The underlying character reader on the
    * current entity will be changed to accomodate the new encoding.
    * However, the new encoding is ignored if the current reader was
@@ -101,12 +101,12 @@ class XMLEntityScanner extends XMLLocator {
           val ENCODING = encoding.toUpperCase//Locale.ENGLISH
           if (ENCODING == "UTF-16") return
           if (ENCODING == "ISO-10646-UCS-4") {
-            fCurrentEntity.reader = if (fCurrentEntity.encoding == "UTF-16BE") new UCSReader(fCurrentEntity.stream, 
+            fCurrentEntity.reader = if (fCurrentEntity.encoding == "UTF-16BE") new UCSReader(fCurrentEntity.stream,
               UCSReader.UCS4BE) else new UCSReader(fCurrentEntity.stream, UCSReader.UCS4LE)
             return
           }
           if (ENCODING == "ISO-10646-UCS-2") {
-            fCurrentEntity.reader = if (fCurrentEntity.encoding == "UTF-16BE") new UCSReader(fCurrentEntity.stream, 
+            fCurrentEntity.reader = if (fCurrentEntity.encoding == "UTF-16BE") new UCSReader(fCurrentEntity.stream,
               UCSReader.UCS2BE) else new UCSReader(fCurrentEntity.stream, UCSReader.UCS2LE)
             return
           }
@@ -140,7 +140,7 @@ class XMLEntityScanner extends XMLLocator {
 
   /**
    * Returns the next character on the input.
-   * 
+   *
    * *Note:* The character is *not* consumed.
    *
    * @throws IOException  Thrown if i/o error occurs.
@@ -174,7 +174,7 @@ class XMLEntityScanner extends XMLLocator {
 
   /**
    * Returns the next character on the input.
-   * 
+   *
    * *Note:* The character is consumed.
    *
    * @throws IOException  Thrown if i/o error occurs.
@@ -217,9 +217,9 @@ class XMLEntityScanner extends XMLLocator {
   /**
    * Returns a string matching the NMTOKEN production appearing immediately
    * on the input as a symbol, or null if NMTOKEN Name string is present.
-   * 
+   *
    * *Note:* The NMTOKEN characters are consumed.
-   * 
+   *
    * *Note:* The string returned must be a symbol. The
    * SymbolTable can be used for this purpose.
    *
@@ -273,9 +273,9 @@ class XMLEntityScanner extends XMLLocator {
   /**
    * Returns a string matching the Name production appearing immediately
    * on the input as a symbol, or null if no Name string is present.
-   * 
+   *
    * *Note:* The Name characters are consumed.
-   * 
+   *
    * *Note:* The string returned must be a symbol. The
    * SymbolTable can be used for this purpose.
    *
@@ -346,9 +346,9 @@ class XMLEntityScanner extends XMLLocator {
   /**
    * Returns a string matching the NCName production appearing immediately
    * on the input as a symbol, or null if no NCName string is present.
-   * 
+   *
    * *Note:* The NCName characters are consumed.
-   * 
+   *
    * *Note:* The string returned must be a symbol. The
    * SymbolTable can be used for this purpose.
    *
@@ -419,9 +419,9 @@ class XMLEntityScanner extends XMLLocator {
   /**
    * Scans a qualified name from the input, setting the fields of the
    * QName structure appropriately.
-   * 
+   *
    * *Note:* The qualified name characters are consumed.
-   * 
+   *
    * *Note:* The strings used to set the values of the
    * QName structure must be symbols. The SymbolTable can be used for
    * this purpose.
@@ -530,14 +530,14 @@ class XMLEntityScanner extends XMLLocator {
   /**
    * Scans a range of parsed character data, setting the fields of the
    * XMLString structure, appropriately.
-   * 
+   *
    * *Note:* The characters are consumed.
-   * 
+   *
    * *Note:* This method does not guarantee to return
    * the longest run of parsed character data. This method may return
    * before markup due to reaching the end of the input buffer or any
    * other reason.
-   * 
+   *
    * *Note:* The fields contained in the XMLString
    * structure are not guaranteed to remain valid upon subsequent calls
    * to the entity scanner. Therefore, the caller is responsible for
@@ -573,7 +573,7 @@ class XMLEntityScanner extends XMLLocator {
     val external = fCurrentEntity.isExternal
     if (c == '\n' || (c == '\r' && external)) {
       if (DEBUG_BUFFER) {
-        System.out.print("[newline, " + offset + ", " + fCurrentEntity.position + 
+        System.out.print("[newline, " + offset + ", " + fCurrentEntity.position +
           ": ")
         XMLEntityManager.print(fCurrentEntity)
         println()
@@ -621,14 +621,14 @@ class XMLEntityScanner extends XMLLocator {
           }
         } while (fCurrentEntity.position < fCurrentEntity.count - 1)
       }
-      for (i ← offset until fCurrentEntity.position) {
+      for (i <- offset until fCurrentEntity.position) {
         fCurrentEntity.ch(i) = '\n'
       }
       val length = fCurrentEntity.position - offset
       if (fCurrentEntity.position == fCurrentEntity.count - 1) {
         content.setValues(fCurrentEntity.ch, offset, length)
         if (DEBUG_BUFFER) {
-          System.out.print("]newline, " + offset + ", " + fCurrentEntity.position + 
+          System.out.print("]newline, " + offset + ", " + fCurrentEntity.position +
             ": ")
           XMLEntityManager.print(fCurrentEntity)
           println()
@@ -636,7 +636,7 @@ class XMLEntityScanner extends XMLLocator {
         return -1
       }
       if (DEBUG_BUFFER) {
-        System.out.print("]newline, " + offset + ", " + fCurrentEntity.position + 
+        System.out.print("]newline, " + offset + ", " + fCurrentEntity.position +
           ": ")
         XMLEntityManager.print(fCurrentEntity)
         println()
@@ -675,14 +675,14 @@ class XMLEntityScanner extends XMLLocator {
   /**
    * Scans a range of attribute value data, setting the fields of the
    * XMLString structure, appropriately.
-   * 
+   *
    * *Note:* The characters are consumed.
-   * 
+   *
    * *Note:* This method does not guarantee to return
    * the longest run of attribute value data. This method may return
    * before the quote character due to reaching the end of the input
    * buffer or any other reason.
-   * 
+   *
    * *Note:* The fields contained in the XMLString
    * structure are not guaranteed to remain valid upon subsequent calls
    * to the entity scanner. Therefore, the caller is responsible for
@@ -720,7 +720,7 @@ class XMLEntityScanner extends XMLLocator {
     val external = fCurrentEntity.isExternal
     if (c == '\n' || (c == '\r' && external)) {
       if (DEBUG_BUFFER) {
-        System.out.print("[newline, " + offset + ", " + fCurrentEntity.position + 
+        System.out.print("[newline, " + offset + ", " + fCurrentEntity.position +
           ": ")
         XMLEntityManager.print(fCurrentEntity)
         println()
@@ -768,14 +768,14 @@ class XMLEntityScanner extends XMLLocator {
           }
         } while (fCurrentEntity.position < fCurrentEntity.count - 1)
       }
-      for (i ← offset until fCurrentEntity.position) {
+      for (i <- offset until fCurrentEntity.position) {
         fCurrentEntity.ch(i) = '\n'
       }
       val length = fCurrentEntity.position - offset
       if (fCurrentEntity.position == fCurrentEntity.count - 1) {
         content.setValues(fCurrentEntity.ch, offset, length)
         if (DEBUG_BUFFER) {
-          System.out.print("]newline, " + offset + ", " + fCurrentEntity.position + 
+          System.out.print("]newline, " + offset + ", " + fCurrentEntity.position +
             ": ")
           XMLEntityManager.print(fCurrentEntity)
           println()
@@ -783,7 +783,7 @@ class XMLEntityScanner extends XMLLocator {
         return -1
       }
       if (DEBUG_BUFFER) {
-        System.out.print("]newline, " + offset + ", " + fCurrentEntity.position + 
+        System.out.print("]newline, " + offset + ", " + fCurrentEntity.position +
           ": ")
         XMLEntityManager.print(fCurrentEntity)
         println()
@@ -822,18 +822,18 @@ class XMLEntityScanner extends XMLLocator {
   /**
    * Scans a range of character data up to the specified delimiter,
    * setting the fields of the XMLString structure, appropriately.
-   * 
+   *
    * *Note:* The characters are consumed.
-   * 
+   *
    * *Note:* This assumes that the internal buffer is
    * at least the same size, or bigger, than the length of the delimiter
    * and that the delimiter contains at least one character.
-   * 
+   *
    * *Note:* This method does not guarantee to return
    * the longest run of character data. This method may return before
    * the delimiter due to reaching the end of the input buffer or any
    * other reason.
-   * 
+   *
    * *Note:* The fields contained in the XMLString
    * structure are not guaranteed to remain valid upon subsequent calls
    * to the entity scanner. Therefore, the caller is responsible for
@@ -863,7 +863,7 @@ class XMLEntityScanner extends XMLLocator {
       load(0, changeEntity = true)
     }
     var bNextEntity = false
-    while ((fCurrentEntity.position > fCurrentEntity.count - delimLen) && 
+    while ((fCurrentEntity.position > fCurrentEntity.count - delimLen) &&
       (!bNextEntity)) {
       System.arraycopy(fCurrentEntity.ch, fCurrentEntity.position, fCurrentEntity.ch, 0, fCurrentEntity.count - fCurrentEntity.position)
       bNextEntity = load(fCurrentEntity.count - fCurrentEntity.position, changeEntity = false)
@@ -885,7 +885,7 @@ class XMLEntityScanner extends XMLLocator {
     var newlines = 0
     if (c == '\n' || (c == '\r' && external)) {
       if (DEBUG_BUFFER) {
-        System.out.print("[newline, " + offset + ", " + fCurrentEntity.position + 
+        System.out.print("[newline, " + offset + ", " + fCurrentEntity.position +
           ": ")
         XMLEntityManager.print(fCurrentEntity)
         println()
@@ -934,14 +934,14 @@ class XMLEntityScanner extends XMLLocator {
           }
         } while (fCurrentEntity.position < fCurrentEntity.count - 1)
       }
-      for (i ← offset until fCurrentEntity.position) {
+      for (i <- offset until fCurrentEntity.position) {
         fCurrentEntity.ch(i) = '\n'
       }
       val length = fCurrentEntity.position - offset
       if (fCurrentEntity.position == fCurrentEntity.count - 1) {
         buffer.append(fCurrentEntity.ch, offset, length)
         if (DEBUG_BUFFER) {
-          System.out.print("]newline, " + offset + ", " + fCurrentEntity.position + 
+          System.out.print("]newline, " + offset + ", " + fCurrentEntity.position +
             ": ")
           XMLEntityManager.print(fCurrentEntity)
           println()
@@ -949,7 +949,7 @@ class XMLEntityScanner extends XMLLocator {
         return true
       }
       if (DEBUG_BUFFER) {
-        System.out.print("]newline, " + offset + ", " + fCurrentEntity.position + 
+        System.out.print("]newline, " + offset + ", " + fCurrentEntity.position +
           ": ")
         XMLEntityManager.print(fCurrentEntity)
         println()
@@ -964,7 +964,7 @@ class XMLEntityScanner extends XMLLocator {
         if (c == charAt0) {
           val delimOffset = fCurrentEntity.position - 1
           forBreaks.breakable {
-            for (i ← 1 until delimLen) {
+            for (i <- 1 until delimLen) {
               if (fCurrentEntity.position == fCurrentEntity.count) {
                 fCurrentEntity.position -= i
                 whileBreaks.break()
@@ -1009,7 +1009,7 @@ class XMLEntityScanner extends XMLLocator {
 
   /**
    * Skips a character appearing immediately on the input.
-   * 
+   *
    * *Note:* The character is consumed only if it matches
    * the specified character.
    *
@@ -1072,7 +1072,7 @@ class XMLEntityScanner extends XMLLocator {
 
   /**
    * Skips space characters appearing immediately on the input.
-   * 
+   *
    * *Note:* The characters are consumed only if they are
    * space characters.
    *
@@ -1141,7 +1141,7 @@ class XMLEntityScanner extends XMLLocator {
    * normalization is performed. This is useful when scanning structures
    * such as the XMLDecl and TextDecl that can only contain US-ASCII
    * characters.
-   * 
+   *
    * *Note:* The characters are consumed only if they would
    * match non-terminal S before end of line normalization is performed.
    *
@@ -1206,7 +1206,7 @@ class XMLEntityScanner extends XMLLocator {
 
   /**
    * Skips the specified string appearing immediately on the input.
-   * 
+   *
    * *Note:* The characters are consumed only if they are
    * space characters.
    *
@@ -1227,7 +1227,7 @@ class XMLEntityScanner extends XMLLocator {
       load(0, changeEntity = true)
     }
     val length = s.length
-    for (i ← 0 until length) {
+    for (i <- 0 until length) {
       val c = fCurrentEntity.ch(fCurrentEntity.position)
       fCurrentEntity.position += 1
       if (c != s.charAt(i)) {
@@ -1264,7 +1264,7 @@ class XMLEntityScanner extends XMLLocator {
 
   /**
    * Return the public identifier for the current document event.
-   * 
+   *
    * The return value is the public identifier of the document
    * entity or of the external parsed entity in which the markup
    * triggering the event appears.
@@ -1281,11 +1281,11 @@ class XMLEntityScanner extends XMLLocator {
 
   /**
    * Return the expanded system identifier for the current document event.
-   * 
+   *
    * The return value is the expanded system identifier of the document
    * entity or of the external parsed entity in which the markup
    * triggering the event appears.
-   * 
+   *
    * If the system identifier is a URL, the parser must resolve it
    * fully before passing it to the application.
    *
@@ -1305,11 +1305,11 @@ class XMLEntityScanner extends XMLLocator {
 
   /**
    * Return the literal system identifier for the current document event.
-   * 
+   *
    * The return value is the literal system identifier of the document
    * entity or of the external parsed entity in which the markup
    * triggering the event appears.
-   * 
+   *
    * @return A string containing the literal system identifier, or null
    *         if none is available.
    */
@@ -1326,16 +1326,16 @@ class XMLEntityScanner extends XMLLocator {
 
   /**
    * Returns the line number where the current document event ends.
-   * 
+   *
    * *Warning:* The return value from the method
    * is intended only as an approximation for the sake of error
    * reporting; it is not intended to provide sufficient information
    * to edit the character content of the original XML document.
-   * 
+   *
    * The return value is an approximation of the line number
    * in the document entity or external parsed entity where the
    * markup triggering the event appears.
-   * 
+   *
    * If possible, the line position of the first character after the
    * text associated with the document event should be provided.
    * The first line in the document is line 1.
@@ -1355,16 +1355,16 @@ class XMLEntityScanner extends XMLLocator {
 
   /**
    * Returns the column number where the current document event ends.
-   * 
+   *
    * *Warning:* The return value from the method
    * is intended only as an approximation for the sake of error
    * reporting; it is not intended to provide sufficient information
    * to edit the character content of the original XML document.
-   * 
+   *
    * The return value is an approximation of the column number
    * in the document entity or external parsed entity where the
    * markup triggering the event appears.
-   * 
+   *
    * If possible, the line position of the first character after the
    * text associated with the document event should be provided.
    * The first column in each line is column 1.
@@ -1384,16 +1384,16 @@ class XMLEntityScanner extends XMLLocator {
 
   /**
    * Returns the character offset where the current document event ends.
-   * 
+   *
    * *Warning:* The return value from the method
    * is intended only as an approximation for the sake of error
    * reporting; it is not intended to provide sufficient information
    * to edit the character content of the original XML document.
-   * 
+   *
    * The return value is an approximation of the character offset
    * in the document entity or external parsed entity where the
    * markup triggering the event appears.
-   * 
+   *
    * If possible, the character offset of the first character after the
    * text associated with the document event should be provided.
    *
@@ -1402,7 +1402,7 @@ class XMLEntityScanner extends XMLLocator {
   def getCharacterOffset: Int = {
     if (fCurrentEntity ne null) {
       if (fCurrentEntity.isExternal) {
-        return fCurrentEntity.baseCharOffset + 
+        return fCurrentEntity.baseCharOffset +
           (fCurrentEntity.position - fCurrentEntity.startPosition)
       } else {
         return fCurrentEntity.getCharacterOffset
@@ -1488,7 +1488,7 @@ class XMLEntityScanner extends XMLLocator {
     }
     fCurrentEntity.baseCharOffset += (fCurrentEntity.position - fCurrentEntity.startPosition)
     var length = fCurrentEntity.ch.length - offset
-    if (!fCurrentEntity.mayReadChunks && 
+    if (!fCurrentEntity.mayReadChunks &&
       length > XMLEntityManager.DEFAULT_XMLDECL_BUFFER_SIZE) {
       length = XMLEntityManager.DEFAULT_XMLDECL_BUFFER_SIZE
     }

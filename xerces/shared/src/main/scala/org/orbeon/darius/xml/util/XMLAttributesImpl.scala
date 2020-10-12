@@ -68,7 +68,7 @@ object XMLAttributesImpl {
  * In the parser, the document source would scan the entire start element
  * and collect the attributes. The attributes are communicated to the
  * document handler in the startElement method.
- * 
+ *
  * The attributes are read-write so that subsequent stages in the document
  * pipeline can modify the values or change the attributes that are
  * propagated to the next stage.
@@ -116,7 +116,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    */
   protected var fIsTableViewConsistent: Boolean = _
 
-  for (i ← fAttributes.indices) {
+  for (i <- fAttributes.indices) {
     fAttributes(i) = new Attribute()
   }
 
@@ -144,7 +144,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * the added attribute will be marked as specified in the XML instance
    * document unless set otherwise using the `setSpecified`
    * method.
-   * 
+   *
    * *Note:* If an attribute of the same name already
    * exists, the old values for the attribute are replaced by the new
    * values.
@@ -175,14 +175,14 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
         if (fLength == fAttributes.length) {
           val attributes = new Array[Attribute](fAttributes.length + 4)
           System.arraycopy(fAttributes, 0, attributes, 0, fAttributes.length)
-          for (i ← fAttributes.length until attributes.length) {
+          for (i <- fAttributes.length until attributes.length) {
             attributes(i) = new Attribute()
           }
           fAttributes = attributes
         }
         fLength += 1
       }
-    } else if ((name.uri eq null) || name.uri.length == 0 || 
+    } else if ((name.uri eq null) || name.uri.length == 0 ||
       { index = getIndexFast(name.uri, name.localpart); index } == -1) {
       if (!fIsTableViewConsistent || fLength == SIZE_LIMIT) {
         prepareAndPopulateTableView()
@@ -194,7 +194,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
         if (fLength == fAttributes.length) {
           val attributes = new Array[Attribute](fAttributes.length << 1)
           System.arraycopy(fAttributes, 0, attributes, 0, fAttributes.length)
-          for (i ← fAttributes.length until attributes.length) {
+          for (i <- fAttributes.length until attributes.length) {
             attributes(i) = new Attribute()
           }
           fAttributes = attributes
@@ -219,7 +219,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
           if (fLength == fAttributes.length) {
             val attributes = new Array[Attribute](fAttributes.length << 1)
             System.arraycopy(fAttributes, 0, attributes, 0, fAttributes.length)
-            for (i ← fAttributes.length until attributes.length) {
+            for (i <- fAttributes.length until attributes.length) {
               attributes(i) = new Attribute()
             }
             fAttributes = attributes
@@ -252,7 +252,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
 
   /**
    * Removes the attribute at the specified index.
-   * 
+   *
    * *Note:* This operation changes the indexes of all
    * attributes following the attribute at the specified index.
    *
@@ -476,7 +476,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    *         appear in the list.
    */
   def getIndex(qName: String): Int = {
-    for (i ← 0 until fLength) {
+    for (i <- 0 until fLength) {
       val attribute = fAttributes(i)
       if ((attribute.name.rawname ne null) && attribute.name.rawname == qName) {
         return i
@@ -495,10 +495,10 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    *         appear in the list.
    */
   def getIndex(uri: String, localPart: String): Int = {
-    for (i ← 0 until fLength) {
+    for (i <- 0 until fLength) {
       val attribute = fAttributes(i)
-      if ((attribute.name.localpart ne null) && attribute.name.localpart == localPart && 
-        ((uri == attribute.name.uri) || 
+      if ((attribute.name.localpart ne null) && attribute.name.localpart == localPart &&
+        ((uri == attribute.name.uri) ||
         ((uri ne null) && (attribute.name.uri ne null) && attribute.name.uri == uri))) {
         return i
       }
@@ -612,7 +612,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
 
   /**
    * Look up an augmentation by XML 1.0 qualified name.
-   * 
+   *
    *
    * @param qName The XML 1.0 qualified name.
    *
@@ -659,7 +659,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
 
   /**
    * Look up the index of an attribute by XML 1.0 qualified name.
-   * 
+   *
    * *Note:*
    * This method uses reference comparison, and thus should
    * only be used internally. We cannot use this method in any
@@ -670,7 +670,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    *         appear in the list.
    */
   def getIndexFast(qName: String): Int = {
-    for (i ← 0 until fLength) {
+    for (i <- 0 until fLength) {
       val attribute = fAttributes(i)
       if (attribute.name.rawname == qName) {
         return i
@@ -686,14 +686,14 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * the added attribute will be marked as specified in the XML instance
    * document unless set otherwise using the `setSpecified`
    * method.
-   * 
+   *
    * This method differs from `addAttribute` in that it
    * does not check if an attribute of the same name already exists
    * in the list before adding it. In order to improve performance
    * of namespace processing, this method allows uniqueness checks
    * to be deferred until all the namespace information is available
    * after the entire attribute specification has been read.
-   * 
+   *
    * *Caution:* If this method is called it should
    * not be mixed with calls to `addAttribute` unless
    * it has been determined that all the attribute names are unique.
@@ -712,7 +712,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
         else
           new Array[Attribute](fAttributes.length << 1)
       System.arraycopy(fAttributes, 0, attributes, 0, fAttributes.length)
-      for (i ← fAttributes.length until attributes.length) {
+      for (i <- fAttributes.length until attributes.length) {
         attributes(i) = new Attribute()
       }
       fAttributes = attributes
@@ -731,7 +731,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * Checks for duplicate expanded names (local part and namespace name
    * pairs) in the attribute specification. If a duplicate is found its
    * name is returned.
-   * 
+   *
    * This should be called once all the in-scope namespaces for the element
    * enclosing these attributes is known, and after all the attributes
    * have gone through namespace binding.
@@ -741,9 +741,9 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    */
   def checkDuplicatesNS(): QName = {
     if (fLength <= SIZE_LIMIT) {
-      for (i ← 0 until fLength - 1) {
+      for (i <- 0 until fLength - 1) {
         val att1 = fAttributes(i)
-        for (j ← i + 1 until fLength) {
+        for (j <- i + 1 until fLength) {
           val att2 = fAttributes(j)
           if (att1.name.localpart == att2.name.localpart && att1.name.uri == att2.name.uri) {
             return att2.name
@@ -782,7 +782,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
 
   /**
    * Look up the index of an attribute by Namespace name.
-   * 
+   *
    * *Note:*
    * This method uses reference comparison, and thus should
    * only be used internally. We cannot use this method in any
@@ -795,7 +795,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    *         appear in the list.
    */
   def getIndexFast(uri: String, localPart: String): Int = {
-    for (i ← 0 until fLength) {
+    for (i <- 0 until fLength) {
       val attribute = fAttributes(i)
       if (attribute.name.localpart == localPart && attribute.name.uri == uri) {
         return i
@@ -883,7 +883,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
     prepareTableView()
     var attr: Attribute = null
     var bucket: Int = 0
-    for (i ← 0 until fLength) {
+    for (i <- 0 until fLength) {
       attr = fAttributes(i)
       bucket = getTableViewBucket(attr.name.rawname)
       if (fAttributeTableViewChainState(bucket) != fLargeCount) {

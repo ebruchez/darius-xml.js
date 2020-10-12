@@ -34,7 +34,7 @@ object Latin1Reader {
  */
 class Latin1Reader(protected val fInputStream: InputStream, protected val fBuffer: Array[Byte])
     extends Reader {
-  
+
   /**
    * Constructs an ISO-8859-1 reader from the specified input stream
    * and buffer size.
@@ -45,7 +45,7 @@ class Latin1Reader(protected val fInputStream: InputStream, protected val fBuffe
   def this(inputStream: InputStream, size: Int) {
     this(inputStream, new Array[Byte](size))
   }
-  
+
   /**
    * Constructs an ISO-8859-1 reader from the specified input stream
    * using the default buffer size.
@@ -91,7 +91,7 @@ class Latin1Reader(protected val fInputStream: InputStream, protected val fBuffe
       length = fBuffer.length
     }
     val count = fInputStream.read(fBuffer, 0, length)
-    for (i ← 0 until count) {
+    for (i <- 0 until count) {
       ch(offset + i) = (fBuffer(i) & 0xff).toChar
     }
     count
