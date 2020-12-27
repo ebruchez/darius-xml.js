@@ -16,9 +16,8 @@
  */
 package org.orbeon.apache.xerces.parsers
 
-import com.sun.org.apache.xerces.internal.util.{EntityResolver2Wrapper, EntityResolverWrapper, ErrorHandlerWrapper}
 import org.orbeon.apache.xerces.impl.Constants
-import org.orbeon.apache.xerces.util.{SymbolHash, XMLSymbols}
+import org.orbeon.apache.xerces.util.{EntityResolver2Wrapper, EntityResolverWrapper, ErrorHandlerWrapper, SymbolHash, XMLSymbols}
 import org.orbeon.apache.xerces.xni._
 import org.orbeon.apache.xerces.xni.parser._
 import org.xml.sax._
