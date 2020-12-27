@@ -17,28 +17,16 @@
 
 package org.orbeon.apache.xerces.parsers
 
-import java.io.IOException
-
-import java.{util => ju}
-
 import org.orbeon.apache.xerces.impl.Constants
 import org.orbeon.apache.xerces.impl.Constants._
-import org.orbeon.apache.xerces.util.ParserConfigurationSettings
-import org.orbeon.apache.xerces.util.SymbolTable
-import org.orbeon.apache.xerces.xni.XMLDTDContentModelHandler
-import org.orbeon.apache.xerces.xni.XMLDTDHandler
-import org.orbeon.apache.xerces.xni.XMLDocumentHandler
-import org.orbeon.apache.xerces.xni.XNIException
-import org.orbeon.apache.xerces.xni.parser.XMLComponent
-import org.orbeon.apache.xerces.xni.parser.XMLComponentManager
-import org.orbeon.apache.xerces.xni.parser.XMLConfigurationException
-import org.orbeon.apache.xerces.xni.parser.XMLDocumentSource
-import org.orbeon.apache.xerces.xni.parser.XMLEntityResolver
-import org.orbeon.apache.xerces.xni.parser.XMLErrorHandler
-import org.orbeon.apache.xerces.xni.parser.XMLInputSource
-import org.orbeon.apache.xerces.xni.parser.XMLParserConfiguration
+import org.orbeon.apache.xerces.util.{ParserConfigurationSettings, SymbolTable}
+import org.orbeon.apache.xerces.xni.{XMLDTDContentModelHandler, XMLDTDHandler, XMLDocumentHandler, XNIException}
+import org.orbeon.apache.xerces.xni.parser._
 
+import java.io.IOException
+import java.{util => ju}
 import scala.jdk.CollectionConverters._
+
 
 protected[parsers] object BasicParserConfiguration {
 
@@ -135,6 +123,10 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
 
   import BasicParserConfiguration._
 
+
+//  /** Locale. */
+//  protected var fLocale: Locale = null
+
   /**
    Components.
    */
@@ -166,7 +158,7 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
 
   fFeatures = new ju.HashMap[String, Any]()
 
-  fProperties = new ju.HashMap[String, Any]()
+  fProperties = new ju.HashMap[String, AnyRef]()
 
   val recognizedFeatures = Array(PARSER_SETTINGS, VALIDATION, NAMESPACES, EXTERNAL_GENERAL_ENTITIES, EXTERNAL_PARAMETER_ENTITIES)
 
@@ -390,14 +382,26 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
     super.setProperty(propertyId, value)
   }
 
+//  /**
+//   * Set the locale to use for messages.
+//   *
+//   * @param locale The locale object to use for localization of messages.
+//   * @exception XNIException Thrown if the parser does not support the
+//   *            specified locale.
+//   */
+//  def setLocale(locale: Locale): Unit =
+//    fLocale = locale
+//
+//  /** Returns the locale. */
+//  def getLocale: Locale =
+//    fLocale
+
   /**
    * reset all components before parsing and namespace context
    */
-  protected def reset(): Unit = {
-    for (c <- fComponents.asScala) {
+  protected def reset(): Unit =
+    for (c <- fComponents.asScala)
       c.reset(this)
-    }
-  }
 
   /**
    * Check a property. If the property is known and supported, this method

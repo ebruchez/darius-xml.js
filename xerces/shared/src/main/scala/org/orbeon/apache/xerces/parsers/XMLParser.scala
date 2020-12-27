@@ -23,22 +23,22 @@ import org.orbeon.apache.xerces.xni.XNIException
 import org.orbeon.apache.xerces.xni.parser.XMLInputSource
 import org.orbeon.apache.xerces.xni.parser.XMLParserConfiguration
 
-object XMLParser {
+private[xerces] object XMLParser {
 
   /**
    Property identifier: entity resolver.
    */
-  protected val ENTITY_RESOLVER = Constants.XERCES_PROPERTY_PREFIX + Constants.ENTITY_RESOLVER_PROPERTY
+  val ENTITY_RESOLVER = Constants.XERCES_PROPERTY_PREFIX + Constants.ENTITY_RESOLVER_PROPERTY
 
   /**
    Property identifier: error handler.
    */
-  protected val ERROR_HANDLER = Constants.XERCES_PROPERTY_PREFIX + Constants.ERROR_HANDLER_PROPERTY
+  val ERROR_HANDLER = Constants.XERCES_PROPERTY_PREFIX + Constants.ERROR_HANDLER_PROPERTY
 
   /**
    Recognized properties.
    */
-  private val RECOGNIZED_PROPERTIES = Array(ENTITY_RESOLVER, ERROR_HANDLER)
+  val RECOGNIZED_PROPERTIES = Array(ENTITY_RESOLVER, ERROR_HANDLER)
 }
 
 /**

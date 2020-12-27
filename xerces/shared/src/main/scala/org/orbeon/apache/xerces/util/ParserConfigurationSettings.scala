@@ -49,7 +49,7 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
   /**
    Properties.
    */
-  protected var fProperties = new ju.HashMap[String, Any]()
+  protected var fProperties = new ju.HashMap[String, AnyRef]()
 
   /**
    Recognized features.
@@ -158,7 +158,7 @@ class ParserConfigurationSettings(protected var fParentSettings: XMLComponentMan
    *                                   it is *really*
    *                                   a critical error.
    */
-  def getProperty(propertyId: String): Any = {
+  def getProperty(propertyId: String): AnyRef = {
     fProperties.get(propertyId) match {
       case null =>
         checkProperty(propertyId)

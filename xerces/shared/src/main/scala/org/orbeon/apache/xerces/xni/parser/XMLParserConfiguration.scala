@@ -17,12 +17,10 @@
 
 package org.orbeon.apache.xerces.xni.parser
 
+import org.orbeon.apache.xerces.xni.{XMLDTDContentModelHandler, XMLDTDHandler, XMLDocumentHandler, XNIException}
+
 import java.io.IOException
 
-import org.orbeon.apache.xerces.xni.XMLDTDContentModelHandler
-import org.orbeon.apache.xerces.xni.XMLDTDHandler
-import org.orbeon.apache.xerces.xni.XMLDocumentHandler
-import org.orbeon.apache.xerces.xni.XNIException
 
 /**
  * Represents a parser configuration. The parser configuration maintains
@@ -159,7 +157,7 @@ trait XMLParserConfiguration extends XMLComponentManager {
    * @throws XMLConfigurationException Thrown if there is a configuration
    *                                   error.
    */
-  def getProperty(propertyId: String): Any
+  def getProperty(propertyId: String): AnyRef
 
   /**
    * Sets the error handler.
@@ -220,4 +218,16 @@ trait XMLParserConfiguration extends XMLComponentManager {
    Returns the registered entity resolver.
    */
   def getEntityResolver: XMLEntityResolver
+
+//  /**
+//   * Set the locale to use for messages.
+//   *
+//   * @param locale The locale object to use for localization of messages.
+//   * @exception XNIException Thrown if the parser does not support the
+//   *            specified locale.
+//   */
+//  def setLocale(locale: Locale): Unit
+//
+//  /** Returns the locale. */
+//  def getLocale: Locale
 }

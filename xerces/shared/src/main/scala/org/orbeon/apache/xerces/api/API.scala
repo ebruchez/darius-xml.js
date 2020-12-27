@@ -16,11 +16,11 @@
 package org.orbeon.apache.xerces.api
 
 import java.io.ByteArrayInputStream
-
-import org.orbeon.apache.xerces.parsers.{AbstractXMLDocumentParser, NonValidatingConfiguration}
+import org.orbeon.apache.xerces.parsers.{AbstractXMLDocumentParser, NonValidatingConfiguration, SAXParser}
 import org.orbeon.apache.xerces.util.SymbolTable
 import org.orbeon.apache.xerces.xni._
 import org.orbeon.apache.xerces.xni.parser.{XMLErrorHandler, XMLInputSource, XMLParseException}
+import org.xml.sax.ContentHandler
 
 import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 
@@ -49,6 +49,33 @@ object API {
         println("Fatal: " + exception.getMessage)
     })
     parser.parse(source)
-    symbols.dumpEntries()
+//    symbols.dumpEntries()
+  }
+
+  @JSExport
+  def parseString(xml: String, handler: ContentHandler): Unit = {
+
+    val baseDir  = null
+    val fileName = "test.xml"
+    val encoding = "UTF-8"
+
+    val source  = new XMLInputSource(null, fileName, baseDir, new ByteArrayInputStream(xml.getBytes("UTF-8")), encoding)
+    val symbols = new SymbolTable
+    val config  = new NonValidatingConfiguration(symbols)
+    val parser  = new SAXParser(config)
+
+    parser.setContentHandler(handler)
+    //parser.setLexicalHandler()
+
+    config.setErrorHandler(new XMLErrorHandler {
+      def warning(domain: String, key: String, exception: XMLParseException): Unit =
+        println("Warning: " + exception.getMessage)
+      def error(domain: String, key: String, exception: XMLParseException): Unit =
+        println("Error: " + exception.getMessage)
+      def fatalError(domain: String, key: String, exception: XMLParseException): Unit =
+        println("Fatal: " + exception.getMessage)
+    })
+    parser.parse(source)
+//    symbols.dumpEntries()
   }
 }
