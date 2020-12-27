@@ -23,7 +23,7 @@ import org.orbeon.apache.xerces.xni.parser._
 import org.xml.sax._
 import org.xml.sax.ext._
 
-import java.io.{CharConversionException, IOException}
+import java.io.IOException
 
 
 abstract class AbstractSAXParser(config: XMLParserConfiguration)
@@ -564,7 +564,9 @@ abstract class AbstractSAXParser(config: XMLParserConfiguration)
     catch {
       case e: XMLParseException =>
         e.getException match {
-          case ex @ (null | _: CharConversionException) =>
+          // ORBEON: No `CharConversionException` on Scala.js.
+//          case ex @ (null | _: CharConversionException) =>
+          case ex @ null =>
             // must be a parser exception; mine it for locator info
             // and throw a SAXParseException
             val locatorImpl = new Locator2Impl
