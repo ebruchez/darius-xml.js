@@ -44,13 +44,13 @@ lazy val xerces = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Ful
 //    testOptions       in Test          += Tests.Argument(TestFrameworks.ScalaTest, "-oF")
   )
   .jsSettings(
-    libraryDependencies ++= Seq("org.xml" %%% "sax"% "2.0.2.2-SNAPSHOT")
+    libraryDependencies ++= Seq("org.xml" %%% "sax"            % "2.0.2.5-SNAPSHOT")
   )
 
 lazy val xercesJS  = xerces.js
   .settings(
-    libraryDependencies += "org.scala-js"           %%% "scalajs-dom"    % ScalaJsDomVersion,
-    libraryDependencies += "be.doeraene"            %%% "scalajs-jquery" % ScalaJsJQueryVersion,
+    libraryDependencies += "org.scala-js" %%% "scalajs-dom"    % ScalaJsDomVersion,
+    libraryDependencies += "be.doeraene"  %%% "scalajs-jquery" % ScalaJsJQueryVersion,
     libraryDependencies += "com.lihaoyi"  %%% "scalarx"        % "0.4.3"
   )
 
