@@ -42,7 +42,6 @@ import org.orbeon.apache.xerces.xni.parser.XMLConfigurationException
 import org.orbeon.apache.xerces.xni.parser.XMLDocumentScanner
 import org.orbeon.apache.xerces.xni.parser.XMLInputSource
 
-import scala.util.control.Breaks
 
 protected[impl] object XMLDocumentFragmentScannerImpl {
 
@@ -737,29 +736,28 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
     fCurrentElement = fElementStack.pushElement(fElementQName)
     var empty = false
     fAttributes.removeAllAttributes()
-    val doBreaks = new Breaks
-    doBreaks.breakable {
-      do {
-        val sawSpace = fEntityScanner.skipSpaces()
-        val c = fEntityScanner.peekChar()
-        if (c == '>') {
-          fEntityScanner.scanChar()
-          doBreaks.break()
-        } else if (c == '/') {
-          fEntityScanner.scanChar()
-          if (!fEntityScanner.skipChar('>')) {
-            reportFatalError("ElementUnterminated", Array(rawname))
-          }
-          empty = true
-          doBreaks.break()
-        } else if (!isValidNameStartChar(c) || !sawSpace) {
-          if (!isValidNameStartHighSurrogate(c) || !sawSpace) {
-            reportFatalError("ElementUnterminated", Array(rawname))
-          }
+    var exitLoop = false
+    do {
+      val sawSpace = fEntityScanner.skipSpaces()
+      val c = fEntityScanner.peekChar()
+      if (c == '>') {
+        fEntityScanner.scanChar()
+        exitLoop = true
+      } else if (c == '/') {
+        fEntityScanner.scanChar()
+        if (!fEntityScanner.skipChar('>')) {
+          reportFatalError("ElementUnterminated", Array(rawname))
         }
+        empty = true
+        exitLoop = true
+      } else if (!isValidNameStartChar(c) || !sawSpace) {
+        if (!isValidNameStartHighSurrogate(c) || !sawSpace) {
+          reportFatalError("ElementUnterminated", Array(rawname))
+        }
+      }
+      if (! exitLoop)
         scanAttribute(fAttributes)
-      } while (true)
-    }
+    } while (! exitLoop)
     if (fDocumentHandler ne null) {
       if (empty) {
         fMarkupDepth -= 1
@@ -799,29 +797,29 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
     fCurrentElement = fElementStack.pushElement(fElementQName)
     var empty = false
     fAttributes.removeAllAttributes()
-    val doBreaks = new Breaks
-    doBreaks.breakable {
-      do {
-        val c = fEntityScanner.peekChar()
-        if (c == '>') {
-          fEntityScanner.scanChar()
-          doBreaks.break()
-        } else if (c == '/') {
-          fEntityScanner.scanChar()
-          if (!fEntityScanner.skipChar('>')) {
-            reportFatalError("ElementUnterminated", Array(rawname))
-          }
-          empty = true
-          doBreaks.break()
-        } else if (!isValidNameStartChar(c) || !fSawSpace) {
-          if (!isValidNameStartHighSurrogate(c) || !fSawSpace) {
-            reportFatalError("ElementUnterminated", Array(rawname))
-          }
+    var exitLoop = false
+    do {
+      val c = fEntityScanner.peekChar()
+      if (c == '>') {
+        fEntityScanner.scanChar()
+        exitLoop = true
+      } else if (c == '/') {
+        fEntityScanner.scanChar()
+        if (!fEntityScanner.skipChar('>')) {
+          reportFatalError("ElementUnterminated", Array(rawname))
         }
+        empty = true
+        exitLoop = true
+      } else if (!isValidNameStartChar(c) || !fSawSpace) {
+        if (!isValidNameStartHighSurrogate(c) || !fSawSpace) {
+          reportFatalError("ElementUnterminated", Array(rawname))
+        }
+      }
+      if (! exitLoop) {
         scanAttribute(fAttributes)
         fSawSpace = fEntityScanner.skipSpaces()
-      } while (true)
-    }
+      }
+    } while (! exitLoop)
     if (fDocumentHandler ne null) {
       if (empty) {
         fMarkupDepth -= 1
@@ -937,64 +935,55 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
     if (fDocumentHandler ne null) {
       fDocumentHandler.startCDATA(null)
     }
-    val whileBreaks = new Breaks
-    whileBreaks.breakable {
-      while (true) {
-        fStringBuffer.clear()
-        if (!fEntityScanner.scanData("]]", fStringBuffer)) {
-          if ((fDocumentHandler ne null) && fStringBuffer.length > 0) {
-            fDocumentHandler.characters(fStringBuffer, null)
-          }
-          var brackets = 0
-          while (fEntityScanner.skipChar(']')) {
-            brackets += 1
-          }
-          if ((fDocumentHandler ne null) && brackets > 0) {
-            fStringBuffer.clear()
-            if (brackets > XMLEntityManager.DEFAULT_BUFFER_SIZE) {
-              val chunks = brackets / XMLEntityManager.DEFAULT_BUFFER_SIZE
-              val remainder = brackets % XMLEntityManager.DEFAULT_BUFFER_SIZE
-              for (i <- 0 until XMLEntityManager.DEFAULT_BUFFER_SIZE) {
-                fStringBuffer.append(']')
-              }
-              for (i <- 0 until chunks) {
-                fDocumentHandler.characters(fStringBuffer, null)
-              }
-              if (remainder != 0) {
-                fStringBuffer.length = remainder
-                fDocumentHandler.characters(fStringBuffer, null)
-              }
-            } else {
-              for (i <- 0 until brackets) {
-                fStringBuffer.append(']')
-              }
+    var exitLoop = false
+    while (! exitLoop) {
+      fStringBuffer.clear()
+      if (!fEntityScanner.scanData("]]", fStringBuffer)) {
+        if ((fDocumentHandler ne null) && fStringBuffer.length > 0)
+          fDocumentHandler.characters(fStringBuffer, null)
+        var brackets = 0
+        while (fEntityScanner.skipChar(']'))
+          brackets += 1
+        if ((fDocumentHandler ne null) && brackets > 0) {
+          fStringBuffer.clear()
+          if (brackets > XMLEntityManager.DEFAULT_BUFFER_SIZE) {
+            val chunks = brackets / XMLEntityManager.DEFAULT_BUFFER_SIZE
+            val remainder = brackets % XMLEntityManager.DEFAULT_BUFFER_SIZE
+            for (i <- 0 until XMLEntityManager.DEFAULT_BUFFER_SIZE) {
+              fStringBuffer.append(']')
+            }
+            for (i <- 0 until chunks)
+              fDocumentHandler.characters(fStringBuffer, null)
+            if (remainder != 0) {
+              fStringBuffer.length = remainder
               fDocumentHandler.characters(fStringBuffer, null)
             }
+          } else {
+            for (i <- 0 until brackets)
+              fStringBuffer.append(']')
+            fDocumentHandler.characters(fStringBuffer, null)
           }
-          if (fEntityScanner.skipChar('>')) {
-            whileBreaks.break()
-          }
-          if (fDocumentHandler ne null) {
+        }
+        if (fEntityScanner.skipChar('>')) {
+          exitLoop = true
+        } else if (fDocumentHandler ne null) {
+          fStringBuffer.clear()
+          fStringBuffer.append("]]")
+          fDocumentHandler.characters(fStringBuffer, null)
+        }
+      } else {
+        if (fDocumentHandler ne null)
+          fDocumentHandler.characters(fStringBuffer, null)
+        val c = fEntityScanner.peekChar()
+        if (c != -1 && isInvalidLiteral(c)) {
+          if (XMLChar.isHighSurrogate(c)) {
             fStringBuffer.clear()
-            fStringBuffer.append("]]")
-            fDocumentHandler.characters(fStringBuffer, null)
-          }
-        } else {
-          if (fDocumentHandler ne null) {
-            fDocumentHandler.characters(fStringBuffer, null)
-          }
-          val c = fEntityScanner.peekChar()
-          if (c != -1 && isInvalidLiteral(c)) {
-            if (XMLChar.isHighSurrogate(c)) {
-              fStringBuffer.clear()
-              scanSurrogates(fStringBuffer)
-              if (fDocumentHandler ne null) {
-                fDocumentHandler.characters(fStringBuffer, null)
-              }
-            } else {
-              reportFatalError("InvalidCharInCDSect", Array(HexUtils.toHexString(c)))
-              fEntityScanner.scanChar()
-            }
+            scanSurrogates(fStringBuffer)
+            if (fDocumentHandler ne null)
+              fDocumentHandler.characters(fStringBuffer, null)
+          } else {
+            reportFatalError("InvalidCharInCDSect", Array(HexUtils.toHexString(c)))
+            fEntityScanner.scanChar()
           }
         }
       }
@@ -1236,6 +1225,9 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
      * @throws XNIException Thrown on parse error.
      */
     def dispatch(complete: Boolean): Boolean = {
+
+      println(s"zzzz Xerces FragmentContentDispatcher dispatch")
+
       try {
         var again: Boolean = false
         do {
@@ -1249,33 +1241,31 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
                 setScannerState(SCANNER_STATE_REFERENCE)
                 again = true
               } else {
-                val doBreaks = new Breaks
-                doBreaks.breakable {
-                  do {
-                    val c = scanContent()
-                    if (c == '<') {
-                      fEntityScanner.scanChar()
-                      setScannerState(SCANNER_STATE_START_OF_MARKUP)
-                      doBreaks.break()
-                    } else if (c == '&') {
-                      fEntityScanner.scanChar()
-                      setScannerState(SCANNER_STATE_REFERENCE)
-                      doBreaks.break()
-                    } else if (c != -1 && isInvalidLiteral(c)) {
-                      if (XMLChar.isHighSurrogate(c)) {
-                        fStringBuffer.clear()
-                        if (scanSurrogates(fStringBuffer)) {
-                          if (fDocumentHandler ne null) {
-                            fDocumentHandler.characters(fStringBuffer, null)
-                          }
+                var exitLoop = false
+                do {
+                  val c = scanContent()
+                  if (c == '<') {
+                    fEntityScanner.scanChar()
+                    setScannerState(SCANNER_STATE_START_OF_MARKUP)
+                    exitLoop = true
+                  } else if (c == '&') {
+                    fEntityScanner.scanChar()
+                    setScannerState(SCANNER_STATE_REFERENCE)
+                    exitLoop = true
+                  } else if (c != -1 && isInvalidLiteral(c)) {
+                    if (XMLChar.isHighSurrogate(c)) {
+                      fStringBuffer.clear()
+                      if (scanSurrogates(fStringBuffer)) {
+                        if (fDocumentHandler ne null) {
+                          fDocumentHandler.characters(fStringBuffer, null)
                         }
-                      } else {
-                        reportFatalError("InvalidCharInContent", Array(HexUtils.toHexString(c)))
-                        fEntityScanner.scanChar()
                       }
+                    } else {
+                      reportFatalError("InvalidCharInContent", Array(HexUtils.toHexString(c)))
+                      fEntityScanner.scanChar()
                     }
-                  } while (complete)
-                }
+                  }
+                } while (! exitLoop && complete)
               }
             case SCANNER_STATE_START_OF_MARKUP =>
               fMarkupDepth += 1

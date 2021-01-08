@@ -24,7 +24,6 @@ import java.io.Reader
 import org.orbeon.apache.xerces.impl.msg.XMLMessageFormatter
 import org.orbeon.apache.xerces.util.MessageFormatter
 
-import scala.util.control.Breaks
 
 object UTF8Reader {
 
@@ -233,28 +232,25 @@ class UTF8Reader(protected val fInputStream: InputStream,
     var byte1: Byte = 0
     val byte0 = 0
     in = 0
-    val whileBreaks = new Breaks
-    whileBreaks.breakable {
-      while (in < total) {
-        byte1 = fBuffer(in)
-        if (byte1 >= byte0) {
-          ch(out) = byte1.toChar
-          out += 1
-        } else {
-          whileBreaks.break()
-        }
-        in += 1
+    var exitLoop = false
+    while (! exitLoop && in < total) {
+      byte1 = fBuffer(in)
+      if (byte1 >= byte0) {
+        ch(out) = byte1.toChar
+        out += 1
+      } else {
+        exitLoop = true
       }
+      if (! exitLoop)
+        in += 1
     }
     while (in < total) {
-      val continueBreaks = new Breaks
-      continueBreaks.breakable {
-        byte1 = fBuffer(in)
-        if (byte1 >= byte0) {
-          ch(out) = byte1.toChar
-          out += 1
-          continueBreaks.break()
-        }
+      byte1 = fBuffer(in)
+      if (byte1 >= byte0) {
+        ch(out) = byte1.toChar
+        out += 1
+        // continue
+      } else {
         val b0 = byte1 & 0x0FF
         if ((b0 & 0xE0) == 0xC0 && (b0 & 0x1E) != 0) {
           var b1 = -1
@@ -286,9 +282,8 @@ class UTF8Reader(protected val fInputStream: InputStream,
           ch(out) = c.toChar
           out += 1
           count -= 1
-          continueBreaks.break()
-        }
-        if ((b0 & 0xF0) == 0xE0) {
+          // continue
+        } else if ((b0 & 0xF0) == 0xE0) {
           var b1 = -1
           in += 1
           if (in < total) {
@@ -345,9 +340,8 @@ class UTF8Reader(protected val fInputStream: InputStream,
           ch(out) = c.toChar
           out += 1
           count -= 2
-          continueBreaks.break()
-        }
-        if ((b0 & 0xF8) == 0xF0) {
+          // continue
+        } else if ((b0 & 0xF8) == 0xF0) {
           var b1 = -1
           in += 1
           if (in < total) {
@@ -449,21 +443,20 @@ class UTF8Reader(protected val fInputStream: InputStream,
             fSurrogate = ls
             count -= 1
           }
-          continueBreaks.break()
+          // continue
+        } else {
+          if (out > offset) {
+            fBuffer(0) = b0.toByte
+            fOffset = 1
+            return out - offset
+          }
+          invalidByte(1, 1, b0)
         }
-        if (out > offset) {
-          fBuffer(0) = b0.toByte
-          fOffset = 1
-          return out - offset
-        }
-        invalidByte(1, 1, b0)
       }
       in += 1
-    }
-    if (DEBUG_READ) {
-      println("read(char[]," + offset + ',' + length + "): count=" +
-        count)
-    }
+    } // end while
+    if (DEBUG_READ)
+      println("read(char[]," + offset + ',' + length + "): count=" + count)
     count
   }
 
@@ -480,18 +473,15 @@ class UTF8Reader(protected val fInputStream: InputStream,
   override def skip(n: Long): Long = {
     var remaining = n
     val ch = new Array[Char](fBuffer.length)
-    val doBreaks = new Breaks
-    doBreaks.breakable {
-      do {
-        val length = if (ch.length < remaining) ch.length else remaining.toInt
-        val count = read(ch, 0, length)
-        if (count > 0) {
-          remaining -= count
-        } else {
-          doBreaks.break()
-        }
-      } while (remaining > 0)
-    }
+    var exitLoop = false
+    do {
+      val length = if (ch.length < remaining) ch.length else remaining.toInt
+      val count = read(ch, 0, length)
+      if (count > 0)
+        remaining -= count
+      else
+        exitLoop = true
+    } while (! exitLoop && remaining > 0)
     val skipped = n - remaining
     skipped
   }

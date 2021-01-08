@@ -22,7 +22,6 @@ import org.orbeon.apache.xerces.xni.Augmentations
 import org.orbeon.apache.xerces.xni.QName
 import org.orbeon.apache.xerces.xni.XMLAttributes
 
-import scala.util.control.Breaks
 
 object XMLAttributesImpl {
 
@@ -204,14 +203,12 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
         fAttributeTableView(bucket) = fAttributes(index)
       } else {
         var found = fAttributeTableView(bucket)
-        val whileBreaks = new Breaks
-        whileBreaks.breakable {
-          while (found ne null) {
-            if (found.name.rawname == name.rawname) {
-              whileBreaks.break()
-            }
+        var exitLoop = false
+        while (! exitLoop && (found ne null)) {
+          if (found.name.rawname == name.rawname)
+            exitLoop = true
+          else
             found = found.next
-          }
         }
         if (found eq null) {
           index = fLength

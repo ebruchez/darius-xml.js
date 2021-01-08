@@ -24,7 +24,6 @@ import org.orbeon.apache.xerces.util.XMLSymbols
 import org.orbeon.apache.xerces.xni.NamespaceContext
 import org.orbeon.apache.xerces.xni.parser.XMLComponentManager
 
-import scala.util.control.Breaks
 
 /**
  * The scanner acts as the source for the document
@@ -132,27 +131,26 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
     fCurrentElement = fElementStack.pushElement(fElementQName)
     var empty = false
     fAttributes.removeAllAttributes()
-    val doBreaks = new Breaks
-    doBreaks.breakable {
-      do {
-        val sawSpace = fEntityScanner.skipSpaces()
-        val c = fEntityScanner.peekChar()
-        if (c == '>') {
-          fEntityScanner.scanChar()
-          doBreaks.break()
-        } else if (c == '/') {
-          fEntityScanner.scanChar()
-          if (!fEntityScanner.skipChar('>')) {
-            reportFatalError("ElementUnterminated", Array(rawname))
-          }
-          empty = true
-          doBreaks.break()
-        } else if (!isValidNameStartChar(c) || !sawSpace) {
+    var exitLoop = false
+    do {
+      val sawSpace = fEntityScanner.skipSpaces()
+      val c = fEntityScanner.peekChar()
+      if (c == '>') {
+        fEntityScanner.scanChar()
+        exitLoop = true
+      } else if (c == '/') {
+        fEntityScanner.scanChar()
+        if (!fEntityScanner.skipChar('>')) {
           reportFatalError("ElementUnterminated", Array(rawname))
         }
+        empty = true
+        exitLoop = true
+      } else if (!isValidNameStartChar(c) || !sawSpace) {
+        reportFatalError("ElementUnterminated", Array(rawname))
+      }
+      if (! exitLoop)
         scanAttribute(fAttributes)
-      } while (true)
-    }
+    } while (! exitLoop)
     if (fBindNamespaces) {
       if (fElementQName.prefix == XMLSymbols.PREFIX_XMLNS) {
         fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "ElementXMLNSPrefix", Array(fElementQName.rawname),
@@ -248,27 +246,27 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
     fCurrentElement = fElementStack.pushElement(fElementQName)
     var empty = false
     fAttributes.removeAllAttributes()
-    val doBreaks = new Breaks
-    doBreaks.breakable {
-      do {
-        val c = fEntityScanner.peekChar()
-        if (c == '>') {
-          fEntityScanner.scanChar()
-          doBreaks.break()
-        } else if (c == '/') {
-          fEntityScanner.scanChar()
-          if (!fEntityScanner.skipChar('>')) {
-            reportFatalError("ElementUnterminated", Array(rawname))
-          }
-          empty = true
-          doBreaks.break()
-        } else if (!isValidNameStartChar(c) || !fSawSpace) {
+    var exitLoop = false
+    do {
+      val c = fEntityScanner.peekChar()
+      if (c == '>') {
+        fEntityScanner.scanChar()
+        exitLoop = true
+      } else if (c == '/') {
+        fEntityScanner.scanChar()
+        if (!fEntityScanner.skipChar('>')) {
           reportFatalError("ElementUnterminated", Array(rawname))
         }
+        empty = true
+        exitLoop = true
+      } else if (!isValidNameStartChar(c) || !fSawSpace) {
+        reportFatalError("ElementUnterminated", Array(rawname))
+      }
+      if (! exitLoop) {
         scanAttribute(fAttributes)
         fSawSpace = fEntityScanner.skipSpaces()
-      } while (true)
-    }
+      }
+    } while (! exitLoop)
     if (fBindNamespaces) {
       if (fElementQName.prefix == XMLSymbols.PREFIX_XMLNS) {
         fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "ElementXMLNSPrefix", Array(fElementQName.rawname),

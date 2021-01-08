@@ -236,24 +236,21 @@ class XMLEntityScanner extends XMLLocator {
       load(0, changeEntity = true)
     }
     var offset = fCurrentEntity.position
-    val whileBreaks = new Breaks
-    whileBreaks.breakable {
-      while (XMLChar.isName(fCurrentEntity.ch(fCurrentEntity.position))) {
-        fCurrentEntity.position += 1
-        if (fCurrentEntity.position == fCurrentEntity.count) {
-          val length = fCurrentEntity.position - offset
-          if (length == fCurrentEntity.ch.length) {
-            val tmp = new Array[Char](fCurrentEntity.ch.length << 1)
-            System.arraycopy(fCurrentEntity.ch, offset, tmp, 0, length)
-            fCurrentEntity.ch = tmp
-          } else {
-            System.arraycopy(fCurrentEntity.ch, offset, fCurrentEntity.ch, 0, length)
-          }
-          offset = 0
-          if (load(length, changeEntity = false)) {
-            whileBreaks.break()
-          }
+    var exitLoop = false
+    while (! exitLoop && XMLChar.isName(fCurrentEntity.ch(fCurrentEntity.position))) {
+      fCurrentEntity.position += 1
+      if (fCurrentEntity.position == fCurrentEntity.count) {
+        val length = fCurrentEntity.position - offset
+        if (length == fCurrentEntity.ch.length) {
+          val tmp = new Array[Char](fCurrentEntity.ch.length << 1)
+          System.arraycopy(fCurrentEntity.ch, offset, tmp, 0, length)
+          fCurrentEntity.ch = tmp
+        } else {
+          System.arraycopy(fCurrentEntity.ch, offset, fCurrentEntity.ch, 0, length)
         }
+        offset = 0
+        if (load(length, changeEntity = false))
+          exitLoop = true
       }
     }
     val length = fCurrentEntity.position - offset
@@ -308,24 +305,21 @@ class XMLEntityScanner extends XMLLocator {
           return symbol
         }
       }
-      val whileBreaks = new Breaks
-      whileBreaks.breakable {
-        while (XMLChar.isName(fCurrentEntity.ch(fCurrentEntity.position))) {
-          fCurrentEntity.position += 1
-          if (fCurrentEntity.position == fCurrentEntity.count) {
-            val length = fCurrentEntity.position - offset
-            if (length == fCurrentEntity.ch.length) {
-              val tmp = new Array[Char](fCurrentEntity.ch.length << 1)
-              System.arraycopy(fCurrentEntity.ch, offset, tmp, 0, length)
-              fCurrentEntity.ch = tmp
-            } else {
-              System.arraycopy(fCurrentEntity.ch, offset, fCurrentEntity.ch, 0, length)
-            }
-            offset = 0
-            if (load(length, changeEntity = false)) {
-              whileBreaks.break()
-            }
+      var exitLoop = false
+      while (! exitLoop && XMLChar.isName(fCurrentEntity.ch(fCurrentEntity.position))) {
+        fCurrentEntity.position += 1
+        if (fCurrentEntity.position == fCurrentEntity.count) {
+          val length = fCurrentEntity.position - offset
+          if (length == fCurrentEntity.ch.length) {
+            val tmp = new Array[Char](fCurrentEntity.ch.length << 1)
+            System.arraycopy(fCurrentEntity.ch, offset, tmp, 0, length)
+            fCurrentEntity.ch = tmp
+          } else {
+            System.arraycopy(fCurrentEntity.ch, offset, fCurrentEntity.ch, 0, length)
           }
+          offset = 0
+          if (load(length, changeEntity = false))
+            exitLoop = true
         }
       }
     }
@@ -381,24 +375,21 @@ class XMLEntityScanner extends XMLLocator {
           return symbol
         }
       }
-      val whileBreaks = new Breaks
-      whileBreaks.breakable {
-        while (XMLChar.isNCName(fCurrentEntity.ch(fCurrentEntity.position))) {
-          fCurrentEntity.position += 1
-          if (fCurrentEntity.position == fCurrentEntity.count) {
-            val length = fCurrentEntity.position - offset
-            if (length == fCurrentEntity.ch.length) {
-              val tmp = new Array[Char](fCurrentEntity.ch.length << 1)
-              System.arraycopy(fCurrentEntity.ch, offset, tmp, 0, length)
-              fCurrentEntity.ch = tmp
-            } else {
-              System.arraycopy(fCurrentEntity.ch, offset, fCurrentEntity.ch, 0, length)
-            }
-            offset = 0
-            if (load(length, changeEntity = false)) {
-              whileBreaks.break()
-            }
+      var exitLoop = false
+      while (! exitLoop && XMLChar.isNCName(fCurrentEntity.ch(fCurrentEntity.position))) {
+        fCurrentEntity.position += 1
+        if (fCurrentEntity.position == fCurrentEntity.count) {
+          val length = fCurrentEntity.position - offset
+          if (length == fCurrentEntity.ch.length) {
+            val tmp = new Array[Char](fCurrentEntity.ch.length << 1)
+            System.arraycopy(fCurrentEntity.ch, offset, tmp, 0, length)
+            fCurrentEntity.ch = tmp
+          } else {
+            System.arraycopy(fCurrentEntity.ch, offset, fCurrentEntity.ch, 0, length)
           }
+          offset = 0
+          if (load(length, changeEntity = false))
+            exitLoop = true
         }
       }
     }
@@ -462,16 +453,16 @@ class XMLEntityScanner extends XMLLocator {
         }
       }
       var index = -1
-      val whileBreaks = new Breaks
-      whileBreaks.breakable {
-        while (XMLChar.isName(fCurrentEntity.ch(fCurrentEntity.position))) {
-          val c = fCurrentEntity.ch(fCurrentEntity.position)
-          if (c == ':') {
-            if (index != -1) {
-              whileBreaks.break()
-            }
+      var exitLoop = false
+      while (! exitLoop && XMLChar.isName(fCurrentEntity.ch(fCurrentEntity.position))) {
+        val c = fCurrentEntity.ch(fCurrentEntity.position)
+        if (c == ':') {
+          if (index != -1)
+            exitLoop = true
+          else
             index = fCurrentEntity.position
-          }
+        }
+        if (! exitLoop) {
           fCurrentEntity.position += 1
           if (fCurrentEntity.position == fCurrentEntity.count) {
             val length = fCurrentEntity.position - offset
@@ -486,9 +477,8 @@ class XMLEntityScanner extends XMLLocator {
               index = index - offset
             }
             offset = 0
-            if (load(length, changeEntity = false)) {
-              whileBreaks.break()
-            }
+            if (load(length, changeEntity = false))
+              exitLoop = true
           }
         }
       }
@@ -578,52 +568,49 @@ class XMLEntityScanner extends XMLLocator {
         XMLEntityManager.print(fCurrentEntity)
         println()
       }
-      val doBreaks = new Breaks
-      doBreaks.breakable {
-        do {
-          c = fCurrentEntity.ch(fCurrentEntity.position)
-          fCurrentEntity.position += 1
-          if (c == '\r' && external) {
-            newlines += 1
-            fCurrentEntity.lineNumber += 1
-            fCurrentEntity.columnNumber = 1
-            if (fCurrentEntity.position == fCurrentEntity.count) {
-              offset = 0
-              fCurrentEntity.baseCharOffset += (fCurrentEntity.position - fCurrentEntity.startPosition)
-              fCurrentEntity.position = newlines
-              fCurrentEntity.startPosition = newlines
-              if (load(newlines, changeEntity = false)) {
-                doBreaks.break()
-              }
-            }
+      var exitLoop = false
+      do {
+        c = fCurrentEntity.ch(fCurrentEntity.position)
+        fCurrentEntity.position += 1
+        if (c == '\r' && external) {
+          newlines += 1
+          fCurrentEntity.lineNumber += 1
+          fCurrentEntity.columnNumber = 1
+          if (fCurrentEntity.position == fCurrentEntity.count) {
+            offset = 0
+            fCurrentEntity.baseCharOffset += (fCurrentEntity.position - fCurrentEntity.startPosition)
+            fCurrentEntity.position = newlines
+            fCurrentEntity.startPosition = newlines
+            if (load(newlines, changeEntity = false))
+              exitLoop = true
+          }
+          if (! exitLoop) {
             if (fCurrentEntity.ch(fCurrentEntity.position) == '\n') {
               fCurrentEntity.position += 1
               offset += 1
             } else {
               newlines += 1
             }
-          } else if (c == '\n') {
-            newlines += 1
-            fCurrentEntity.lineNumber += 1
-            fCurrentEntity.columnNumber = 1
-            if (fCurrentEntity.position == fCurrentEntity.count) {
-              offset = 0
-              fCurrentEntity.baseCharOffset += (fCurrentEntity.position - fCurrentEntity.startPosition)
-              fCurrentEntity.position = newlines
-              fCurrentEntity.startPosition = newlines
-              if (load(newlines, changeEntity = false)) {
-                doBreaks.break()
-              }
-            }
-          } else {
-            fCurrentEntity.position -= 1
-            doBreaks.break()
           }
-        } while (fCurrentEntity.position < fCurrentEntity.count - 1)
-      }
-      for (i <- offset until fCurrentEntity.position) {
+        } else if (c == '\n') {
+          newlines += 1
+          fCurrentEntity.lineNumber += 1
+          fCurrentEntity.columnNumber = 1
+          if (fCurrentEntity.position == fCurrentEntity.count) {
+            offset = 0
+            fCurrentEntity.baseCharOffset += (fCurrentEntity.position - fCurrentEntity.startPosition)
+            fCurrentEntity.position = newlines
+            fCurrentEntity.startPosition = newlines
+            if (load(newlines, changeEntity = false))
+              exitLoop = true
+          }
+        } else {
+          fCurrentEntity.position -= 1
+          exitLoop = true
+        }
+      } while (! exitLoop && fCurrentEntity.position < fCurrentEntity.count - 1)
+      for (i <- offset until fCurrentEntity.position)
         fCurrentEntity.ch(i) = '\n'
-      }
       val length = fCurrentEntity.position - offset
       if (fCurrentEntity.position == fCurrentEntity.count - 1) {
         content.setValues(fCurrentEntity.ch, offset, length)
@@ -642,15 +629,13 @@ class XMLEntityScanner extends XMLLocator {
         println()
       }
     }
-    val whileBreaks = new Breaks
-    whileBreaks.breakable {
-      while (fCurrentEntity.position < fCurrentEntity.count) {
-        c = fCurrentEntity.ch(fCurrentEntity.position)
-        fCurrentEntity.position += 1
-        if (!XMLChar.isContent(c)) {
-          fCurrentEntity.position -= 1
-          whileBreaks.break()
-        }
+    var exitLoop = false
+    while (! exitLoop && fCurrentEntity.position < fCurrentEntity.count) {
+      c = fCurrentEntity.ch(fCurrentEntity.position)
+      fCurrentEntity.position += 1
+      if (! XMLChar.isContent(c)) {
+        fCurrentEntity.position -= 1
+        exitLoop = true
       }
     }
     val length = fCurrentEntity.position - offset
@@ -725,52 +710,49 @@ class XMLEntityScanner extends XMLLocator {
         XMLEntityManager.print(fCurrentEntity)
         println()
       }
-      val doBreaks = new Breaks
-      doBreaks.breakable {
-        do {
-          c = fCurrentEntity.ch(fCurrentEntity.position)
-          fCurrentEntity.position += 1
-          if (c == '\r' && external) {
-            newlines += 1
-            fCurrentEntity.lineNumber += 1
-            fCurrentEntity.columnNumber = 1
-            if (fCurrentEntity.position == fCurrentEntity.count) {
-              offset = 0
-              fCurrentEntity.baseCharOffset += (fCurrentEntity.position - fCurrentEntity.startPosition)
-              fCurrentEntity.position = newlines
-              fCurrentEntity.startPosition = newlines
-              if (load(newlines, changeEntity = false)) {
-                doBreaks.break()
-              }
-            }
+      var exitLoop = false
+      do {
+        c = fCurrentEntity.ch(fCurrentEntity.position)
+        fCurrentEntity.position += 1
+        if (c == '\r' && external) {
+          newlines += 1
+          fCurrentEntity.lineNumber += 1
+          fCurrentEntity.columnNumber = 1
+          if (fCurrentEntity.position == fCurrentEntity.count) {
+            offset = 0
+            fCurrentEntity.baseCharOffset += (fCurrentEntity.position - fCurrentEntity.startPosition)
+            fCurrentEntity.position = newlines
+            fCurrentEntity.startPosition = newlines
+            if (load(newlines, changeEntity = false))
+              exitLoop = true
+          }
+          if (! exitLoop) {
             if (fCurrentEntity.ch(fCurrentEntity.position) == '\n') {
               fCurrentEntity.position += 1
               offset += 1
             } else {
               newlines += 1
             }
-          } else if (c == '\n') {
-            newlines += 1
-            fCurrentEntity.lineNumber += 1
-            fCurrentEntity.columnNumber = 1
-            if (fCurrentEntity.position == fCurrentEntity.count) {
-              offset = 0
-              fCurrentEntity.baseCharOffset += (fCurrentEntity.position - fCurrentEntity.startPosition)
-              fCurrentEntity.position = newlines
-              fCurrentEntity.startPosition = newlines
-              if (load(newlines, changeEntity = false)) {
-                doBreaks.break()
-              }
-            }
-          } else {
-            fCurrentEntity.position -= 1
-            doBreaks.break()
           }
-        } while (fCurrentEntity.position < fCurrentEntity.count - 1)
-      }
-      for (i <- offset until fCurrentEntity.position) {
+        } else if (c == '\n') {
+          newlines += 1
+          fCurrentEntity.lineNumber += 1
+          fCurrentEntity.columnNumber = 1
+          if (fCurrentEntity.position == fCurrentEntity.count) {
+            offset = 0
+            fCurrentEntity.baseCharOffset += (fCurrentEntity.position - fCurrentEntity.startPosition)
+            fCurrentEntity.position = newlines
+            fCurrentEntity.startPosition = newlines
+            if (load(newlines, changeEntity = false))
+              exitLoop = true
+          }
+        } else {
+          fCurrentEntity.position -= 1
+          exitLoop = true
+        }
+      } while (! exitLoop && fCurrentEntity.position < fCurrentEntity.count - 1)
+      for (i <- offset until fCurrentEntity.position)
         fCurrentEntity.ch(i) = '\n'
-      }
       val length = fCurrentEntity.position - offset
       if (fCurrentEntity.position == fCurrentEntity.count - 1) {
         content.setValues(fCurrentEntity.ch, offset, length)
@@ -789,15 +771,13 @@ class XMLEntityScanner extends XMLLocator {
         println()
       }
     }
-    val whileBreaks = new Breaks
-    whileBreaks.breakable {
-      while (fCurrentEntity.position < fCurrentEntity.count) {
-        c = fCurrentEntity.ch(fCurrentEntity.position)
-        fCurrentEntity.position += 1
-        if ((c == quote && (!fCurrentEntity.literal || external)) || c == '%' || !XMLChar.isContent(c)) {
-          fCurrentEntity.position -= 1
-          whileBreaks.break()
-        }
+    var exitLoop = false
+    while (! exitLoop && fCurrentEntity.position < fCurrentEntity.count) {
+      c = fCurrentEntity.ch(fCurrentEntity.position)
+      fCurrentEntity.position += 1
+      if ((c == quote && (!fCurrentEntity.literal || external)) || c == '%' || !XMLChar.isContent(c)) {
+        fCurrentEntity.position -= 1
+        exitLoop = true
       }
     }
     val length = fCurrentEntity.position - offset
@@ -890,53 +870,50 @@ class XMLEntityScanner extends XMLLocator {
         XMLEntityManager.print(fCurrentEntity)
         println()
       }
-      val doBreaks = new Breaks
-      doBreaks.breakable {
-        do {
-          c = fCurrentEntity.ch(fCurrentEntity.position)
-          fCurrentEntity.position += 1
-          if (c == '\r' && external) {
-            newlines += 1
-            fCurrentEntity.lineNumber += 1
-            fCurrentEntity.columnNumber = 1
-            if (fCurrentEntity.position == fCurrentEntity.count) {
-              offset = 0
-              fCurrentEntity.baseCharOffset += (fCurrentEntity.position - fCurrentEntity.startPosition)
-              fCurrentEntity.position = newlines
-              fCurrentEntity.startPosition = newlines
-              if (load(newlines, changeEntity = false)) {
-                doBreaks.break()
-              }
-            }
+      var exitLoop = false
+      do {
+        c = fCurrentEntity.ch(fCurrentEntity.position)
+        fCurrentEntity.position += 1
+        if (c == '\r' && external) {
+          newlines += 1
+          fCurrentEntity.lineNumber += 1
+          fCurrentEntity.columnNumber = 1
+          if (fCurrentEntity.position == fCurrentEntity.count) {
+            offset = 0
+            fCurrentEntity.baseCharOffset += (fCurrentEntity.position - fCurrentEntity.startPosition)
+            fCurrentEntity.position = newlines
+            fCurrentEntity.startPosition = newlines
+            if (load(newlines, changeEntity = false))
+              exitLoop = true
+          }
+          if (! exitLoop) {
             if (fCurrentEntity.ch(fCurrentEntity.position) == '\n') {
               fCurrentEntity.position += 1
               offset += 1
             } else {
               newlines += 1
             }
-          } else if (c == '\n') {
-            newlines += 1
-            fCurrentEntity.lineNumber += 1
-            fCurrentEntity.columnNumber = 1
-            if (fCurrentEntity.position == fCurrentEntity.count) {
-              offset = 0
-              fCurrentEntity.baseCharOffset += (fCurrentEntity.position - fCurrentEntity.startPosition)
-              fCurrentEntity.position = newlines
-              fCurrentEntity.startPosition = newlines
-              fCurrentEntity.count = newlines
-              if (load(newlines, changeEntity = false)) {
-                doBreaks.break()
-              }
-            }
-          } else {
-            fCurrentEntity.position -= 1
-            doBreaks.break()
           }
-        } while (fCurrentEntity.position < fCurrentEntity.count - 1)
-      }
-      for (i <- offset until fCurrentEntity.position) {
+        } else if (c == '\n') {
+          newlines += 1
+          fCurrentEntity.lineNumber += 1
+          fCurrentEntity.columnNumber = 1
+          if (fCurrentEntity.position == fCurrentEntity.count) {
+            offset = 0
+            fCurrentEntity.baseCharOffset += (fCurrentEntity.position - fCurrentEntity.startPosition)
+            fCurrentEntity.position = newlines
+            fCurrentEntity.startPosition = newlines
+            fCurrentEntity.count = newlines
+            if (load(newlines, changeEntity = false))
+              exitLoop = true
+          }
+        } else {
+          fCurrentEntity.position -= 1
+          exitLoop = true
+        }
+      } while (! exitLoop && fCurrentEntity.position < fCurrentEntity.count - 1)
+      for (i <- offset until fCurrentEntity.position)
         fCurrentEntity.ch(i) = '\n'
-      }
       val length = fCurrentEntity.position - offset
       if (fCurrentEntity.position == fCurrentEntity.count - 1) {
         buffer.append(fCurrentEntity.ch, offset, length)

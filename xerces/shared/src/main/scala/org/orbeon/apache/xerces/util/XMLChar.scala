@@ -19,7 +19,6 @@ package org.orbeon.apache.xerces.util
 
 import java.util.Arrays
 
-import scala.util.control.Breaks
 
 object XMLChar {
 
@@ -1605,30 +1604,28 @@ object XMLChar {
     var end: Int = 0
     val lengthMinusOne = value.length - 1
     start = 0
-    val whileBreaks = new Breaks
-    whileBreaks.breakable {
-      while (start <= lengthMinusOne) {
-        if (!isSpace(value.charAt(start))) {
-          whileBreaks.break()
-        }
-        start += 1
-      }
+    locally {
+      var exitLoop = false
+      while (! exitLoop && start <= lengthMinusOne)
+        if (! isSpace(value.charAt(start)))
+          exitLoop = true
+        else
+          start += 1
     }
     end = lengthMinusOne
-    whileBreaks.breakable {
-      while (end >= start) {
-        if (!isSpace(value.charAt(end))) {
-          whileBreaks.break()
-        }
-        end -= 1
+    locally {
+      var exitLoop = false
+      while (! exitLoop && end >= start) {
+        if (! isSpace(value.charAt(end)))
+          exitLoop = true
+        else
+          end -= 1
       }
     }
-    if (start == 0 && end == lengthMinusOne) {
+    if (start == 0 && end == lengthMinusOne)
       return value
-    }
-    if (start > lengthMinusOne) {
+    if (start > lengthMinusOne)
       return ""
-    }
     value.substring(start, end + 1)
   }
 }
