@@ -1225,9 +1225,6 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
      * @throws XNIException Thrown on parse error.
      */
     def dispatch(complete: Boolean): Boolean = {
-
-      println(s"zzzz Xerces FragmentContentDispatcher dispatch")
-
       try {
         var again: Boolean = false
         do {
