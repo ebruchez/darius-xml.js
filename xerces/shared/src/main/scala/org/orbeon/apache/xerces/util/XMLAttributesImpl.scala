@@ -770,7 +770,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
           attr.next = fAttributeTableView(bucket)
           fAttributeTableView(bucket) = attr
         }
-        i
+        i -= 1
       }
     }
     null
