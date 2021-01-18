@@ -984,7 +984,6 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
                 setScannerState(SCANNER_STATE_TERMINATED)
                 return false
               }
-              println(s"xxx: ch = $ch")
               reportFatalError("ContentIllegalInTrailingMisc", null)
               fEntityScanner.scanChar()
               setScannerState(SCANNER_STATE_TRAILING_MISC)
