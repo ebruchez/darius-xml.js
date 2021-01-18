@@ -789,15 +789,16 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
           baseSystemId = fCurrentEntity.entityLocation.getExpandedSystemId
         }
         var i = size - 1
-        val whileBreaks = new Breaks
-        whileBreaks.breakable {
-          while (i >= 0) {
-            val externalEntity = fEntityStack.get(i).asInstanceOf[ScannedEntity]
-            if ((externalEntity.entityLocation ne null) &&
-              (externalEntity.entityLocation.getExpandedSystemId ne null)) {
-              baseSystemId = externalEntity.entityLocation.getExpandedSystemId
-              whileBreaks.break()
-            }
+        var exitLoop = false
+        while (! exitLoop && i >= 0) {
+          val externalEntity = fEntityStack.get(i).asInstanceOf[ScannedEntity]
+          if (
+            (externalEntity.entityLocation ne null) &&
+            (externalEntity.entityLocation.getExpandedSystemId ne null)
+          ) {
+            baseSystemId = externalEntity.entityLocation.getExpandedSystemId
+            exitLoop = true
+          } else {
             i -= 1
           }
         }
@@ -806,10 +807,9 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
         baseSystemId, expandSystemId(literalSystemId, baseSystemId, strict = false)), null, fInExternalSubset)
       fEntities.put(name, entity)
     } else {
-      if (fWarnDuplicateEntityDef) {
+      if (fWarnDuplicateEntityDef)
         fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "MSG_DUPLICATE_ENTITY_DEFINITION",
           Array(name), XMLErrorReporter.SEVERITY_WARNING)
-      }
     }
   }
 
@@ -1180,14 +1180,13 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
         if (encoding == "UTF-8") {
           val b3 = new Array[Int](3)
           var count = 0
-          val whileBreaks = new Breaks
-          whileBreaks.breakable {
-            while (count < 3) {
-              b3(count) = rewindableStream.readAndBuffer()
-              if (b3(count) == -1)
-                whileBreaks.break()
+          var exitLoop = false
+          while (! exitLoop && count < 3) {
+            b3(count) = rewindableStream.readAndBuffer()
+            if (b3(count) == -1)
+              exitLoop = true
+            else
               count += 1
-            }
           }
           if (count == 3) {
             if (b3(0) != 0xEF || b3(1) != 0xBB || b3(2) != 0xBF) {
@@ -1200,14 +1199,13 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
         } else if (encoding == "UTF-16") {
           val b4 = new Array[Int](4)
           var count = 0
-          val whileBreaks = new Breaks
-          whileBreaks.breakable {
-            while (count < 4) {
-              b4(count) = rewindableStream.readAndBuffer()
-              if (b4(count) == -1)
-                whileBreaks.break()
+          var exitLoop = false
+          while (! exitLoop && count < 4) {
+            b4(count) = rewindableStream.readAndBuffer()
+            if (b4(count) == -1)
+              exitLoop = true
+            else
               count += 1
-            }
           }
           stream.reset()
           if (count >= 2) {
@@ -1234,14 +1232,13 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
         } else if (encoding == "ISO-10646-UCS-4") {
           val b4 = new Array[Int](4)
           var count = 0
-          val whileBreaks = new Breaks
-          whileBreaks.breakable {
-            while (count < 4) {
-              b4(count) = rewindableStream.readAndBuffer()
-              if (b4(count) == -1)
-                whileBreaks.break()
+          var exitLoop = false
+          while (! exitLoop && count < 4) {
+            b4(count) = rewindableStream.readAndBuffer()
+            if (b4(count) == -1)
+              exitLoop = true
+            else
               count += 1
-            }
           }
           stream.reset()
           if (count == 4) {
@@ -1255,14 +1252,13 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
         } else if (encoding == "ISO-10646-UCS-2") {
           val b4 = new Array[Int](4)
           var count = 0
-          val whileBreaks = new Breaks
-          whileBreaks.breakable {
-            while (count < 4) {
-              b4(count) = rewindableStream.readAndBuffer()
-              if (b4(count) == -1)
-                whileBreaks.break()
+          var exitLoop = false
+          while (! exitLoop && count < 4) {
+            b4(count) = rewindableStream.readAndBuffer()
+            if (b4(count) == -1)
+              exitLoop = true
+            else
               count += 1
-            }
           }
           stream.reset()
           if (count == 4) {

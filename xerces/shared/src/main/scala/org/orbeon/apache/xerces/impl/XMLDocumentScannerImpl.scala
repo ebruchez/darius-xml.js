@@ -725,38 +725,37 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
           again = false
           fScannerState match {
             case SCANNER_STATE_DTD_INTERNAL_DECLS =>
-              val caseBreaks = new Breaks
-              caseBreaks.breakable {
-                val completeDTD = true
-                val readExternalSubset = (fValidation || fLoadExternalDTD) &&
+              var exitLoop = false
+              val completeDTD = true
+              val readExternalSubset =
+                (fValidation || fLoadExternalDTD) &&
                   ((fValidationManager eq null) || !fValidationManager.isCachedDTD)
-                val moreToScan = fDTDScanner.scanDTDInternalSubset(completeDTD, fStandalone, fHasExternalDTD && readExternalSubset)
-                if (!moreToScan) {
-                  if (!fEntityScanner.skipChar(']')) {
-                    reportFatalError("EXPECTED_SQUARE_BRACKET_TO_CLOSE_INTERNAL_SUBSET", null)
+              val moreToScan = fDTDScanner.scanDTDInternalSubset(completeDTD, fStandalone, fHasExternalDTD && readExternalSubset)
+              if (!moreToScan) {
+                if (!fEntityScanner.skipChar(']'))
+                  reportFatalError("EXPECTED_SQUARE_BRACKET_TO_CLOSE_INTERNAL_SUBSET", null)
+                fEntityScanner.skipSpaces()
+                if (!fEntityScanner.skipChar('>'))
+                  reportFatalError("DoctypedeclUnterminated", Array(fDoctypeName))
+                fMarkupDepth -= 1
+                if (fDoctypeSystemId ne null) {
+                  fIsEntityDeclaredVC = !fStandalone
+                  if (readExternalSubset) {
+                    setScannerState(SCANNER_STATE_DTD_EXTERNAL)
+                    exitLoop = true
                   }
-                  fEntityScanner.skipSpaces()
-                  if (!fEntityScanner.skipChar('>')) {
-                    reportFatalError("DoctypedeclUnterminated", Array(fDoctypeName))
+                } else if (fExternalSubsetSource ne null) {
+                  fIsEntityDeclaredVC = !fStandalone
+                  if (readExternalSubset) {
+                    fDTDScanner.setInputSource(fExternalSubsetSource)
+                    fExternalSubsetSource = null
+                    setScannerState(SCANNER_STATE_DTD_EXTERNAL_DECLS)
+                    exitLoop = true
                   }
-                  fMarkupDepth -= 1
-                  if (fDoctypeSystemId ne null) {
-                    fIsEntityDeclaredVC = !fStandalone
-                    if (readExternalSubset) {
-                      setScannerState(SCANNER_STATE_DTD_EXTERNAL)
-                      caseBreaks.break()
-                    }
-                  } else if (fExternalSubsetSource ne null) {
-                    fIsEntityDeclaredVC = !fStandalone
-                    if (readExternalSubset) {
-                      fDTDScanner.setInputSource(fExternalSubsetSource)
-                      fExternalSubsetSource = null
-                      setScannerState(SCANNER_STATE_DTD_EXTERNAL_DECLS)
-                      caseBreaks.break()
-                    }
-                  } else {
-                    fIsEntityDeclaredVC = fEntityManager.hasPEReferences && !fStandalone
-                  }
+                } else {
+                  fIsEntityDeclaredVC = fEntityManager.hasPEReferences && !fStandalone
+                }
+                if (! exitLoop) {
                   setScannerState(SCANNER_STATE_PROLOG)
                   setDispatcher(fPrologDispatcher)
                   fEntityManager.setEntityHandler(XMLDocumentScannerImpl.this)

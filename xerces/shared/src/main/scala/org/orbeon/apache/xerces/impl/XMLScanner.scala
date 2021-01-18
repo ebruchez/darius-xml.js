@@ -851,31 +851,29 @@ abstract class XMLScanner extends XMLComponent {
     fStringBuffer.clear()
     var skipSpace = true
     var dataok = true
-    val whileBreaks = new Breaks
-    whileBreaks.breakable {
-      while (true) {
-        val c = fEntityScanner.scanChar()
-        if (c == ' ' || c == '\n' || c == '\r') {
-          if (!skipSpace) {
-            fStringBuffer.append(' ')
-            skipSpace = true
-          }
-        } else if (c == quote) {
-          if (skipSpace) {
-            fStringBuffer.length -= 1
-          }
-          literal.setValues(fStringBuffer)
-          whileBreaks.break()
-        } else if (XMLChar.isPubid(c)) {
-          fStringBuffer.append(c.toChar)
-          skipSpace = false
-        } else if (c == -1) {
-          reportFatalError("PublicIDUnterminated", null)
-          return false
-        } else {
-          dataok = false
-          reportFatalError("InvalidCharInPublicID", Array(Integer.toHexString(c)))
+
+    var exitLoop = false
+    while (! exitLoop) {
+      val c = fEntityScanner.scanChar()
+      if (c == ' ' || c == '\n' || c == '\r') {
+        if (!skipSpace) {
+          fStringBuffer.append(' ')
+          skipSpace = true
         }
+      } else if (c == quote) {
+        if (skipSpace)
+          fStringBuffer.length -= 1
+        literal.setValues(fStringBuffer)
+        exitLoop = true
+      } else if (XMLChar.isPubid(c)) {
+        fStringBuffer.append(c.toChar)
+        skipSpace = false
+      } else if (c == -1) {
+        reportFatalError("PublicIDUnterminated", null)
+        return false
+      } else {
+        dataok = false
+        reportFatalError("InvalidCharInPublicID", Array(Integer.toHexString(c)))
       }
     }
     dataok
