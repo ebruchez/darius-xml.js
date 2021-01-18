@@ -164,7 +164,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
     var index: Int = 0
     if (fLength < SIZE_LIMIT) {
       index =
-        if ((name.uri ne null) && name.uri.length != 0)
+        if ((name.uri ne null) && name.uri.nonEmpty)
           getIndexFast(name.uri, name.localpart)
         else
           getIndexFast(name.rawname)
@@ -180,7 +180,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
         }
         fLength += 1
       }
-    } else if ((name.uri eq null) || name.uri.length == 0 ||
+    } else if ((name.uri eq null) || name.uri.isEmpty ||
       { index = getIndexFast(name.uri, name.localpart); index } == -1) {
       if (!fIsTableViewConsistent || fLength == SIZE_LIMIT) {
         prepareAndPopulateTableView()

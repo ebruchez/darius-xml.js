@@ -889,9 +889,8 @@ abstract class XMLScanner extends XMLComponent {
     val end = value.offset + value.length
     for (i <- value.offset until end) {
       val c = value.ch(i)
-      if (c < 0x20) {
+      if (c < 0x20)
         value.ch(i) = ' '
-      }
     }
   }
 
@@ -920,9 +919,8 @@ abstract class XMLScanner extends XMLComponent {
     val end = value.offset + value.length
     for (i <- value.offset until end) {
       val c = value.ch(i)
-      if (c < 0x20) {
+      if (c < 0x20)
         return i - value.offset
-      }
     }
     -1
   }

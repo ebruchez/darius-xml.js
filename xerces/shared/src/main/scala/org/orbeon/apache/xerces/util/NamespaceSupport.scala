@@ -103,9 +103,8 @@ class NamespaceSupport extends NamespaceContext {
   }
 
   def declarePrefix(prefix: String, uri: String): Boolean = {
-    if (prefix == XMLSymbols.PREFIX_XML || prefix == XMLSymbols.PREFIX_XMLNS) {
+    if (prefix == XMLSymbols.PREFIX_XML || prefix == XMLSymbols.PREFIX_XMLNS)
       return false
-    }
     var i = fNamespaceSize
     while (i > fContext(fCurrentContext)) {
       if (fNamespace(i - 2) == prefix) {
@@ -129,9 +128,8 @@ class NamespaceSupport extends NamespaceContext {
   def getURI(prefix: String): String = {
     var i = fNamespaceSize
     while (i > 0) {
-      if (fNamespace(i - 2) == prefix) {
+      if (fNamespace(i - 2) == prefix)
         return fNamespace(i - 1)
-      }
       i -= 2
     }
     null
@@ -140,21 +138,19 @@ class NamespaceSupport extends NamespaceContext {
   def getPrefix(uri: String): String = {
     var i = fNamespaceSize
     while (i > 0) {
-      if (fNamespace(i - 1) == uri) {
-        if (getURI(fNamespace(i - 2)) == uri) return fNamespace(i - 2)
-      }
+      if (fNamespace(i - 1) == uri)
+        if (getURI(fNamespace(i - 2)) == uri)
+          return fNamespace(i - 2)
       i -= 2
     }
     null
   }
 
-  def getDeclaredPrefixCount: Int = {
+  def getDeclaredPrefixCount: Int =
     (fNamespaceSize - fContext(fCurrentContext)) / 2
-  }
 
-  def getDeclaredPrefixAt(index: Int): String = {
+  def getDeclaredPrefixAt(index: Int): String =
     fNamespace(fContext(fCurrentContext) + index * 2)
-  }
 
   def getAllPrefixes: Iterator[String] = {
     var count = 0
@@ -195,9 +191,8 @@ class NamespaceSupport extends NamespaceContext {
   def containsPrefix(prefix: String): Boolean = {
     var i = fNamespaceSize
     while (i > 0) {
-      if (fNamespace(i - 2) == prefix) {
+      if (fNamespace(i - 2) == prefix)
         return true
-      }
       i -= 2
     }
     false

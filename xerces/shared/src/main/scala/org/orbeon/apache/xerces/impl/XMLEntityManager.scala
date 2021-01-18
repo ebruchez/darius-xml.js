@@ -822,10 +822,10 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    */
   def isExternalEntity(entityName: String): Boolean = {
     val entity = fEntities.get(entityName)
-    if (entity eq null) {
-      return false
-    }
-    entity.isExternal
+    if (entity eq null)
+      false
+    else
+      entity.isExternal
   }
 
   /**
@@ -838,10 +838,10 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    */
   def isEntityDeclInExternalSubset(entityName: String): Boolean = {
     val entity = fEntities.get(entityName)
-    if (entity eq null) {
-      return false
-    }
-    entity.isEntityDeclInExternalSubset
+    if (entity eq null)
+      false
+    else
+      entity.isEntityDeclInExternalSubset
   }
 
   /**

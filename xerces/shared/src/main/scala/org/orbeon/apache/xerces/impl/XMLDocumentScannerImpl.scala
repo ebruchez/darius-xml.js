@@ -720,7 +720,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
     def dispatch(complete: Boolean): Boolean = {
       fEntityManager.setEntityHandler(null)
       try {
-        var again: Boolean = false
+        var again = false
         do {
           again = false
           fScannerState match {
@@ -785,18 +785,17 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
                 getScannerStateName(fScannerState) +
                 ')')
           }
-        } while (complete || again);
+        } while (complete || again)
       } catch {
         case e: MalformedByteSequenceException =>
-          fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR,
-            e)
+          fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR, e)
           return false
 // @ebruchez: not supported in Scala.js
 //        case e: CharConversionException =>
 //          fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "CharConversionFailure", null, XMLErrorReporter.SEVERITY_FATAL_ERROR,
 //            e)
 //          return false
-        case e: EOFException =>
+        case _: EOFException =>
           reportFatalError("PrematureEOF", null)
           return false
       } finally {
