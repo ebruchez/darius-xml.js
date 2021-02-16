@@ -19,7 +19,6 @@ package org.orbeon.apache.xerces.util
 
 import org.orbeon.apache.xerces.util.SymbolTable._
 
-import scala.util.control.Breaks
 
 private object SymbolTable {
 
@@ -210,17 +209,26 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
    */
   def addSymbol(buffer: Array[Char], offset: Int, length: Int): String = {
     var bucket = hash(buffer, offset, length) % fTableSize
-    val whileBreaks = new Breaks
-    whileBreaks.breakable {
+    locally {
       var entry = fBuckets(bucket)
-      while (entry ne null) {
+      // ORBEON: Avoid non-local return
+      var exitLoop = false
+      while (! exitLoop && (entry ne null)) {
         if (length == entry.characters.length) {
-          for (i <- 0 until length if buffer(offset + i) != entry.characters(i)) {
-            whileBreaks.break()
+
+          var i = 0
+          while (! exitLoop && i < length) {
+            if (buffer(offset + i) != entry.characters(i))
+              exitLoop = true // continue after outer `while`
+            else
+              i += 1
           }
-          return entry.symbol
+
+          if (! exitLoop)
+            return entry.symbol
         }
-        entry = entry.next
+        if (! exitLoop)
+          entry = entry.next
       }
     }
     if (fCount >= fThreshold) {
@@ -300,13 +308,17 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
   def containsSymbol(symbol: String): Boolean = {
     val bucket = hash(symbol) % fTableSize
     val length = symbol.length
-    val whileBreaks = new Breaks
-    whileBreaks.breakable {
+    locally {
       var entry = fBuckets(bucket)
       while (entry ne null) {
         if (length == entry.characters.length) {
-          for (i <- 0 until length if symbol.charAt(i) != entry.characters(i)) {
-            whileBreaks.break()
+          // ORBEON: Avoid non-local return
+          var i = 0
+          while (i < length) {
+            if (symbol.charAt(i) != entry.characters(i))
+              return false
+            else
+              i += 1
           }
           return true
         }
@@ -326,13 +338,17 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
    */
   def containsSymbol(buffer: Array[Char], offset: Int, length: Int): Boolean = {
     val bucket = hash(buffer, offset, length) % fTableSize
-    val whileBreaks = new Breaks
-    whileBreaks.breakable {
+    locally {
       var entry = fBuckets(bucket)
       while (entry ne null) {
         if (length == entry.characters.length) {
-          for (i <- 0 until length if buffer(offset + i) != entry.characters(i)) {
-            whileBreaks.break()
+          // ORBEON: Avoid non-local return
+          var i = 0
+          while (i < length) {
+            if (buffer(offset + i) != entry.characters(i))
+              return false
+            else
+              i += 1
           }
           return true
         }
