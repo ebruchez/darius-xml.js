@@ -562,8 +562,7 @@ class XMLEntityScanner extends XMLLocator {
     val external = fCurrentEntity.isExternal
     if (c == '\n' || (c == '\r' && external)) {
       if (DEBUG_BUFFER) {
-        System.out.print("[newline, " + offset + ", " + fCurrentEntity.position +
-          ": ")
+        System.out.print("[newline, " + offset + ", " + fCurrentEntity.position + ": ")
         XMLEntityManager.print(fCurrentEntity)
         println()
       }
@@ -614,16 +613,14 @@ class XMLEntityScanner extends XMLLocator {
       if (fCurrentEntity.position == fCurrentEntity.count - 1) {
         content.setValues(fCurrentEntity.ch, offset, length)
         if (DEBUG_BUFFER) {
-          System.out.print("]newline, " + offset + ", " + fCurrentEntity.position +
-            ": ")
+          System.out.print("]newline, " + offset + ", " + fCurrentEntity.position + ": ")
           XMLEntityManager.print(fCurrentEntity)
           println()
         }
         return -1
       }
       if (DEBUG_BUFFER) {
-        System.out.print("]newline, " + offset + ", " + fCurrentEntity.position +
-          ": ")
+        System.out.print("]newline, " + offset + ", " + fCurrentEntity.position + ": ")
         XMLEntityManager.print(fCurrentEntity)
         println()
       }
