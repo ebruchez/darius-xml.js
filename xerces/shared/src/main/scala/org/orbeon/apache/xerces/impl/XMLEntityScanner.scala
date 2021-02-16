@@ -30,7 +30,6 @@ import org.orbeon.apache.xerces.xni.QName
 import org.orbeon.apache.xerces.xni.XMLLocator
 import org.orbeon.apache.xerces.xni.XMLString
 
-import scala.util.control.Breaks
 
 object XMLEntityScanner {
 
@@ -932,35 +931,42 @@ class XMLEntityScanner extends XMLLocator {
         println()
       }
     }
-    val whileBreaks = new Breaks
-    val forBreaks = new Breaks
-    whileBreaks.breakable {
-      while (fCurrentEntity.position < fCurrentEntity.count) {
+
+    locally {
+      var exitOuterLoop = false
+      while (! exitOuterLoop && fCurrentEntity.position < fCurrentEntity.count) {
         c = fCurrentEntity.ch(fCurrentEntity.position)
         fCurrentEntity.position += 1
         if (c == charAt0) {
           val delimOffset = fCurrentEntity.position - 1
-          forBreaks.breakable {
-            for (i <- 1 until delimLen) {
+
+          locally {
+            var i = 0
+            var exitInnerLoop = false
+            while (! exitInnerLoop && i < delimLen) {
               if (fCurrentEntity.position == fCurrentEntity.count) {
                 fCurrentEntity.position -= i
-                whileBreaks.break()
-              }
-              c = fCurrentEntity.ch(fCurrentEntity.position)
-              fCurrentEntity.position += 1
-              if (delimiter.charAt(i) != c) {
-                fCurrentEntity.position -= 1
-                forBreaks.break()
+                exitInnerLoop = true
+                exitOuterLoop = true
+              } else {
+                c = fCurrentEntity.ch(fCurrentEntity.position)
+                fCurrentEntity.position += 1
+                if (delimiter.charAt(i) != c) {
+                  fCurrentEntity.position -= 1
+                  exitInnerLoop = true
+                } else {
+                  i += 1
+                }
               }
             }
           }
-          if (fCurrentEntity.position == delimOffset + delimLen) {
+          if (! exitOuterLoop && fCurrentEntity.position == delimOffset + delimLen) {
             found = true
-            whileBreaks.break()
+            exitOuterLoop = true
           }
         } else if (c == '\n' || (external && c == '\r')) {
           fCurrentEntity.position -= 1
-          whileBreaks.break()
+          exitOuterLoop = true
         } else if (XMLChar.isInvalid(c)) {
           fCurrentEntity.position -= 1
           val length = fCurrentEntity.position - offset
