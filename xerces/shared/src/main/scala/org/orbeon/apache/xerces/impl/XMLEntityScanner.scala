@@ -1203,11 +1203,13 @@ class XMLEntityScanner extends XMLLocator {
       XMLEntityManager.print(fCurrentEntity)
       println()
     }
-    if (fCurrentEntity.position == fCurrentEntity.count) {
+    if (fCurrentEntity.position == fCurrentEntity.count)
       load(0, changeEntity = true)
-    }
+    // ORBEON: Avoid non-local return.
     val length = s.length
-    for (i <- 0 until length) {
+    var exitLoop = false
+    var i = 0
+    while (! exitLoop && i < length) {
       val c = fCurrentEntity.ch(fCurrentEntity.position)
       fCurrentEntity.position += 1
       if (c != s.charAt(i)) {
@@ -1217,9 +1219,8 @@ class XMLEntityScanner extends XMLLocator {
           XMLEntityManager.print(fCurrentEntity)
           println(" -> false")
         }
-        return false
-      }
-      if (i < length - 1 && fCurrentEntity.position == fCurrentEntity.count) {
+        exitLoop = true
+      } else if (i < length - 1 && fCurrentEntity.position == fCurrentEntity.count) {
         System.arraycopy(fCurrentEntity.ch, fCurrentEntity.count - i - 1, fCurrentEntity.ch, 0, i + 1)
         if (load(i + 1, changeEntity = false)) {
           fCurrentEntity.startPosition -= i + 1
@@ -1229,17 +1230,23 @@ class XMLEntityScanner extends XMLLocator {
             XMLEntityManager.print(fCurrentEntity)
             println(" -> false")
           }
-          return false
+          exitLoop = true
         }
+      } else {
+        i += 1
       }
     }
-    if (DEBUG_BUFFER) {
-      System.out.print(")skipString, \"" + s + "\": ")
-      XMLEntityManager.print(fCurrentEntity)
-      println(" -> true")
+    if (exitLoop) {
+      false
+    } else {
+      if (DEBUG_BUFFER) {
+        System.out.print(")skipString, \"" + s + "\": ")
+        XMLEntityManager.print(fCurrentEntity)
+        println(" -> true")
+      }
+      fCurrentEntity.columnNumber += length
+      true
     }
-    fCurrentEntity.columnNumber += length
-    true
   }
 
   /**
