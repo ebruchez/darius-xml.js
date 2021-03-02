@@ -1231,6 +1231,8 @@ class XMLEntityScanner extends XMLLocator {
             println(" -> false")
           }
           exitLoop = true
+        } else {
+          i += 1
         }
       } else {
         i += 1
