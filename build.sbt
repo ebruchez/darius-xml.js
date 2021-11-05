@@ -3,13 +3,13 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 enablePlugins(ScalaJSPlugin)
 enablePlugins(ScalaNativePlugin)
 
-lazy val scala212 = "2.12.13"
+lazy val scala212 = "2.12.15"
 lazy val scala213 = "2.13.4"
 lazy val supportedScalaVersions = List(scala212, scala213)
 
 val ScalaJsStubsVersion          = "1.0.0" // can be different from Scala.js version
-val ScalaJsDomVersion            = "0.9.8"
-val ScalaJsJQueryVersion         = "0.9.6"
+val ScalaJsDomVersion            = "2.0.0"
+val ScalaJsJQueryVersion         = "1.0.0"
 val UTestVersion                 = "0.7.7"
 //val ScalaTestVersion             = "3.2.1"
 val ScalaCollectionCompatVersion = "2.4.2"
@@ -19,13 +19,15 @@ ThisBuild / githubRepository  := "xerces-xml"
 ThisBuild / githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
 ThisBuild / traceLevel        := 0
 
+ThisBuild / evictionErrorLevel := Level.Info
+
 //jsDependencies      += RuntimeDOM
 
 lazy val xerces = (crossProject(JVMPlatform, JSPlatform, NativePlatform).crossType(CrossType.Full) in file("xerces"))
   .settings(
     organization := "org.orbeon",
     name         := "xerces",
-    version      := "2.11.0.11-SNAPSHOT",
+    version      := "2.11.0.12-SNAPSHOT",
 
     scalaVersion       := scala212,
     crossScalaVersions := supportedScalaVersions,
