@@ -19,7 +19,6 @@ package org.orbeon.apache.xerces.impl.msg
 
 import org.orbeon.apache.xerces.util.MessageFormatter
 
-import scala.collection.compat._
 
 object XMLMessageFormatter {
   val XML_DOMAIN   = "http://www.w3.org/TR/1998/REC-xml-19980210"

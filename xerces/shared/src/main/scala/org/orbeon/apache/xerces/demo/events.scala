@@ -19,7 +19,6 @@ package org.orbeon.apache.xerces.demo
 import org.orbeon.apache.xerces.xni._
 import org.orbeon.apache.xerces.xni.parser.XMLDocumentSource
 
-import scala.collection.compat._
 import scala.collection.mutable.ListBuffer
 
 sealed trait XMLEvent
