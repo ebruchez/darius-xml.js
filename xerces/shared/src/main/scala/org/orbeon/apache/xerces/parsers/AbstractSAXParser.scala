@@ -107,7 +107,7 @@ abstract class AbstractSAXParser(config: XMLParserConfiguration)
     try
       config.setFeature(ALLOW_UE_AND_NOTATION_EVENTS, false)
     catch {
-      case _: XMLConfigurationException ⇒
+      case _: XMLConfigurationException =>
       // it wasn't a recognized feature, so we don't worry about it
     }
   }
@@ -127,7 +127,7 @@ abstract class AbstractSAXParser(config: XMLParserConfiguration)
         if (fContentHandler != null) fContentHandler.startDocument()
       }
     } catch {
-      case e: SAXException ⇒
+      case e: SAXException =>
         throw new XNIException(e)
     }
   }
@@ -580,12 +580,7 @@ abstract class AbstractSAXParser(config: XMLParserConfiguration)
             locatorImpl.setSystemId(e.getExpandedSystemId)
             locatorImpl.setLineNumber(e.getLineNumber)
             locatorImpl.setColumnNumber(e.getColumnNumber)
-            throw (
-              if (ex == null)
-                new SAXParseException(e.getMessage, locatorImpl)
-              else
-                new SAXParseException(e.getMessage, locatorImpl, ex)
-            )
+            throw new SAXParseException(e.getMessage, locatorImpl)
           case e @ (_: SAXException | _: IOException) => // why did we create an XMLParseException?
             throw e
           case ex =>

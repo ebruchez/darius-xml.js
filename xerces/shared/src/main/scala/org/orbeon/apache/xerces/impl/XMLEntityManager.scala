@@ -145,7 +145,7 @@ object XMLEntityManager {
   /**
    Property defaults.
    */
-  private val PROPERTY_DEFAULTS = Array(null, null, null, null, new java.lang.Integer(DEFAULT_BUFFER_SIZE), null)
+  private val PROPERTY_DEFAULTS = Array(null, null, null, null, Integer.valueOf(DEFAULT_BUFFER_SIZE), null)
 
   private val XMLEntity = "[xml]".intern()
   private val DTDEntity = "[dtd]".intern()
@@ -1104,7 +1104,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       isExternal: Boolean): Unit = {
     val encoding = setupCurrentEntity(name, xmlInputSource, literal, isExternal)
     if ((fSecurityManager ne null) && fEntityExpansionCount > fEntityExpansionLimit) {
-      fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EntityExpansionLimitExceeded", Array(new java.lang.Integer(fEntityExpansionLimit)),
+      fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EntityExpansionLimitExceeded", Array(Integer.valueOf(fEntityExpansionLimit)),
         XMLErrorReporter.SEVERITY_FATAL_ERROR)
       fEntityExpansionCount = 0
     }

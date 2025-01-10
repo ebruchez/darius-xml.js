@@ -67,7 +67,7 @@ class ErrorHandlerWrapper extends XMLErrorHandler {
   protected var fErrorHandler: ErrorHandler = null
 
   /** Wraps the specified SAX error handler. */
-  def this(errorHandler: ErrorHandler) {
+  def this(errorHandler: ErrorHandler) = {
     this()
     setErrorHandler(errorHandler)
   }

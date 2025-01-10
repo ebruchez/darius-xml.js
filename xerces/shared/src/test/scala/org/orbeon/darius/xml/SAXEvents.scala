@@ -119,7 +119,7 @@ class AllCollector extends ContentHandler with LexicalHandler {
   import SAXEvents._
 
   private var _events = ListBuffer[SAXEvent]()
-  def events: List[SAXEvent] = _events.result
+  def events: List[SAXEvent] = _events.result()
 
   def setDocumentLocator(locator: Locator)                                          : Unit = _events += DocumentLocator(locator)
   def startDocument()                                                               : Unit = _events += StartDocument

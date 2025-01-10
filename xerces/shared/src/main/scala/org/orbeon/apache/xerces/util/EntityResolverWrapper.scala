@@ -36,7 +36,7 @@ class EntityResolverWrapper extends XMLEntityResolver {
   protected var fEntityResolver: EntityResolver = null
 
   /** Wraps the specified SAX entity resolver. */
-  def this(entityResolver: EntityResolver) {
+  def this(entityResolver: EntityResolver) = {
     this()
     setEntityResolver(entityResolver)
   }

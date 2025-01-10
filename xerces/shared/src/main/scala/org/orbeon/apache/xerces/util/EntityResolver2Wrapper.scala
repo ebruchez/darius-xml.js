@@ -42,7 +42,7 @@ class EntityResolver2Wrapper extends ExternalSubsetResolver {
    *
    * @param entityResolver the SAX entity resolver to wrap
    */
-  def this(entityResolver: EntityResolver2) {
+  def this(entityResolver: EntityResolver2) = {
     this()
     setEntityResolver(entityResolver)
   }
