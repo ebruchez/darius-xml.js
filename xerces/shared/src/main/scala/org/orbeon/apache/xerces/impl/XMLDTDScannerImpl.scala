@@ -87,7 +87,7 @@ protected[impl] object XMLDTDScannerImpl {
   /**
    Property defaults.
    */
-  private val PROPERTY_DEFAULTS = Array(null, null, null)
+  private val PROPERTY_DEFAULTS = Array[AnyRef](null, null, null)
 
   /**
    Debug scanner state.
@@ -304,11 +304,12 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
         }
       }
     }
-    do {
+    while ({
       if (!scanDecls(complete)) {
         return false
       }
-    } while (complete)
+      complete
+    }) ()
     true
   }
 
@@ -343,15 +344,16 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
       }
       setScannerState(SCANNER_STATE_MARKUP_DECL)
     }
-    do {
+    while ({
       if (!scanDecls(complete)) {
-        if ((fDTDHandler ne null) && ! hasExternalSubset) {
+        if ((fDTDHandler ne null) && !hasExternalSubset) {
           fDTDHandler.endDTD(null)
         }
         setScannerState(SCANNER_STATE_TEXT_DECL)
         return false
       }
-    } while (complete)
+      complete
+    }) ()
     true
   }
 
@@ -984,7 +986,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
       fMarkUpDepth += 1
       val doBreaks = new Breaks
       doBreaks.breakable {
-        do {
+        while ({
           skipSeparator(spaceRequired = false, lookForPERefs = !scanningInternalSubset())
           val aName = fEntityScanner.scanName()
           if (aName eq null) {
@@ -999,7 +1001,8 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
             skipSeparator(spaceRequired = false, lookForPERefs = !scanningInternalSubset())
             c = fEntityScanner.scanChar()
           }
-        } while (c == '|')
+          c == '|'
+        }) ()
       }
       if (c != ')') {
         reportFatalError("NotationTypeUnterminated", Array(elName, atName))
@@ -1014,7 +1017,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
       fMarkUpDepth += 1
       val doBreaks = new Breaks
       doBreaks.breakable {
-        do {
+        while ({
           skipSeparator(spaceRequired = false, lookForPERefs = !scanningInternalSubset())
           val token = fEntityScanner.scanNmtoken()
           if (token eq null) {
@@ -1029,7 +1032,8 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
             skipSeparator(spaceRequired = false, lookForPERefs = !scanningInternalSubset())
             c = fEntityScanner.scanChar()
           }
-        } while (c == '|')
+          c == '|'
+        }) ()
       }
       if (c != ')') {
         reportFatalError("EnumerationUnterminated", Array(elName, atName))
@@ -1238,7 +1242,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
     if (fEntityScanner.scanLiteral(quote, fString) != quote) {
       fStringBuffer.clear()
       fStringBuffer2.clear()
-      do {
+      while ({
         fStringBuffer.append(fString)
         fStringBuffer2.append(fString)
         if (fEntityScanner.skipChar('&')) {
@@ -1298,7 +1302,8 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
             fEntityScanner.scanChar()
           }
         }
-      } while (fEntityScanner.scanLiteral(quote, fString) != quote)
+        fEntityScanner.scanLiteral(quote, fString) != quote
+      }) ()
       fStringBuffer.append(fString)
       fStringBuffer2.append(fString)
       literal = fStringBuffer
@@ -1533,11 +1538,12 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
       } else {
         reportFatalError("MSG_MARKUP_NOT_RECOGNIZED_IN_DTD", null)
         var ch: Int = 0
-        do {
+        while ({
           fEntityScanner.scanChar()
           skipSeparator(spaceRequired = false, lookForPERefs = true)
           ch = fEntityScanner.peekChar()
-        } while (ch != '<' && ch != ']' && !XMLChar.isSpace(ch))
+          ch != '<' && ch != ']' && !XMLChar.isSpace(ch)
+        }) ()
       }
       skipSeparator(spaceRequired = false, lookForPERefs = true)
     }
@@ -1645,9 +1651,10 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
 
   private def skipInvalidEnumerationValue(): Int = {
     var c: Int = 0
-    do {
+    while ({
       c = fEntityScanner.scanChar()
-    } while (c != '|' && c != ')')
+      c != '|' && c != ')'
+    }) ()
     ensureEnumerationSize(fEnumerationCount + 1)
     fEnumeration(fEnumerationCount) = XMLSymbols.EMPTY_STRING
     fEnumerationCount += 1

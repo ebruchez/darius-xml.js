@@ -133,7 +133,7 @@ protected[impl] object XMLDocumentFragmentScannerImpl {
   /**
    Property defaults.
    */
-  private val PROPERTY_DEFAULTS = Array(null, null, null, null)
+  private val PROPERTY_DEFAULTS = Array[AnyRef](null, null, null, null)
 
   /**
    Debug scanner state.
@@ -424,11 +424,12 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
   def scanDocument(complete: Boolean): Boolean = {
     fEntityScanner = fEntityManager.getEntityScanner
     fEntityManager.setEntityHandler(this)
-    do {
+    while ({
       if (!fDispatcher.dispatch(complete)) {
         return false
       }
-    } while (complete)
+      complete
+    }) ()
     true
   }
 
@@ -737,7 +738,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
     var empty = false
     fAttributes.removeAllAttributes()
     var exitLoop = false
-    do {
+    while (! exitLoop) {
       val sawSpace = fEntityScanner.skipSpaces()
       val c = fEntityScanner.peekChar()
       if (c == '>') {
@@ -757,7 +758,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
       }
       if (! exitLoop)
         scanAttribute(fAttributes)
-    } while (! exitLoop)
+    }
     if (fDocumentHandler ne null) {
       if (empty) {
         fMarkupDepth -= 1
@@ -798,7 +799,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
     var empty = false
     fAttributes.removeAllAttributes()
     var exitLoop = false
-    do {
+    while (! exitLoop) {
       val c = fEntityScanner.peekChar()
       if (c == '>') {
         fEntityScanner.scanChar()
@@ -819,7 +820,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
         scanAttribute(fAttributes)
         fSawSpace = fEntityScanner.skipSpaces()
       }
-    } while (! exitLoop)
+    }
     if (fDocumentHandler ne null) {
       if (empty) {
         fMarkupDepth -= 1
@@ -1227,7 +1228,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
     def dispatch(complete: Boolean): Boolean = {
       try {
         var again: Boolean = false
-        do {
+        while ({
           again = false
           fScannerState match {
             case SCANNER_STATE_CONTENT =>
@@ -1239,7 +1240,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
                 again = true
               } else {
                 var exitLoop = false
-                do {
+                while ({
                   val c = scanContent()
                   if (c == '<') {
                     fEntityScanner.scanChar()
@@ -1262,7 +1263,8 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
                       fEntityScanner.scanChar()
                     }
                   }
-                } while (! exitLoop && complete)
+                  !exitLoop && complete
+                }) ()
               }
             case SCANNER_STATE_START_OF_MARKUP =>
               fMarkupDepth += 1
@@ -1348,7 +1350,8 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
               reportFatalError("DoctypeIllegalInContent", null)
               setScannerState(SCANNER_STATE_CONTENT)
           }
-        } while (complete || again)
+          complete || again
+        }) ()
       } catch {
         case e: MalformedByteSequenceException =>
           fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR,

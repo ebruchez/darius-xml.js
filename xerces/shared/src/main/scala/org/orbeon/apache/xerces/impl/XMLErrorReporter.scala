@@ -84,7 +84,7 @@ object XMLErrorReporter {
   /**
    Property defaults.
    */
-  private val PROPERTY_DEFAULTS = Array(null)
+  private val PROPERTY_DEFAULTS = Array[AnyRef](null)
 }
 
 /**

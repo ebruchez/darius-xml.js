@@ -567,7 +567,7 @@ class XMLEntityScanner extends XMLLocator {
         println()
       }
       var exitLoop = false
-      do {
+      while ({
         c = fCurrentEntity.ch(fCurrentEntity.position)
         fCurrentEntity.position += 1
         if (c == '\r' && external) {
@@ -606,7 +606,8 @@ class XMLEntityScanner extends XMLLocator {
           fCurrentEntity.position -= 1
           exitLoop = true
         }
-      } while (! exitLoop && fCurrentEntity.position < fCurrentEntity.count - 1)
+        !exitLoop && fCurrentEntity.position < fCurrentEntity.count - 1
+      }) ()
       for (i <- offset until fCurrentEntity.position)
         fCurrentEntity.ch(i) = '\n'
       val length = fCurrentEntity.position - offset
@@ -707,7 +708,7 @@ class XMLEntityScanner extends XMLLocator {
         println()
       }
       var exitLoop = false
-      do {
+      while ({
         c = fCurrentEntity.ch(fCurrentEntity.position)
         fCurrentEntity.position += 1
         if (c == '\r' && external) {
@@ -746,7 +747,8 @@ class XMLEntityScanner extends XMLLocator {
           fCurrentEntity.position -= 1
           exitLoop = true
         }
-      } while (! exitLoop && fCurrentEntity.position < fCurrentEntity.count - 1)
+        !exitLoop && fCurrentEntity.position < fCurrentEntity.count - 1
+      }) ()
       for (i <- offset until fCurrentEntity.position)
         fCurrentEntity.ch(i) = '\n'
       val length = fCurrentEntity.position - offset
@@ -867,7 +869,7 @@ class XMLEntityScanner extends XMLLocator {
         println()
       }
       var exitLoop = false
-      do {
+      while ({
         c = fCurrentEntity.ch(fCurrentEntity.position)
         fCurrentEntity.position += 1
         if (c == '\r' && external) {
@@ -907,7 +909,8 @@ class XMLEntityScanner extends XMLLocator {
           fCurrentEntity.position -= 1
           exitLoop = true
         }
-      } while (! exitLoop && fCurrentEntity.position < fCurrentEntity.count - 1)
+        !exitLoop && fCurrentEntity.position < fCurrentEntity.count - 1
+      }) ()
       for (i <- offset until fCurrentEntity.position)
         fCurrentEntity.ch(i) = '\n'
       val length = fCurrentEntity.position - offset
@@ -1073,7 +1076,7 @@ class XMLEntityScanner extends XMLLocator {
     var c: Int = fCurrentEntity.ch(fCurrentEntity.position)
     if (XMLChar.isSpace(c)) {
       val external = fCurrentEntity.isExternal
-      do {
+      while ({
         var entityChanged = false
         if (c == '\n' || (external && c == '\r')) {
           fCurrentEntity.lineNumber += 1
@@ -1099,7 +1102,8 @@ class XMLEntityScanner extends XMLLocator {
         if (fCurrentEntity.position == fCurrentEntity.count) {
           load(0, changeEntity = true)
         }
-      } while (XMLChar.isSpace({ c = fCurrentEntity.ch(fCurrentEntity.position); c }))
+        XMLChar.isSpace({ c = fCurrentEntity.ch(fCurrentEntity.position); c })
+      }) ()
       if (DEBUG_BUFFER) {
         System.out.print(")skipSpaces: ")
         XMLEntityManager.print(fCurrentEntity)
@@ -1142,7 +1146,7 @@ class XMLEntityScanner extends XMLLocator {
     var c: Int = fCurrentEntity.ch(fCurrentEntity.position)
     if (XMLChar.isSpace(c)) {
       val external = fCurrentEntity.isExternal
-      do {
+      while ({
         var entityChanged = false
         if (c == '\n' || (external && c == '\r')) {
           fCurrentEntity.lineNumber += 1
@@ -1168,7 +1172,8 @@ class XMLEntityScanner extends XMLLocator {
         if (fCurrentEntity.position == fCurrentEntity.count) {
           load(0, changeEntity = true)
         }
-      } while (XMLChar.isSpace({ c = fCurrentEntity.ch(fCurrentEntity.position); c }))
+        XMLChar.isSpace({ c = fCurrentEntity.ch(fCurrentEntity.position); c })
+      }) ()
       if (DEBUG_BUFFER) {
         System.out.print(")skipDeclSpaces: ")
         XMLEntityManager.print(fCurrentEntity)

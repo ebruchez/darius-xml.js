@@ -286,7 +286,7 @@ abstract class AbstractSAXParser(config: XMLParserConfiguration)
         val uri =
           if (element.uri != null)
             element.uri
-        else
+          else
             ""
         val localpart =
           if (fNamespaces) element

@@ -132,7 +132,7 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
     var empty = false
     fAttributes.removeAllAttributes()
     var exitLoop = false
-    do {
+    while (! exitLoop) {
       val sawSpace = fEntityScanner.skipSpaces()
       val c = fEntityScanner.peekChar()
       if (c == '>') {
@@ -150,7 +150,7 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
       }
       if (! exitLoop)
         scanAttribute(fAttributes)
-    } while (! exitLoop)
+    }
     if (fBindNamespaces) {
       if (fElementQName.prefix == XMLSymbols.PREFIX_XMLNS) {
         fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "ElementXMLNSPrefix", Array(fElementQName.rawname),
@@ -247,7 +247,7 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
     var empty = false
     fAttributes.removeAllAttributes()
     var exitLoop = false
-    do {
+    while (! exitLoop) {
       val c = fEntityScanner.peekChar()
       if (c == '>') {
         fEntityScanner.scanChar()
@@ -266,7 +266,7 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
         scanAttribute(fAttributes)
         fSawSpace = fEntityScanner.skipSpaces()
       }
-    } while (! exitLoop)
+    }
     if (fBindNamespaces) {
       if (fElementQName.prefix == XMLSymbols.PREFIX_XMLNS) {
         fErrorReporter.reportError(XMLMessageFormatter.XMLNS_DOMAIN, "ElementXMLNSPrefix", Array(fElementQName.rawname),

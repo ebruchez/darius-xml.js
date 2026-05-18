@@ -114,7 +114,7 @@ protected[impl] object XMLDocumentScannerImpl {
   /**
    Property defaults.
    */
-  private val PROPERTY_DEFAULTS = Array(null, null, null)
+  private val PROPERTY_DEFAULTS = Array[AnyRef](null, null, null)
 }
 
 /**
@@ -583,7 +583,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
     def dispatch(complete: Boolean): Boolean = {
       try {
         var again: Boolean = false
-        do {
+        while ({
           again = false
           fScannerState match {
             case SCANNER_STATE_PROLOG =>
@@ -674,7 +674,8 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
             case SCANNER_STATE_REFERENCE =>
               reportFatalError("ReferenceIllegalInProlog", null)
           }
-        } while (complete || again)
+          complete || again
+        }) ()
         if (complete) {
           if (fEntityScanner.scanChar() != '<') {
             reportFatalError("RootElementRequired", null)
@@ -721,7 +722,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
       fEntityManager.setEntityHandler(null)
       try {
         var again = false
-        do {
+        while ({
           again = false
           fScannerState match {
             case SCANNER_STATE_DTD_INTERNAL_DECLS =>
@@ -784,7 +785,8 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
                 getScannerStateName(fScannerState) +
                 ')')
           }
-        } while (complete || again)
+          complete || again
+        }) ()
       } catch {
         case e: MalformedByteSequenceException =>
           fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR, e)
@@ -935,7 +937,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
     def dispatch(complete: Boolean): Boolean = {
       try {
         var again: Boolean = false
-        do {
+        while ({
           again = false
           fScannerState match {
             case SCANNER_STATE_TRAILING_MISC =>
@@ -993,7 +995,8 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
             case SCANNER_STATE_TERMINATED =>
               return false
           }
-        } while (complete || again);
+          complete || again
+        }) ()
       } catch {
         case e: MalformedByteSequenceException =>
           fErrorReporter.reportError(e.getDomain, e.getKey, e.getArguments, XMLErrorReporter.SEVERITY_FATAL_ERROR,
@@ -1016,3 +1019,4 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
     }
   }
 }
+

@@ -210,10 +210,10 @@ abstract class XMLScanner extends XMLComponent {
       } catch {
         case e: XMLConfigurationException => true
       }
-		if (! fParserSettings) {
-			init()
-			return
-		}
+    if (! fParserSettings) {
+      init()
+      return
+    }
     fSymbolTable = componentManager.getProperty(SYMBOL_TABLE).asInstanceOf[SymbolTable]
     fErrorReporter = componentManager.getProperty(ERROR_REPORTER).asInstanceOf[XMLErrorReporter]
     fEntityManager = componentManager.getProperty(ENTITY_MANAGER).asInstanceOf[XMLEntityManager]
@@ -442,7 +442,7 @@ abstract class XMLScanner extends XMLComponent {
     var c = fEntityScanner.scanLiteral(quote, value)
     if (c != quote) {
       fStringBuffer2.clear()
-      do {
+      while ({
         fStringBuffer2.append(value)
         if (c != -1) {
           if (c == '&' || c == '%' || c == '<' || c == ']') {
@@ -456,7 +456,8 @@ abstract class XMLScanner extends XMLComponent {
           }
         }
         c = fEntityScanner.scanLiteral(quote, value)
-      } while (c != quote)
+        c != quote
+      }) ()
       fStringBuffer2.append(value)
       value.setValues(fStringBuffer2)
     }
@@ -527,7 +528,7 @@ abstract class XMLScanner extends XMLComponent {
     }
     fStringBuffer.clear()
     if (fEntityScanner.scanData("?>", fStringBuffer)) {
-      do {
+      while ({
         val c = fEntityScanner.peekChar()
         if (c != -1) {
           if (XMLChar.isHighSurrogate(c)) {
@@ -537,7 +538,8 @@ abstract class XMLScanner extends XMLComponent {
             fEntityScanner.scanChar()
           }
         }
-      } while (fEntityScanner.scanData("?>", fStringBuffer))
+        fEntityScanner.scanData("?>", fStringBuffer)
+      }) ()
     }
     data.setValues(fStringBuffer)
   }
@@ -624,7 +626,7 @@ abstract class XMLScanner extends XMLComponent {
     if (c != quote) {
       fScanningAttribute = true
       fStringBuffer.clear()
-      do {
+      while ({
         fStringBuffer.append(value)
         if (DEBUG_ATTR_NORMALIZATION) {
           println("** value2: \"" + fStringBuffer.toString + "\"")
@@ -743,7 +745,8 @@ abstract class XMLScanner extends XMLComponent {
           fStringBuffer2.append(value)
         }
         normalizeWhitespace(value)
-      } while (c != quote || entityDepth != fEntityDepth)
+        c != quote || entityDepth != fEntityDepth
+      }) ()
       fStringBuffer.append(value)
       if (DEBUG_ATTR_NORMALIZATION) {
         println("** valueN: \"" + fStringBuffer.toString + "\"")
@@ -799,7 +802,7 @@ abstract class XMLScanner extends XMLComponent {
       var ident = fString
       if (fEntityScanner.scanLiteral(quote, ident) != quote) {
         fStringBuffer.clear()
-        do {
+        while ({
           fStringBuffer.append(ident)
           val c = fEntityScanner.peekChar()
           if (XMLChar.isMarkup(c) || c == ']') {
@@ -810,7 +813,8 @@ abstract class XMLScanner extends XMLComponent {
             reportFatalError("InvalidCharInSystemID", Array(Integer.toHexString(c)))
             fEntityScanner.scanChar()
           }
-        } while (fEntityScanner.scanLiteral(quote, ident) != quote)
+          fEntityScanner.scanLiteral(quote, ident) != quote
+        }) ()
         fStringBuffer.append(ident)
         ident = fStringBuffer
       }
@@ -994,7 +998,7 @@ abstract class XMLScanner extends XMLComponent {
         }
         fEntityScanner.scanChar()
         fStringBuffer3.append(c.toChar)
-        do {
+        while ({
           c = fEntityScanner.peekChar()
           digit = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')
           if (digit) {
@@ -1004,7 +1008,8 @@ abstract class XMLScanner extends XMLComponent {
             fEntityScanner.scanChar()
             fStringBuffer3.append(c.toChar)
           }
-        } while (digit)
+          digit
+        }) ()
       } else {
         reportFatalError("HexdigitRequiredInCharRef", null)
       }
@@ -1019,7 +1024,7 @@ abstract class XMLScanner extends XMLComponent {
         }
         fEntityScanner.scanChar()
         fStringBuffer3.append(c.toChar)
-        do {
+        while ({
           c = fEntityScanner.peekChar()
           digit = c >= '0' && c <= '9'
           if (digit) {
@@ -1029,7 +1034,8 @@ abstract class XMLScanner extends XMLComponent {
             fEntityScanner.scanChar()
             fStringBuffer3.append(c.toChar)
           }
-        } while (digit)
+          digit
+        }) ()
       } else {
         reportFatalError("DigitRequiredInCharRef", null)
       }

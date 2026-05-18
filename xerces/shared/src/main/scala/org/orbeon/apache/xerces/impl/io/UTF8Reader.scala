@@ -474,14 +474,15 @@ class UTF8Reader(protected val fInputStream: InputStream,
     var remaining = n
     val ch = new Array[Char](fBuffer.length)
     var exitLoop = false
-    do {
+    while ({
       val length = if (ch.length < remaining) ch.length else remaining.toInt
       val count = read(ch, 0, length)
       if (count > 0)
         remaining -= count
       else
         exitLoop = true
-    } while (! exitLoop && remaining > 0)
+      !exitLoop && remaining > 0
+    }) ()
     val skipped = n - remaining
     skipped
   }

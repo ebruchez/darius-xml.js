@@ -1338,10 +1338,10 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
     } catch {
       case e: XMLConfigurationException => parser_settings = true
     }
-		if (! parser_settings) {
-			reset()
-			return
-		}
+    if (! parser_settings) {
+      reset()
+      return
+    }
     try {
       fValidation = componentManager.getFeature(VALIDATION)
     } catch {
