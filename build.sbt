@@ -1,4 +1,4 @@
-import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
+
 
 enablePlugins(ScalaJSPlugin)
 enablePlugins(ScalaNativePlugin)
@@ -25,7 +25,7 @@ lazy val xerces = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Ful
   .settings(
     organization := "org.orbeon",
     name         := "xerces",
-    version      := "2.11.0.14-SNAPSHOT",
+    version      := "2.11.0.16-SNAPSHOT",
 
     scalaVersion       := scala213,
     crossScalaVersions := supportedScalaVersions,
@@ -41,7 +41,7 @@ lazy val xerces = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Ful
     testFrameworks      += new TestFramework("utest.runner.Framework")
   )
   .jsSettings(
-    libraryDependencies ++= Seq("org.xml" %%% "sax" % SaxVersion)
+    libraryDependencies ++= Seq(("org.xml" %% "sax" % SaxVersion).cross(CrossVersion.for2_13Use3))
   )
 //  .nativeSettings(
 //    libraryDependencies ++= Seq("org.xml" %%% "sax" % SaxVersion)
