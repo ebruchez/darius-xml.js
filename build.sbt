@@ -41,7 +41,7 @@ lazy val xerces = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Ful
     testFrameworks      += new TestFramework("utest.runner.Framework")
   )
   .jsSettings(
-    libraryDependencies ++= Seq(("org.xml" %% "sax" % SaxVersion).cross(CrossVersion.for2_13Use3))
+    libraryDependencies ++= Seq(("org.xml" %%% "sax" % SaxVersion).cross(CrossVersion.for2_13Use3))
   )
 //  .nativeSettings(
 //    libraryDependencies ++= Seq("org.xml" %%% "sax" % SaxVersion)

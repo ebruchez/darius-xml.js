@@ -64,16 +64,11 @@ object TranslationFixesTest extends TestSuite {
       }
 
       // Verify addSymbol(Array[Char], Int, Int) returns identical interned references without duplicating
-      val fCountField = classOf[SymbolTable].getDeclaredField("fCount")
-      fCountField.setAccessible(true)
-      val initialCount = fCountField.getInt(st)
-
       for (s <- candidates) {
         val chars = s.toCharArray
         val sym = st.addSymbol(chars, 0, chars.length)
-        assert(candidates.contains(sym))
+        assert(sym eq st.addSymbol(s))
       }
-      assert(fCountField.getInt(st) == initialCount)
     }
 
     test("Bug 3: NamespaceSupport.getAllPrefixes with redeclared prefixes") {
@@ -125,17 +120,15 @@ object TranslationFixesTest extends TestSuite {
     }
 
     test("Bug 5: XMLAttributesImpl.cleanTableView does not hang on overflow") {
-      val attrs = new XMLAttributesImpl()
-      // Use reflection or subclass method to trigger cleanTableView with simulated overflow
-      val cleanMethod = classOf[XMLAttributesImpl].getDeclaredMethod("cleanTableView")
-      cleanMethod.setAccessible(true)
-      val largeCountField = classOf[XMLAttributesImpl].getDeclaredField("fLargeCount")
-      largeCountField.setAccessible(true)
-
-      // Set fLargeCount to Int.MaxValue so that next cleanTableView increments it to negative
-      largeCountField.setInt(attrs, Int.MaxValue)
-      cleanMethod.invoke(attrs) // Must terminate cleanly without infinite loop
-      assert(largeCountField.getInt(attrs) == 1)
+      class TestAttributes extends XMLAttributesImpl {
+        def testCleanOverflow(): Unit = {
+          fLargeCount = Int.MaxValue
+          cleanTableView()
+          assert(fLargeCount == 1)
+        }
+      }
+      val attrs = new TestAttributes()
+      attrs.testCleanOverflow()
     }
 
     test("Bug 6: QName.equals symmetry") {
