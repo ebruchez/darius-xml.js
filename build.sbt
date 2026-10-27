@@ -56,6 +56,7 @@ lazy val xercesJS = xerces.js
 
 lazy val xercesJVM = xerces.jvm
   .settings(
+    Compile / unmanagedSources / excludeFilter := "*.java",
     libraryDependencies += "org.scala-js" %% "scalajs-stubs" % ScalaJsStubsVersion % Provided,
   )
 

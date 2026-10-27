@@ -108,16 +108,23 @@ class UTF8Reader(protected val fInputStream: InputStream,
     var c = fSurrogate
     if (fSurrogate == -1) {
       var index = 0
-      val b0 = if (index == fOffset) fInputStream.read() else fBuffer(index) & 0x00FF
-      index += 1
+      @inline def nextByte(): Int =
+        if (index == fOffset) {
+          fInputStream.read()
+        } else {
+          val b = fBuffer(index) & 0x00FF
+          index += 1
+          b
+        }
+
+      val b0 = nextByte()
       if (b0 == -1) {
         return -1
       }
       if (b0 < 0x80) {
         c = b0.toChar
       } else if ((b0 & 0xE0) == 0xC0 && (b0 & 0x1E) != 0) {
-        val b1 = if (index == fOffset) fInputStream.read() else fBuffer(index) & 0x00FF
-        index += 1
+        val b1 = nextByte()
         if (b1 == -1) {
           expectedByte(2, 2)
         }
@@ -126,16 +133,14 @@ class UTF8Reader(protected val fInputStream: InputStream,
         }
         c = ((b0 << 6) & 0x07C0) | (b1 & 0x003F)
       } else if ((b0 & 0xF0) == 0xE0) {
-        val b1 = if (index == fOffset) fInputStream.read() else fBuffer(index) & 0x00FF
-        index += 1
+        val b1 = nextByte()
         if (b1 == -1) {
           expectedByte(2, 3)
         }
         if ((b1 & 0xC0) != 0x80 || (b0 == 0xED && b1 >= 0xA0) || ((b0 & 0x0F) == 0 && (b1 & 0x20) == 0)) {
           invalidByte(2, 3, b1)
         }
-        val b2 = if (index == fOffset) fInputStream.read() else fBuffer(index) & 0x00FF
-        index += 1
+        val b2 = nextByte()
         if (b2 == -1) {
           expectedByte(3, 3)
         }
@@ -144,24 +149,21 @@ class UTF8Reader(protected val fInputStream: InputStream,
         }
         c = ((b0 << 12) & 0xF000) | ((b1 << 6) & 0x0FC0) | (b2 & 0x003F)
       } else if ((b0 & 0xF8) == 0xF0) {
-        val b1 = if (index == fOffset) fInputStream.read() else fBuffer(index) & 0x00FF
-        index += 1
+        val b1 = nextByte()
         if (b1 == -1) {
           expectedByte(2, 4)
         }
         if ((b1 & 0xC0) != 0x80 || ((b1 & 0x30) == 0 && (b0 & 0x07) == 0)) {
-          invalidByte(2, 3, b1)
+          invalidByte(2, 4, b1)
         }
-        val b2 = if (index == fOffset) fInputStream.read() else fBuffer(index) & 0x00FF
-        index += 1
+        val b2 = nextByte()
         if (b2 == -1) {
           expectedByte(3, 4)
         }
         if ((b2 & 0xC0) != 0x80) {
-          invalidByte(3, 3, b2)
+          invalidByte(3, 4, b2)
         }
-        val b3 = if (index == fOffset) fInputStream.read() else fBuffer(index) & 0x00FF
-        index += 1
+        val b3 = nextByte()
         if (b3 == -1) {
           expectedByte(4, 4)
         }
