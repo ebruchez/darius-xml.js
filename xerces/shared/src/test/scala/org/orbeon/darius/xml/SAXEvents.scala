@@ -4,6 +4,7 @@ import org.xml.sax.ext.LexicalHandler
 import org.xml.sax.{Attributes, ContentHandler, Locator}
 
 import scala.collection.mutable.ListBuffer
+import scala.language.implicitConversions
 
 
 object SAXEvents {

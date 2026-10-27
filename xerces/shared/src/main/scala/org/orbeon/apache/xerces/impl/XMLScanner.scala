@@ -144,7 +144,7 @@ abstract class XMLScanner extends XMLComponent {
   /**
    Namespaces.
    */
-  protected var fNamespaces: Boolean = _
+  protected var fNamespaces: Boolean = false
 
   /**
    Character references notification.
@@ -159,27 +159,27 @@ abstract class XMLScanner extends XMLComponent {
   /**
    Symbol table.
    */
-  protected var fSymbolTable: SymbolTable = _
+  protected var fSymbolTable: SymbolTable = null
 
   /**
    Error reporter.
    */
-  protected var fErrorReporter: XMLErrorReporter = _
+  protected var fErrorReporter: XMLErrorReporter = null
 
   /**
    Entity manager.
    */
-  protected var fEntityManager: XMLEntityManager = _
+  protected var fEntityManager: XMLEntityManager = null
 
   /**
    Entity scanner.
    */
-  protected var fEntityScanner: XMLEntityScanner = _
+  protected var fEntityScanner: XMLEntityScanner = null
 
   /**
    Entity depth.
    */
-  protected var fEntityDepth: Int = _
+  protected var fEntityDepth: Int = 0
 
   /**
    Literal value of the last character refence scanned.
@@ -189,12 +189,12 @@ abstract class XMLScanner extends XMLComponent {
   /**
    Scanning attribute.
    */
-  protected var fScanningAttribute: Boolean = _
+  protected var fScanningAttribute: Boolean = false
 
   /**
    Report entity boundary.
    */
-  protected var fReportEntity: Boolean = _
+  protected var fReportEntity: Boolean = false
 
   private val fString = new XMLString()
   private val fStringBuffer = new XMLStringBuffer()
@@ -919,10 +919,12 @@ abstract class XMLScanner extends XMLComponent {
    */
   protected def isUnchangedByNormalization(value: XMLString): Int = {
     val end = value.offset + value.length
-    for (i <- value.offset until end) {
+    var i = value.offset
+    while (i < end) {
       val c = value.ch(i)
       if (c < 0x20)
         return i - value.offset
+      i += 1
     }
     -1
   }

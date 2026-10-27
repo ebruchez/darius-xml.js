@@ -29,27 +29,27 @@ class XMLResourceIdentifierImpl extends XMLResourceIdentifier {
   /**
    The public identifier.
    */
-  protected var fPublicId: String = _
+  protected var fPublicId: String = null
 
   /**
    The literal system identifier.
    */
-  protected var fLiteralSystemId: String = _
+  protected var fLiteralSystemId: String = null
 
   /**
    The base system identifier.
    */
-  protected var fBaseSystemId: String = _
+  protected var fBaseSystemId: String = null
 
   /**
    The expanded system identifier.
    */
-  protected var fExpandedSystemId: String = _
+  protected var fExpandedSystemId: String = null
 
   /**
    The namespace of the resource.
    */
-  protected var fNamespace: String = _
+  protected var fNamespace: String = null
 
   /**
    * Constructs a resource identifier.

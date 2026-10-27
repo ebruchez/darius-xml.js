@@ -39,7 +39,7 @@ class NamespaceSupport extends NamespaceContext {
   /**
    The top of the namespace information array.
    */
-  protected var fNamespaceSize: Int = _
+  protected var fNamespaceSize: Int = 0
 
   /**
    * Context indexes. This array contains indexes into the namespace
@@ -52,7 +52,7 @@ class NamespaceSupport extends NamespaceContext {
   /**
    The current context.
    */
-  protected var fCurrentContext: Int = _
+  protected var fCurrentContext: Int = 0
 
   protected var fPrefixes: Array[String] = new Array[String](16)
 

@@ -41,17 +41,17 @@ class XMLString {
   /**
    The character array.
    */
-  var ch: Array[Char] = _
+  var ch: Array[Char] = null
 
   /**
    The offset into the character array.
    */
-  var offset: Int = _
+  var offset: Int = 0
 
   /**
    The length of characters from the offset.
    */
-  var length: Int = _
+  var length: Int = 0
 
   /**
    * Constructs an XMLString structure preset with the specified

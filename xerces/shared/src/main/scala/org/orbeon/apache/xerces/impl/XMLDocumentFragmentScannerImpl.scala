@@ -165,7 +165,7 @@ protected[impl] object XMLDocumentFragmentScannerImpl {
     /**
      The size of the stack.
      */
-    protected var fSize: Int = _
+    protected var fSize: Int = 0
 
     for (i <- fElements.indices) {
       fElements(i) = new QName()
@@ -265,7 +265,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
   /**
    Document handler.
    */
-  protected var fDocumentHandler: XMLDocumentHandler = _
+  protected var fDocumentHandler: XMLDocumentHandler = null
 
   /**
    Entity stack.
@@ -275,12 +275,12 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
   /**
    Markup depth.
    */
-  protected var fMarkupDepth: Int = _
+  protected var fMarkupDepth: Int = 0
 
   /**
    Scanner state.
    */
-  protected var fScannerState: Int = _
+  protected var fScannerState: Int = 0
 
   /**
    SubScanner state: inside scanContent method.
@@ -290,27 +290,27 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
   /**
    has external dtd
    */
-  protected var fHasExternalDTD: Boolean = _
+  protected var fHasExternalDTD: Boolean = false
 
   /**
    Standalone.
    */
-  protected var fStandalone: Boolean = _
+  protected var fStandalone: Boolean = false
 
   /**
    True if [Entity Declared] is a VC; false if it is a WFC.
    */
-  protected var fIsEntityDeclaredVC: Boolean = _
+  protected var fIsEntityDeclaredVC: Boolean = false
 
   /**
    External subset resolver. *
    */
-  protected var fExternalSubsetResolver: ExternalSubsetResolver = _
+  protected var fExternalSubsetResolver: ExternalSubsetResolver = null
 
   /**
    Current element.
    */
-  protected var fCurrentElement: QName = _
+  protected var fCurrentElement: QName = null
 
   /**
    Element stack.
@@ -325,7 +325,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
   /**
    Active dispatcher.
    */
-  protected var fDispatcher: Dispatcher = _
+  protected var fDispatcher: Dispatcher = null
 
   /**
    Content dispatcher.
@@ -389,7 +389,7 @@ class XMLDocumentFragmentScannerImpl extends XMLScanner with XMLDocumentScanner 
    * several methods, as is the case when scanning the start of a root element
    * where a DTD external subset may be read after scanning the element name.
    */
-  private var fSawSpace: Boolean = _
+  private var fSawSpace: Boolean = false
 
   /**
    Reusable Augmentations.

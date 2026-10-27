@@ -143,32 +143,32 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
   /**
    DTD scanner.
    */
-  protected var fDTDScanner: XMLDTDScanner = _
+  protected var fDTDScanner: XMLDTDScanner = null
 
   /**
    Validation manager .
    */
-  protected var fValidationManager: ValidationManager = _
+  protected var fValidationManager: ValidationManager = null
 
   /**
    Scanning DTD.
    */
-  protected var fScanningDTD: Boolean = _
+  protected var fScanningDTD: Boolean = false
 
   /**
    Doctype name.
    */
-  protected var fDoctypeName: String = _
+  protected var fDoctypeName: String = null
 
   /**
    Doctype declaration public identifier.
    */
-  protected var fDoctypePublicId: String = _
+  protected var fDoctypePublicId: String = null
 
   /**
    Doctype declaration system identifier.
    */
-  protected var fDoctypeSystemId: String = _
+  protected var fDoctypeSystemId: String = null
 
   /**
    Namespace support.
@@ -188,7 +188,7 @@ class XMLDocumentScannerImpl extends XMLDocumentFragmentScannerImpl {
   /**
    Seen doctype declaration.
    */
-  protected var fSeenDoctypeDecl: Boolean = _
+  protected var fSeenDoctypeDecl: Boolean = false
 
   /**
    XML declaration dispatcher.

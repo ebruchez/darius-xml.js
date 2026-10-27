@@ -175,12 +175,12 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
   /**
    Document scanner.
    */
-  protected var fScanner: XMLDocumentScanner = _
+  protected var fScanner: XMLDocumentScanner = null
 
   /**
    Input Source
    */
-  protected var fInputSource: XMLInputSource = _
+  protected var fInputSource: XMLInputSource = null
 
   /**
    DTD scanner.
@@ -192,12 +192,12 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
   /**
    Document scanner that does namespace binding.
    */
-  private var fNamespaceScanner: XMLNSDocumentScannerImpl = _
+  private var fNamespaceScanner: XMLNSDocumentScannerImpl = null
 
   /**
    Default implementation of scanner
    */
-  private var fNonNSScanner: XMLDocumentScannerImpl = _
+  private var fNonNSScanner: XMLDocumentScannerImpl = null
 
   /**
    fConfigUpdated is set to true if there has been any change to the configuration settings,
@@ -205,7 +205,7 @@ class NonValidatingConfiguration(symbolTable: SymbolTable, protected var fGramma
    */
   protected var fConfigUpdated: Boolean = false
 
-  protected var fLocator: XMLLocator = _
+  protected var fLocator: XMLLocator = null
 
   /**
    * True if a parse is in progress. This state is needed because

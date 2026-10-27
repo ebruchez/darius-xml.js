@@ -17,8 +17,6 @@
 
 package org.orbeon.apache.xerces.util
 
-import scala.beans.BeanProperty
-
 object SecurityManager {
 
   /**
@@ -53,8 +51,13 @@ class SecurityManager {
   /**
    * Entity expansion limit.
    */
-  @BeanProperty
   var entityExpansionLimit: Int = DEFAULT_ENTITY_EXPANSION_LIMIT
+
+  def setEntityExpansionLimit(limit: Int): Unit = {
+    entityExpansionLimit = limit
+  }
+
+  def getEntityExpansionLimit(): Int = entityExpansionLimit
 
   /**
    * W3C XML Schema maxOccurs limit.

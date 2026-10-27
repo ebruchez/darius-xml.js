@@ -60,18 +60,18 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
    If is true, the dtd validator is no longer in the pipeline
    * and the scanner should bind namespaces
    */
-  protected var fBindNamespaces: Boolean = _
+  protected var fBindNamespaces: Boolean = false
 
   /**
    If validating parser, make sure we report an error in the
    *   scanner if DTD grammar is missing.
    */
-  protected var fPerformValidation: Boolean = _
+  protected var fPerformValidation: Boolean = false
 
   /**
    DTD validator
    */
-  private var fDTDValidator: XMLDTDValidatorFilter = _
+  private var fDTDValidator: XMLDTDValidatorFilter = null
 
   /**
    * Saw spaces after element name or between attributes.
@@ -80,7 +80,7 @@ class XMLNSDocumentScannerImpl extends XMLDocumentScannerImpl {
    * several methods, as is the case when scanning the start of a root element
    * where a DTD external subset may be read after scanning the element name.
    */
-  private var fSawSpace: Boolean = _
+  private var fSawSpace: Boolean = false
 
   /**
    * The scanner is responsible for removing DTD validator

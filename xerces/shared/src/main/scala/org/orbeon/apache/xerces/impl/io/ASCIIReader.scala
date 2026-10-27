@@ -119,7 +119,7 @@ class ASCIIReader(
       val b0 = fBuffer(i)
       if (b0 < 0) {
         throw new MalformedByteSequenceException(fFormatter, XMLMessageFormatter.XML_DOMAIN,
-          "InvalidASCII", Array(Integer toString b0 & 0x0FF))
+          "InvalidASCII", Array(Integer.toString(b0 & 0x0FF)))
       }
       ch(offset + i) = b0.toChar
     }

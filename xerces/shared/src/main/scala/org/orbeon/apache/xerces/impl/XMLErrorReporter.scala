@@ -124,17 +124,17 @@ class XMLErrorReporter extends XMLComponent {
   /**
    Error handler.
    */
-  protected var fErrorHandler: XMLErrorHandler = _
+  protected var fErrorHandler: XMLErrorHandler = null
 
   /**
    Document locator.
    */
-  protected var fLocator: XMLLocator = _
+  protected var fLocator: XMLLocator = null
 
   /**
    Continue after fatal error feature.
    */
-  protected var fContinueAfterFatalError: Boolean = _
+  protected var fContinueAfterFatalError: Boolean = false
 
   /**
    * Default error handler. This error handler is only used in the
@@ -142,7 +142,7 @@ class XMLErrorReporter extends XMLComponent {
    * "swallowed" silently. This is one of the most common "problems"
    * reported by users of the parser.
    */
-  protected var fDefaultErrorHandler: XMLErrorHandler = _
+  protected var fDefaultErrorHandler: XMLErrorHandler = null
 
   /**
    * Sets the document locator.

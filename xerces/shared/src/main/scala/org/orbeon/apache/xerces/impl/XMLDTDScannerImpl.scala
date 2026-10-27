@@ -129,37 +129,37 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
   /**
    DTD handler.
    */
-  protected var fDTDHandler: XMLDTDHandler = _
+  protected var fDTDHandler: XMLDTDHandler = null
 
   /**
    DTD content model handler.
    */
-  protected var fDTDContentModelHandler: XMLDTDContentModelHandler = _
+  protected var fDTDContentModelHandler: XMLDTDContentModelHandler = null
 
   /**
    Scanner state.
    */
-  protected var fScannerState: Int = _
+  protected var fScannerState: Int = 0
 
   /**
    Standalone.
    */
-  protected var fStandalone: Boolean = _
+  protected var fStandalone: Boolean = false
 
   /**
    Seen external DTD.
    */
-  protected var fSeenExternalDTD: Boolean = _
+  protected var fSeenExternalDTD: Boolean = false
 
   /**
    Seen a parameter entity reference.
    */
-  protected var fSeenPEReferences: Boolean = _
+  protected var fSeenPEReferences: Boolean = false
 
   /**
    Start DTD called.
    */
-  private var fStartDTDCalled: Boolean = _
+  private var fStartDTDCalled: Boolean = false
 
   /**
    * Stack of content operators (either '|' or ',') in children
@@ -170,7 +170,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
   /**
    Size of content stack.
    */
-  private var fContentDepth: Int = _
+  private var fContentDepth: Int = 0
 
   /**
    Parameter entity stack to check well-formedness.
@@ -185,22 +185,22 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
   /**
    Number of opened parameter entities.
    */
-  private var fPEDepth: Int = _
+  private var fPEDepth: Int = 0
 
   /**
    Markup depth.
    */
-  private var fMarkUpDepth: Int = _
+  private var fMarkUpDepth: Int = 0
 
   /**
    Number of opened external entities.
    */
-  private var fExtEntityDepth: Int = _
+  private var fExtEntityDepth: Int = 0
 
   /**
    Number of opened include sections.
    */
-  private var fIncludeSectDepth: Int = _
+  private var fIncludeSectDepth: Int = 0
 
   /**
    Array of 3 strings.
@@ -240,7 +240,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
   /**
    Enumeration values count.
    */
-  private var fEnumerationCount: Int = _
+  private var fEnumerationCount: Int = 0
 
   /**
    Ignore conditional section buffer.
@@ -773,19 +773,16 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
     var currentOp = 0
     var c: Int = 0
     while (true) {
-      val continueBreaks = new Breaks
-      continueBreaks.breakable {
-        if (fEntityScanner.skipChar('(')) {
-          fMarkUpDepth += 1
-          fStringBuffer.append('(')
-          if (fDTDContentModelHandler ne null) {
-            fDTDContentModelHandler.startGroup(null)
-          }
-          pushContentStack(currentOp)
-          currentOp = 0
-          skipSeparator(spaceRequired = false, lookForPERefs = !scanningInternalSubset())
-          continueBreaks.break()
+      if (fEntityScanner.skipChar('(')) {
+        fMarkUpDepth += 1
+        fStringBuffer.append('(')
+        if (fDTDContentModelHandler ne null) {
+          fDTDContentModelHandler.startGroup(null)
         }
+        pushContentStack(currentOp)
+        currentOp = 0
+        skipSeparator(spaceRequired = false, lookForPERefs = !scanningInternalSubset())
+      } else {
         skipSeparator(spaceRequired = false, lookForPERefs = !scanningInternalSubset())
         val childName = fEntityScanner.scanName()
         if (childName eq null) {
@@ -806,30 +803,30 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
           fEntityScanner.scanChar()
           fStringBuffer.append(c.toChar)
         }
-        val whileBreaks = new Breaks
-        whileBreaks.breakable {
-          while (true) {
-            skipSeparator(spaceRequired = false, lookForPERefs = !scanningInternalSubset())
-            c = fEntityScanner.peekChar()
-            if (c == ',' && currentOp != '|') {
-              currentOp = c
-              if (fDTDContentModelHandler ne null) {
-                fDTDContentModelHandler.separator(XMLDTDContentModelHandler.SEPARATOR_SEQUENCE, null)
-              }
-              fEntityScanner.scanChar()
-              fStringBuffer.append(',')
-              whileBreaks.break()
-            } else if (c == '|' && currentOp != ',') {
-              currentOp = c
-              if (fDTDContentModelHandler ne null) {
-                fDTDContentModelHandler.separator(XMLDTDContentModelHandler.SEPARATOR_CHOICE, null)
-              }
-              fEntityScanner.scanChar()
-              fStringBuffer.append('|')
-              whileBreaks.break()
-            } else if (c != ')') {
-              reportFatalError("MSG_CLOSE_PAREN_REQUIRED_IN_CHILDREN", Array(elName))
+        var innerLoop = true
+        while (innerLoop) {
+          skipSeparator(spaceRequired = false, lookForPERefs = !scanningInternalSubset())
+          c = fEntityScanner.peekChar()
+          if (c == ',' && currentOp != '|') {
+            currentOp = c
+            if (fDTDContentModelHandler ne null) {
+              fDTDContentModelHandler.separator(XMLDTDContentModelHandler.SEPARATOR_SEQUENCE, null)
             }
+            fEntityScanner.scanChar()
+            fStringBuffer.append(',')
+            innerLoop = false
+          } else if (c == '|' && currentOp != ',') {
+            currentOp = c
+            if (fDTDContentModelHandler ne null) {
+              fDTDContentModelHandler.separator(XMLDTDContentModelHandler.SEPARATOR_CHOICE, null)
+            }
+            fEntityScanner.scanChar()
+            fStringBuffer.append('|')
+            innerLoop = false
+          } else if (c != ')') {
+            reportFatalError("MSG_CLOSE_PAREN_REQUIRED_IN_CHILDREN", Array(elName))
+          }
+          if (innerLoop) {
             if (fDTDContentModelHandler ne null) {
               fDTDContentModelHandler.endGroup(null)
             }

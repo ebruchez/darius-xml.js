@@ -66,7 +66,7 @@ class XMLEntityDescriptionImpl extends XMLResourceIdentifierImpl with XMLEntityD
   /**
    The name of the entity.
    */
-  protected var fEntityName: String = _
+  protected var fEntityName: String = null
 
   /**
    * Sets the name of the entity.

@@ -42,10 +42,10 @@ object XMLAttributesImpl {
   class Attribute {
 
     val name = new QName()
-    var `type`: String = _
-    var value: String = _
-    var nonNormalizedValue: String = _
-    var specified: Boolean = _
+    var `type`: String = null
+    var value: String = null
+    var nonNormalizedValue: String = null
+    var specified: Boolean = false
 
     /**
      * Augmentations information for this attribute.
@@ -57,7 +57,7 @@ object XMLAttributesImpl {
     /**
      Pointer to the next attribute in the chain. *
      */
-    var next: Attribute = _
+    var next: Attribute = null
   }
 }
 
@@ -89,7 +89,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
   /**
    Attribute count.
    */
-  protected var fLength: Int = _
+  protected var fLength: Int = 0
 
   /**
    Attribute information.
@@ -100,7 +100,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * Hash table of attribute information.
    * Provides an alternate view of the attribute specification.
    */
-  protected var fAttributeTableView: Array[Attribute] = _
+  protected var fAttributeTableView: Array[Attribute] = null
 
   /**
    * Tracks whether each chain in the hash table is stale
@@ -108,12 +108,12 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * A chain is stale if its state is not the same as the number
    * of times the attribute table view has been used.
    */
-  protected var fAttributeTableViewChainState: Array[Int] = _
+  protected var fAttributeTableViewChainState: Array[Int] = null
 
   /**
    * Indicates whether the table view contains consistent data.
    */
-  protected var fIsTableViewConsistent: Boolean = _
+  protected var fIsTableViewConsistent: Boolean = false
 
   for (i <- fAttributes.indices) {
     fAttributes(i) = new Attribute()
@@ -472,11 +472,13 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    *         appear in the list.
    */
   def getIndex(qName: String): Int = {
-    for (i <- 0 until fLength) {
+    var i = 0
+    while (i < fLength) {
       val attribute = fAttributes(i)
       if ((attribute.name.rawname ne null) && attribute.name.rawname == qName) {
         return i
       }
+      i += 1
     }
     -1
   }
@@ -491,13 +493,15 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    *         appear in the list.
    */
   def getIndex(uri: String, localPart: String): Int = {
-    for (i <- 0 until fLength) {
+    var i = 0
+    while (i < fLength) {
       val attribute = fAttributes(i)
       if ((attribute.name.localpart ne null) && attribute.name.localpart == localPart &&
         ((uri == attribute.name.uri) ||
         ((uri ne null) && (attribute.name.uri ne null) && attribute.name.uri == uri))) {
         return i
       }
+      i += 1
     }
     -1
   }
@@ -666,11 +670,13 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    *         appear in the list.
    */
   def getIndexFast(qName: String): Int = {
-    for (i <- 0 until fLength) {
+    var i = 0
+    while (i < fLength) {
       val attribute = fAttributes(i)
       if (attribute.name.rawname == qName) {
         return i
       }
+      i += 1
     }
     -1
   }
@@ -737,14 +743,18 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    */
   def checkDuplicatesNS(): QName = {
     if (fLength <= SIZE_LIMIT) {
-      for (i <- 0 until fLength - 1) {
+      var i = 0
+      while (i < fLength - 1) {
         val att1 = fAttributes(i)
-        for (j <- i + 1 until fLength) {
+        var j = i + 1
+        while (j < fLength) {
           val att2 = fAttributes(j)
           if (att1.name.localpart == att2.name.localpart && att1.name.uri == att2.name.uri) {
             return att2.name
           }
+          j += 1
         }
+        i += 1
       }
     } else {
       fIsTableViewConsistent = false
@@ -791,11 +801,13 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    *         appear in the list.
    */
   def getIndexFast(uri: String, localPart: String): Int = {
-    for (i <- 0 until fLength) {
+    var i = 0
+    while (i < fLength) {
       val attribute = fAttributes(i)
       if (attribute.name.localpart == localPart && attribute.name.uri == uri) {
         return i
       }
+      i += 1
     }
     -1
   }

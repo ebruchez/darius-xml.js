@@ -61,7 +61,7 @@ class XMLEntityScanner extends XMLLocator {
    * Error reporter. This property identifier is:
    * http://apache.org/xml/properties/internal/error-reporter
    */
-  protected var fErrorReporter: XMLErrorReporter = _
+  protected var fErrorReporter: XMLErrorReporter = null
 
   /**
    * Returns the base system identifier of the currently scanned

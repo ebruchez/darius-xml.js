@@ -532,7 +532,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    * Validation. This feature identifier is:
    * http://xml.org/sax/features/validation
    */
-  protected var fValidation: Boolean = _
+  protected var fValidation: Boolean = false
 
   /**
    * External general entities. This feature identifier is:
@@ -550,43 +550,43 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    * Allow Java encoding names. This feature identifier is:
    * http://apache.org/xml/features/allow-java-encodings
    */
-  protected var fAllowJavaEncodings: Boolean = _
+  protected var fAllowJavaEncodings: Boolean = false
 
   /**
    warn on duplicate Entity declaration.
    *  http://apache.org/xml/features/warn-on-duplicate-entitydef
    */
-  protected var fWarnDuplicateEntityDef: Boolean = _
+  protected var fWarnDuplicateEntityDef: Boolean = false
 
   /**
    * standard uri conformant (strict uri).
    * http://apache.org/xml/features/standard-uri-conformant
    */
-  protected var fStrictURI: Boolean = _
+  protected var fStrictURI: Boolean = false
 
   /**
    * Symbol table. This property identifier is:
    * http://apache.org/xml/properties/internal/symbol-table
    */
-  protected var fSymbolTable: SymbolTable = _
+  protected var fSymbolTable: SymbolTable = null
 
   /**
    * Error reporter. This property identifier is:
    * http://apache.org/xml/properties/internal/error-reporter
    */
-  protected var fErrorReporter: XMLErrorReporter = _
+  protected var fErrorReporter: XMLErrorReporter = null
 
   /**
    * Entity resolver. This property identifier is:
    * http://apache.org/xml/properties/internal/entity-resolver
    */
-  protected var fEntityResolver: XMLEntityResolver = _
+  protected var fEntityResolver: XMLEntityResolver = null
 
   /**
    * Validation manager. This property identifier is:
    * http://apache.org/xml/properties/internal/validation-manager
    */
-  protected var fValidationManager: ValidationManager = _
+  protected var fValidationManager: ValidationManager = null
 
   /**
    * Buffer size. We get this value from a property. The default size
@@ -601,34 +601,34 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    * True if the document entity is standalone. This should really
    * only be set by the document source (e.g. XMLDocumentScanner).
    */
-  protected var fStandalone: Boolean = _
+  protected var fStandalone: Boolean = false
 
   /**
    * True if the current document contains parameter entity references.
    */
-  protected var fHasPEReferences: Boolean = _
+  protected var fHasPEReferences: Boolean = false
 
   protected var fInExternalSubset: Boolean = false
 
   /**
    Entity handler.
    */
-  protected var fEntityHandler: XMLEntityHandler = _
+  protected var fEntityHandler: XMLEntityHandler = null
 
   /**
    Current entity scanner.
    */
-  protected var fEntityScanner: XMLEntityScanner = _
+  protected var fEntityScanner: XMLEntityScanner = null
 
   /**
    XML 1.0 entity scanner.
    */
-  protected var fXML10EntityScanner: XMLEntityScanner = _
+  protected var fXML10EntityScanner: XMLEntityScanner = null
 
   /**
    XML 1.1 entity scanner.
    */
-  protected var fXML11EntityScanner: XMLEntityScanner = _
+  protected var fXML11EntityScanner: XMLEntityScanner = null
 
   protected var fEntityExpansionLimit: Int = 0
 
@@ -647,7 +647,7 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
   /**
    Current entity.
    */
-  protected[impl] var fCurrentEntity: ScannedEntity = _
+  protected[impl] var fCurrentEntity: ScannedEntity = null
 
   /**
    Shared declared entities.
@@ -1809,22 +1809,22 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
     /**
      Position in character buffer.
      */
-    var position: Int = _
+    var position: Int = 0
 
     /**
      Base character offset for computing absolute character offset.
      */
-    var baseCharOffset: Int = _
+    var baseCharOffset: Int = 0
 
     /**
      Start position in character buffer.
      */
-    var startPosition: Int = _
+    var startPosition: Int = 0
 
     /**
      Count of characters in buffer.
      */
-    var count: Int = _
+    var count: Int = 0
 
     /**
      Character buffer container.

@@ -34,7 +34,7 @@ class MalformedByteSequenceException(
   /**
    message text for this message, initially null *
    */
-  private var fMessage: String = _
+  private var fMessage: String = null
 
   /**
    * Returns the error domain of the error message.

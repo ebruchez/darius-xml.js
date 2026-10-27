@@ -135,22 +135,22 @@ abstract class BasicParserConfiguration protected (protected var fSymbolTable: S
   /**
    The document handler.
    */
-  protected var fDocumentHandler: XMLDocumentHandler = _
+  protected var fDocumentHandler: XMLDocumentHandler = null
 
   /**
    The DTD handler.
    */
-  protected var fDTDHandler: XMLDTDHandler = _
+  protected var fDTDHandler: XMLDTDHandler = null
 
   /**
    The DTD content model handler.
    */
-  protected var fDTDContentModelHandler: XMLDTDContentModelHandler = _
+  protected var fDTDContentModelHandler: XMLDTDContentModelHandler = null
 
   /**
    Last component in the document pipeline
    */
-  protected var fLastComponent: XMLDocumentSource = _
+  protected var fLastComponent: XMLDocumentSource = null
 
   fRecognizedFeatures = new ju.ArrayList[String]()
 

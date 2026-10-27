@@ -51,7 +51,7 @@ class UTF8Reader(protected val fInputStream: InputStream,
   /**
    Offset into buffer.
    */
-  protected var fOffset: Int = _
+  protected var fOffset: Int = 0
 
   /**
    Surrogate character.
@@ -556,7 +556,7 @@ class UTF8Reader(protected val fInputStream: InputStream,
    */
   private def expectedByte(position: Int, count: Int): Unit = {
     throw new MalformedByteSequenceException(fFormatter, XMLMessageFormatter.XML_DOMAIN, "ExpectedByte",
-      Array(Integer toString position, Integer toString count))
+      Array(Integer.toString(position), Integer.toString(count)))
   }
 
   /**
@@ -564,7 +564,7 @@ class UTF8Reader(protected val fInputStream: InputStream,
    */
   private def invalidByte(position: Int, count: Int, c: Int): Unit = {
     throw new MalformedByteSequenceException(fFormatter, XMLMessageFormatter.XML_DOMAIN, "InvalidByte",
-      Array(Integer toString position, Integer toString count))
+      Array(Integer.toString(position), Integer.toString(count)))
   }
 
   /**

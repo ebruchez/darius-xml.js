@@ -51,22 +51,22 @@ abstract class AbstractXMLDocumentParser protected (config: XMLParserConfigurati
   /**
    True if inside DTD.
    */
-  protected var fInDTD: Boolean = _
+  protected var fInDTD: Boolean = false
 
   /**
    Document source
    */
-  protected var fDocumentSource: XMLDocumentSource = _
+  protected var fDocumentSource: XMLDocumentSource = null
 
   /**
    DTD source
    */
-  protected var fDTDSource: XMLDTDSource = _
+  protected var fDTDSource: XMLDTDSource = null
 
   /**
    DTD content model source
    */
-  protected var fDTDContentModelSource: XMLDTDContentModelSource = _
+  protected var fDTDContentModelSource: XMLDTDContentModelSource = null
 
   config.setDocumentHandler(this)
 

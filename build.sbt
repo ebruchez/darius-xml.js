@@ -33,7 +33,8 @@ lazy val xerces = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Ful
     scalacOptions ++= Seq(
       "-encoding", "utf8",
       "-deprecation",
-      "-unchecked"
+      "-unchecked",
+      "-feature"
     ),
 
     libraryDependencies += "com.lihaoyi" %%% "utest" % UTestVersion % Test,

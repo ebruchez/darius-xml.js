@@ -31,25 +31,25 @@ class QName extends Cloneable {
    * The qname prefix. For example, the prefix for the qname "a:foo"
    * is "a".
    */
-  var prefix: String = _
+  var prefix: String = null
 
   /**
    * The qname localpart. For example, the localpart for the qname "a:foo"
    * is "foo".
    */
-  var localpart: String = _
+  var localpart: String = null
 
   /**
    * The qname rawname. For example, the rawname for the qname "a:foo"
    * is "a:foo".
    */
-  var rawname: String = _
+  var rawname: String = null
 
   /**
    * The URI to which the qname prefix is bound. This binding must be
    * performed by a XML Namespaces aware processor.
    */
-  var uri: String = _
+  var uri: String = null
 
   clear()
 

@@ -41,17 +41,17 @@ class XMLInputSource(
   /**
    Byte stream.
    */
-  protected var fByteStream: InputStream = _
+  protected var fByteStream: InputStream = null
 
   /**
    Character stream.
    */
-  protected var fCharStream: Reader = _
+  protected var fCharStream: Reader = null
 
   /**
    Encoding.
    */
-  protected var fEncoding: String = _
+  protected var fEncoding: String = null
 
   /**
    * Constructs an input source from a XMLResourceIdentifier

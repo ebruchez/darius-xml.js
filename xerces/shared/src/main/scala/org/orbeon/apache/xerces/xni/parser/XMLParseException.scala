@@ -32,22 +32,22 @@ class XMLParseException(locator: XMLLocator, message: String, exception: Excepti
   /**
    Public identifier.
    */
-  protected var fPublicId: String = _
+  protected var fPublicId: String = null
 
   /**
    literal System identifier.
    */
-  protected var fLiteralSystemId: String = _
+  protected var fLiteralSystemId: String = null
 
   /**
    expanded System identifier.
    */
-  protected var fExpandedSystemId: String = _
+  protected var fExpandedSystemId: String = null
 
   /**
    Base system identifier.
    */
-  protected var fBaseSystemId: String = _
+  protected var fBaseSystemId: String = null
 
   /**
    Line number.
