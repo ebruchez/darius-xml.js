@@ -136,7 +136,7 @@ class QName extends Cloneable {
     other match {
       case qname: QName if qname.uri ne null =>
         uri == qname.uri && localpart == qname.localpart
-      case qname: QName =>
+      case qname: QName if uri eq null =>
         rawname == qname.rawname
       case _ =>
         false

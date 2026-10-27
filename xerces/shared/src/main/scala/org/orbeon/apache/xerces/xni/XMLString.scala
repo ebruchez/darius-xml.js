@@ -129,8 +129,12 @@ class XMLString {
     if (this.length != length) {
       return false
     }
-    for (i <- 0 until length if this.ch(this.offset + i) != ch(offset + i)) {
-      return false
+    var i = 0
+    while (i < length) {
+      if (this.ch(this.offset + i) != ch(offset + i)) {
+        return false
+      }
+      i += 1
     }
     true
   }
@@ -146,8 +150,12 @@ class XMLString {
     if (length != s.length) {
       return false
     }
-    for (i <- 0 until length if ch(offset + i) != s.charAt(i)) {
-      return false
+    var i = 0
+    while (i < length) {
+      if (ch(offset + i) != s.charAt(i)) {
+        return false
+      }
+      i += 1
     }
     true
   }

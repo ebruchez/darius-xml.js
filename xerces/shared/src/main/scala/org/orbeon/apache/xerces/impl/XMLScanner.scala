@@ -759,7 +759,7 @@ abstract class XMLScanner extends XMLComponent {
     if (cquote != quote) {
       reportFatalError("CloseQuoteExpected", Array(eleName, atName))
     }
-    nonNormalizedValue.==(value.ch, value.offset, value.length)
+    nonNormalizedValue.equals(value.ch, value.offset, value.length)
   }
 
   /**

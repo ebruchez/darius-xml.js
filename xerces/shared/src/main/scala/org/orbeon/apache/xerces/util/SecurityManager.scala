@@ -53,6 +53,7 @@ class SecurityManager {
   /**
    * Entity expansion limit.
    */
+  @BeanProperty
   var entityExpansionLimit: Int = DEFAULT_ENTITY_EXPANSION_LIMIT
 
   /**

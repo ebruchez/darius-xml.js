@@ -941,7 +941,7 @@ class XMLEntityScanner extends XMLLocator {
           val delimOffset = fCurrentEntity.position - 1
 
           locally {
-            var i = 0
+            var i = 1
             var exitInnerLoop = false
             while (! exitInnerLoop && i < delimLen) {
               if (fCurrentEntity.position == fCurrentEntity.count) {

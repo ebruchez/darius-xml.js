@@ -94,7 +94,6 @@ class XMLGrammarPoolImpl extends XMLGrammarPool {
             pos += 1
           }
           e = e.next
-          e = e.next
         }
       }
       val toReturn = new Array[Grammar](pos)
@@ -137,7 +136,7 @@ class XMLGrammarPoolImpl extends XMLGrammarPool {
         locally {
           var entry = fGrammars(index)
           while (entry ne null) {
-            if (entry.hash == hash && ==(entry.desc, desc)) {
+            if (entry.hash == hash && equals(entry.desc, desc)) {
               entry.grammar = grammar
               return
             }
@@ -164,10 +163,9 @@ class XMLGrammarPoolImpl extends XMLGrammarPool {
       val index = (hash & 0x7FFFFFFF) % fGrammars.length
       var entry = fGrammars(index)
       while (entry ne null) {
-        if ((entry.hash == hash) && ==(entry.desc, desc)) {
+        if ((entry.hash == hash) && equals(entry.desc, desc)) {
           return entry.grammar
         }
-        entry = entry.next
         entry = entry.next
       }
       null
@@ -190,7 +188,7 @@ class XMLGrammarPoolImpl extends XMLGrammarPool {
       var entry = fGrammars(index)
       var prev: Entry = null
       while (entry ne null) {
-        if ((entry.hash == hash) && ==(entry.desc, desc)) {
+        if ((entry.hash == hash) && equals(entry.desc, desc)) {
           if (prev ne null) {
             prev.next = entry.next
           } else {
@@ -201,8 +199,6 @@ class XMLGrammarPoolImpl extends XMLGrammarPool {
           fGrammarCount -= 1
           return tempGrammar
         }
-        prev = entry
-        entry = entry.next
         prev = entry
         entry = entry.next
       }
@@ -224,10 +220,9 @@ class XMLGrammarPoolImpl extends XMLGrammarPool {
       val index = (hash & 0x7FFFFFFF) % fGrammars.length
       var entry = fGrammars(index)
       while (entry ne null) {
-        if ((entry.hash == hash) && ==(entry.desc, desc)) {
+        if ((entry.hash == hash) && equals(entry.desc, desc)) {
           return true
         }
-        entry = entry.next
         entry = entry.next
       }
       false

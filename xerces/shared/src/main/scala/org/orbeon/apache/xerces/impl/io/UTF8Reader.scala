@@ -421,7 +421,7 @@ class UTF8Reader(protected val fInputStream: InputStream,
               fOffset = 4
               return out - offset
             }
-            invalidByte(4, 4, b2)
+            invalidByte(4, 4, b3)
           }
           val uuuuu = ((b0 << 2) & 0x001C) | ((b1 >> 4) & 0x0003)
           if (uuuuu > 0x10) {

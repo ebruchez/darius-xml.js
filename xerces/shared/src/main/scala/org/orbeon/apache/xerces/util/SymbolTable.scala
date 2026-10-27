@@ -211,24 +211,20 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
     var bucket = hash(buffer, offset, length) % fTableSize
     locally {
       var entry = fBuckets(bucket)
-      // ORBEON: Avoid non-local return
-      var exitLoop = false
-      while (! exitLoop && (entry ne null)) {
+      while (entry ne null) {
         if (length == entry.characters.length) {
-
+          var matchFailed = false
           var i = 0
-          while (! exitLoop && i < length) {
+          while (i < length && !matchFailed) {
             if (buffer(offset + i) != entry.characters(i))
-              exitLoop = true // continue after outer `while`
+              matchFailed = true
             else
               i += 1
           }
-
-          if (! exitLoop)
+          if (!matchFailed)
             return entry.symbol
         }
-        if (! exitLoop)
-          entry = entry.next
+        entry = entry.next
       }
     }
     if (fCount >= fThreshold) {
@@ -312,15 +308,16 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
       var entry = fBuckets(bucket)
       while (entry ne null) {
         if (length == entry.characters.length) {
-          // ORBEON: Avoid non-local return
+          var matchFailed = false
           var i = 0
-          while (i < length) {
+          while (i < length && !matchFailed) {
             if (symbol.charAt(i) != entry.characters(i))
-              return false
+              matchFailed = true
             else
               i += 1
           }
-          return true
+          if (!matchFailed)
+            return true
         }
         entry = entry.next
       }
@@ -342,15 +339,16 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
       var entry = fBuckets(bucket)
       while (entry ne null) {
         if (length == entry.characters.length) {
-          // ORBEON: Avoid non-local return
+          var matchFailed = false
           var i = 0
-          while (i < length) {
+          while (i < length && !matchFailed) {
             if (buffer(offset + i) != entry.characters(i))
-              return false
+              matchFailed = true
             else
               i += 1
           }
-          return true
+          if (!matchFailed)
+            return true
         }
         entry = entry.next
       }

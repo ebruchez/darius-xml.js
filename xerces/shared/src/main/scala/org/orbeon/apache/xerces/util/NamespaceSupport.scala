@@ -19,7 +19,6 @@ package org.orbeon.apache.xerces.util
 
 import org.orbeon.apache.xerces.xni.NamespaceContext
 
-import scala.util.control.Breaks
 
 /**
  * Namespace support for XML document handlers. This class doesn't
@@ -161,21 +160,21 @@ class NamespaceSupport extends NamespaceContext {
     var prefix: String = null
     var unique = true
     var i = 2
-    val whileBreaks = new Breaks
-    whileBreaks.breakable {
-      while (i < (fNamespaceSize - 2)) {
-        prefix = fNamespace(i + 2)
-        for (k <- 0 until count if fPrefixes(k) == prefix) {
+    while (i < (fNamespaceSize - 2)) {
+      prefix = fNamespace(i + 2)
+      var k = 0
+      while (k < count && unique) {
+        if (fPrefixes(k) == prefix) {
           unique = false
-          whileBreaks.break()
         }
-        if (unique) {
-          fPrefixes(count) = prefix
-          count += 1
-        }
-        unique = true
-        i += 2
+        k += 1
       }
+      if (unique) {
+        fPrefixes(count) = prefix
+        count += 1
+      }
+      unique = true
+      i += 2
     }
     fPrefixes.iterator.take(count)
   }

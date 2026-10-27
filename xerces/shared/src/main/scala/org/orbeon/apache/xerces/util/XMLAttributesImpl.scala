@@ -849,9 +849,10 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
     fLargeCount += 1
     if (fLargeCount < 0) {
       if (fAttributeTableViewChainState ne null) {
-        val i = fTableViewBuckets - 1
+        var i = fTableViewBuckets - 1
         while (i >= 0) {
           fAttributeTableViewChainState(i) = 0
+          i -= 1
         }
       }
       fLargeCount = 1

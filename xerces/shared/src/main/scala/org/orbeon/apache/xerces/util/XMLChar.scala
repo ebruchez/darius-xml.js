@@ -1479,11 +1479,13 @@ object XMLChar {
     if (!isNameStart(ch)) {
       return false
     }
-    for (i <- 1 until length) {
+    var i = 1
+    while (i < length) {
       ch = name.charAt(i)
       if (!isName(ch)) {
         return false
       }
+      i += 1
     }
     true
   }
@@ -1504,11 +1506,13 @@ object XMLChar {
     if (!isNCNameStart(ch)) {
       return false
     }
-    for (i <- 1 until length) {
+    var i = 1
+    while (i < length) {
       ch = ncName.charAt(i)
       if (!isNCName(ch)) {
         return false
       }
+      i += 1
     }
     true
   }
@@ -1525,11 +1529,13 @@ object XMLChar {
     if (length == 0) {
       return false
     }
-    for (i <- 0 until length) {
+    var i = 0
+    while (i < length) {
       val ch = nmtoken.charAt(i)
       if (!isName(ch)) {
         return false
       }
+      i += 1
     }
     true
   }
@@ -1548,7 +1554,8 @@ object XMLChar {
       if (length > 0) {
         var c = ianaEncoding.charAt(0)
         if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
-          for (i <- 1 until length) {
+          var i = 1
+          while (i < length) {
             c = ianaEncoding.charAt(i)
             if ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') && (c < '0' || c > '9') &&
               c != '.' &&
@@ -1556,6 +1563,7 @@ object XMLChar {
               c != '-') {
               return false
             }
+            i += 1
           }
           return true
         }
@@ -1576,7 +1584,8 @@ object XMLChar {
     if (javaEncoding ne null) {
       val length = javaEncoding.length
       if (length > 0) {
-        for (i <- 1 until length) {
+        var i = 1
+        while (i < length) {
           val c = javaEncoding.charAt(i)
           if ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') && (c < '0' || c > '9') &&
             c != '.' &&
@@ -1584,6 +1593,7 @@ object XMLChar {
             c != '-') {
             return false
           }
+          i += 1
         }
         return true
       }
