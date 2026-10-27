@@ -9,7 +9,7 @@ val mainScalaVersion       = scala213
 
 val supportedScalaVersions = List(scala213, scala3)
 
-val SaxVersion                   = "2.0.2.10-SNAPSHOT"
+val SaxVersion                   = "2.0.2.11-SNAPSHOT"
 val ScalaJsStubsVersion          = "1.1.0"
 //val ScalaJsDomVersion            = "0.9.8"
 //val ScalaJsJQueryVersion         = "0.9.6"
