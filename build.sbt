@@ -9,7 +9,7 @@ val mainScalaVersion       = scala213
 
 val supportedScalaVersions = List(scala213, scala3)
 
-val SaxVersion                   = "2.0.2.11-SNAPSHOT"
+val SaxVersion                   = "2.0.2.10-SNAPSHOT"
 val ScalaJsStubsVersion          = "1.1.0"
 //val ScalaJsDomVersion            = "0.9.8"
 //val ScalaJsJQueryVersion         = "0.9.6"
@@ -25,7 +25,7 @@ lazy val xerces = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Ful
   .settings(
     organization := "org.orbeon",
     name         := "xerces",
-    version      := "2.11.0.16-SNAPSHOT",
+    version      := "2.11.0.17-SNAPSHOT",
 
     scalaVersion       := scala213,
     crossScalaVersions := supportedScalaVersions,
