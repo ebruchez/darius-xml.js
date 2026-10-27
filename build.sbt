@@ -30,6 +30,9 @@ lazy val xerces = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Ful
     scalaVersion       := scala213,
     crossScalaVersions := supportedScalaVersions,
 
+    Compile / doc / sources                := Seq.empty,
+    Compile / packageDoc / publishArtifact := false,
+
     scalacOptions ++= Seq(
       "-encoding", "utf8",
       "-deprecation",
