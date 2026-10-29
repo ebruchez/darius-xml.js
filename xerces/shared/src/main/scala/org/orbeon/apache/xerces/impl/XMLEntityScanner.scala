@@ -198,8 +198,10 @@ class XMLEntityScanner extends XMLLocator {
         load(1, changeEntity = false)
       }
       if (c == '\r' && fCurrentEntity.isExternal) {
-        if (fCurrentEntity.ch(fCurrentEntity.position) == '\n') {
-          fCurrentEntity.position += 1
+        if (fCurrentEntity.position < fCurrentEntity.count) {
+          if (fCurrentEntity.ch(fCurrentEntity.position) == '\n') {
+            fCurrentEntity.position += 1
+          }
         }
         c = '\n'
       }
@@ -240,13 +242,7 @@ class XMLEntityScanner extends XMLLocator {
       fCurrentEntity.position += 1
       if (fCurrentEntity.position == fCurrentEntity.count) {
         val length = fCurrentEntity.position - offset
-        if (length == fCurrentEntity.ch.length) {
-          val tmp = new Array[Char](fCurrentEntity.ch.length << 1)
-          System.arraycopy(fCurrentEntity.ch, offset, tmp, 0, length)
-          fCurrentEntity.ch = tmp
-        } else {
-          System.arraycopy(fCurrentEntity.ch, offset, fCurrentEntity.ch, 0, length)
-        }
+        resizeBuffer(offset, length)
         offset = 0
         if (load(length, changeEntity = false))
           exitLoop = true
@@ -309,13 +305,7 @@ class XMLEntityScanner extends XMLLocator {
         fCurrentEntity.position += 1
         if (fCurrentEntity.position == fCurrentEntity.count) {
           val length = fCurrentEntity.position - offset
-          if (length == fCurrentEntity.ch.length) {
-            val tmp = new Array[Char](fCurrentEntity.ch.length << 1)
-            System.arraycopy(fCurrentEntity.ch, offset, tmp, 0, length)
-            fCurrentEntity.ch = tmp
-          } else {
-            System.arraycopy(fCurrentEntity.ch, offset, fCurrentEntity.ch, 0, length)
-          }
+          resizeBuffer(offset, length)
           offset = 0
           if (load(length, changeEntity = false))
             exitLoop = true
@@ -379,13 +369,7 @@ class XMLEntityScanner extends XMLLocator {
         fCurrentEntity.position += 1
         if (fCurrentEntity.position == fCurrentEntity.count) {
           val length = fCurrentEntity.position - offset
-          if (length == fCurrentEntity.ch.length) {
-            val tmp = new Array[Char](fCurrentEntity.ch.length << 1)
-            System.arraycopy(fCurrentEntity.ch, offset, tmp, 0, length)
-            fCurrentEntity.ch = tmp
-          } else {
-            System.arraycopy(fCurrentEntity.ch, offset, fCurrentEntity.ch, 0, length)
-          }
+          resizeBuffer(offset, length)
           offset = 0
           if (load(length, changeEntity = false))
             exitLoop = true
@@ -465,13 +449,7 @@ class XMLEntityScanner extends XMLLocator {
           fCurrentEntity.position += 1
           if (fCurrentEntity.position == fCurrentEntity.count) {
             val length = fCurrentEntity.position - offset
-            if (length == fCurrentEntity.ch.length) {
-              val tmp = new Array[Char](fCurrentEntity.ch.length << 1)
-              System.arraycopy(fCurrentEntity.ch, offset, tmp, 0, length)
-              fCurrentEntity.ch = tmp
-            } else {
-              System.arraycopy(fCurrentEntity.ch, offset, fCurrentEntity.ch, 0, length)
-            }
+            resizeBuffer(offset, length)
             if (index != -1) {
               index = index - offset
             }
@@ -773,7 +751,7 @@ class XMLEntityScanner extends XMLLocator {
     while (! exitLoop && fCurrentEntity.position < fCurrentEntity.count) {
       c = fCurrentEntity.ch(fCurrentEntity.position)
       fCurrentEntity.position += 1
-      if ((c == quote && (!fCurrentEntity.literal || external)) || c == '%' || !XMLChar.isContent(c)) {
+      if ((c == quote && (!fCurrentEntity.literal || external)) || c == '%' || !(XMLChar.isContent(c) || c == '\r' && !external)) {
         fCurrentEntity.position -= 1
         exitLoop = true
       }
@@ -1517,5 +1495,20 @@ class XMLEntityScanner extends XMLLocator {
       println()
     }
     entityChanged
+  }
+
+  /**
+   * This method is invoked to increase the size of the current entity's
+   * buffer if apolarized XML name is being scanned is too large to fit within
+   * the buffer at its current size.
+   */
+  final def resizeBuffer(offset: Int, length: Int): Unit = {
+    if (length == fCurrentEntity.ch.length) {
+      val tmp = new Array[Char](fCurrentEntity.ch.length << 1)
+      System.arraycopy(fCurrentEntity.ch, offset, tmp, 0, length)
+      fCurrentEntity.ch = tmp
+    } else {
+      System.arraycopy(fCurrentEntity.ch, offset, fCurrentEntity.ch, 0, length)
+    }
   }
 }

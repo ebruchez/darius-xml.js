@@ -116,7 +116,10 @@ class XMLStringBuffer(size: Int) extends XMLString {
 
   def append(ch: Array[Char], offset: Int, length: Int): Unit = {
     if (this.length + length > this.ch.length) {
-      val newch = new Array[Char](this.ch.length + length + DEFAULT_SIZE)
+      var newLength = this.ch.length * 2
+      if (newLength < this.length + length + DEFAULT_SIZE)
+        newLength = this.ch.length + length + DEFAULT_SIZE
+      val newch = new Array[Char](newLength)
       System.arraycopy(this.ch, 0, newch, 0, this.length)
       this.ch = newch
     }

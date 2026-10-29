@@ -27,6 +27,12 @@ private object SymbolTable {
    */
   val TABLE_SIZE = 101
 
+  /** Maximum hash collisions per bucket for a table with load factor == 1. */
+  val MAX_HASH_COLLISIONS = 40
+
+  val MULTIPLIERS_SIZE = 1 << 5
+  val MULTIPLIERS_MASK = MULTIPLIERS_SIZE - 1
+
   /**
    * This class is a symbol table entry. Each entry acts as a node
    * in a linked list.
@@ -136,6 +142,18 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
    */
   private var fThreshold: Int = (fTableSize * fLoadFactor).toInt
 
+  /**
+   * A new hash function is selected and the table is rehashed when
+   * the number of keys in the bucket exceeds this threshold.
+   */
+  protected val fCollisionThreshold: Int = (MAX_HASH_COLLISIONS * fLoadFactor).toInt
+
+  /**
+   * Array of randomly selected hash function multipliers or `null`
+   * if the default String.hashCode() function should be used.
+   */
+  protected var fHashMultipliers: Array[Int] = null
+
   locally {
     if (fTableSize < 0) {
       throw new IllegalArgumentException("Illegal Capacity: " + fTableSize)
@@ -177,18 +195,30 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
    * @param symbol The new symbol.
    */
   def addSymbol(symbol: String): String = {
-    var bucket = hash(symbol) % fTableSize
+    var collisionCount = 0
+    val bucket = hash(symbol) % fTableSize
     locally {
       var entry = fBuckets(bucket)
       while (entry ne null) {
         if (entry.symbol == symbol) {
           return entry.symbol
         }
+        collisionCount += 1
         entry = entry.next
       }
     }
+    addSymbol0(symbol, bucket, collisionCount)
+  }
+
+  private def addSymbol0(symbol: String, _bucket: Int, collisionCount: Int): String = {
+    var bucket = _bucket
     if (fCount >= fThreshold) {
       rehash()
+      bucket = hash(symbol) % fTableSize
+    } else if (collisionCount >= fCollisionThreshold) {
+      // Select a new hash function and rehash the table if
+      // the collision threshold is exceeded.
+      rebalance()
       bucket = hash(symbol) % fTableSize
     }
     val entry = Entry(symbol, fBuckets(bucket))
@@ -208,7 +238,8 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
    * @param length The length of the new symbol in the buffer.
    */
   def addSymbol(buffer: Array[Char], offset: Int, length: Int): String = {
-    var bucket = hash(buffer, offset, length) % fTableSize
+    var collisionCount = 0
+    val bucket = hash(buffer, offset, length) % fTableSize
     locally {
       var entry = fBuckets(bucket)
       while (entry ne null) {
@@ -216,19 +247,33 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
           var matchFailed = false
           var i = 0
           while (i < length && !matchFailed) {
-            if (buffer(offset + i) != entry.characters(i))
+            if (buffer(offset + i) != entry.characters(i)) {
+              collisionCount += 1
               matchFailed = true
-            else
+            } else {
               i += 1
+            }
           }
           if (!matchFailed)
             return entry.symbol
+        } else {
+          collisionCount += 1
         }
         entry = entry.next
       }
     }
+    addSymbol0(buffer, offset, length, bucket, collisionCount)
+  }
+
+  private def addSymbol0(buffer: Array[Char], offset: Int, length: Int, _bucket: Int, collisionCount: Int): String = {
+    var bucket = _bucket
     if (fCount >= fThreshold) {
       rehash()
+      bucket = hash(buffer, offset, length) % fTableSize
+    } else if (collisionCount >= fCollisionThreshold) {
+      // Select a new hash function and rehash the table if
+      // the collision threshold is exceeded.
+      rebalance()
       bucket = hash(buffer, offset, length) % fTableSize
     }
     val entry = Entry(buffer, offset, length, fBuckets(bucket))
@@ -245,7 +290,23 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
    *
    * @param symbol The symbol to hash.
    */
-  def hash(symbol: String): Int = symbol.hashCode & 0x7FFFFFFF
+  def hash(symbol: String): Int =
+    if (fHashMultipliers eq null)
+      symbol.hashCode & 0x7FFFFFFF
+    else
+      hash0(symbol)
+
+  private def hash0(symbol: String): Int = {
+    var code = 0
+    val length = symbol.length
+    val multipliers = fHashMultipliers
+    var i = 0
+    while (i < length) {
+      code = code * multipliers(i & MULTIPLIERS_MASK) + symbol.charAt(i)
+      i += 1
+    }
+    code & 0x7FFFFFFF
+  }
 
   /**
    * Returns a hashcode value for the specified symbol information.
@@ -258,10 +319,26 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
    *               of the symbol.
    * @param length The length of the symbol.
    */
-  def hash(buffer: Array[Char], offset: Int, length: Int): Int = {
+  def hash(buffer: Array[Char], offset: Int, length: Int): Int =
+    if (fHashMultipliers eq null) {
+      var code = 0
+      var i = 0
+      while (i < length) {
+        code = code * 31 + buffer(offset + i)
+        i += 1
+      }
+      code & 0x7FFFFFFF
+    } else {
+      hash0(buffer, offset, length)
+    }
+
+  private def hash0(buffer: Array[Char], offset: Int, length: Int): Int = {
     var code = 0
-    for (i <- 0 until length) {
-      code = code * 31 + buffer(offset + i)
+    val multipliers = fHashMultipliers
+    var i = 0
+    while (i < length) {
+      code = code * multipliers(i & MULTIPLIERS_MASK) + buffer(offset + i)
+      i += 1
     }
     code & 0x7FFFFFFF
   }
@@ -273,21 +350,36 @@ class SymbolTable(protected var fTableSize: Int, protected var fLoadFactor: Floa
    * number of keys in the SymbolTable exceeds this hash table's capacity
    * and load factor.
    */
-  protected def rehash(): Unit = {
+  protected def rehash(): Unit =
+    rehashCommon(fBuckets.length * 2 + 1)
+
+  /**
+   * Randomly selects a new hash function and reorganizes this SymbolTable
+   * in order to more evenly distribute its entries across the table. This
+   * method is called automatically when the number keys in one of the
+   * SymbolTable's buckets exceeds the given collision threshold.
+   */
+  protected def rebalance(): Unit = {
+    if (fHashMultipliers eq null)
+      fHashMultipliers = new Array[Int](MULTIPLIERS_SIZE)
+    PrimeNumberSequenceGenerator.generateSequence(fHashMultipliers)
+    rehashCommon(fBuckets.length)
+  }
+
+  private def rehashCommon(newCapacity: Int): Unit = {
     val oldCapacity = fBuckets.length
     val oldTable = fBuckets
-    val newCapacity = oldCapacity * 2 + 1
     val newTable = new Array[Entry](newCapacity)
     fThreshold = (newCapacity * fLoadFactor).toInt
     fBuckets = newTable
     fTableSize = fBuckets.length
     var i = oldCapacity
-    while (i  > 0) {
+    while (i > 0) {
       var old = oldTable(i - 1)
       while (old ne null) {
         val e = old
         old = old.next
-        val index = hash(e.characters, 0, e.characters.length) % newCapacity
+        val index = hash(e.symbol) % newCapacity
         e.next = newTable(index)
         newTable(index) = e
       }

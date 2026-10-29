@@ -289,8 +289,12 @@ object XMLEntityManager {
   /**
    * Internal entity.
    */
-  protected class InternalEntity(name: String, var text: String, inExternalSubset: Boolean)
-    extends Entity(name, inExternalSubset) {
+  protected class InternalEntity(
+    name: String,
+    var text: String,
+    inExternalSubset: Boolean,
+    var paramEntityRefs: Int = 0
+  ) extends Entity(name, inExternalSubset) {
 
     /**
      Returns true if this is an external entity.
@@ -338,22 +342,22 @@ object XMLEntityManager {
     /**
      UTF-16, big-endian *
      */
-    val UTF_16_BIG_ENDIAN = new EncodingInfo("UTF-16", true, false)
+    val UTF_16_BIG_ENDIAN = new EncodingInfo("UTF-16BE", "UTF-16", true, false)
 
     /**
      UTF-16, big-endian with BOM *
      */
-    val UTF_16_BIG_ENDIAN_WITH_BOM = new EncodingInfo("UTF-16", true, true)
+    val UTF_16_BIG_ENDIAN_WITH_BOM = new EncodingInfo("UTF-16BE", "UTF-16", true, true)
 
     /**
      UTF-16, little-endian *
      */
-    val UTF_16_LITTLE_ENDIAN = new EncodingInfo("UTF-16", false, false)
+    val UTF_16_LITTLE_ENDIAN = new EncodingInfo("UTF-16LE", "UTF-16", false, false)
 
     /**
      UTF-16, little-endian with BOM *
      */
-    val UTF_16_LITTLE_ENDIAN_WITH_BOM = new EncodingInfo("UTF-16", false, true)
+    val UTF_16_LITTLE_ENDIAN_WITH_BOM = new EncodingInfo("UTF-16LE", "UTF-16", false, true)
 
     /**
      UCS-4, big-endian *
@@ -379,7 +383,15 @@ object XMLEntityManager {
   /**
    * Information about auto-detectable encodings.
    */
-  private[impl] class EncodingInfo private (val encoding: String, val isBigEndian: java.lang.Boolean, val hasBOM: Boolean)
+  private[impl] class EncodingInfo private (
+    val autoDetectedEncoding: String,
+    val readerEncoding: String,
+    val isBigEndian: java.lang.Boolean,
+    val hasBOM: Boolean
+  ) {
+    private def this(autoDetectedEncoding: String, isBigEndian: java.lang.Boolean, hasBOM: Boolean) =
+      this(autoDetectedEncoding, autoDetectedEncoding, isBigEndian, hasBOM)
+  }
 
   object ByteBufferPool {
     private val DEFAULT_POOL_SIZE = 3
@@ -744,10 +756,11 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
    *
    * @param name The name of the entity.
    * @param text The text of the entity.
+   * @param paramEntityRefs Count of direct and indirect references to parameter entities in the value of the entity.
    */
-  def addInternalEntity(name: String, text: String): Unit = {
+  def addInternalEntity(name: String, text: String, paramEntityRefs: Int): Unit = {
     if (!fEntities.containsKey(name)) {
-      val entity = new InternalEntity(name, text, fInExternalSubset)
+      val entity = new InternalEntity(name, text, fInExternalSubset, paramEntityRefs)
       fEntities.put(name, entity)
     } else {
       if (fWarnDuplicateEntityDef) {
@@ -756,6 +769,41 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       }
     }
   }
+
+  /**
+   * Adds an internal entity declaration.
+   *
+   * *Note:* This method ignores subsequent entity
+   * declarations.
+   *
+   * *Note:* The name should be a unique symbol. The
+   * SymbolTable can be used for this purpose.
+   *
+   * @param name The name of the entity.
+   * @param text The text of the entity.
+   */
+  def addInternalEntity(name: String, text: String): Unit = {
+    addInternalEntity(name, text, 0)
+  }
+
+  /**
+   * Returns the number of direct and indirect references to parameter
+   * entities in the value of the entity. This value will only be
+   * non-zero for an internal parameter entity.
+   *
+   * @param entityName The name of the entity to check.
+   * @return Count of direct and indirect references to parameter entities
+   */
+  def getParamEntityRefCount(entityName: String): Int =
+    if ((entityName ne null) && entityName.nonEmpty && entityName.charAt(0) == '%') {
+      val entity = fEntities.get(entityName)
+      if ((entity ne null) && !entity.isExternal)
+        entity.asInstanceOf[InternalEntity].paramEntityRefs
+      else
+        0
+    } else {
+      0
+    }
 
   /**
    * Adds an external entity declaration.
@@ -1103,12 +1151,15 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
       literal: Boolean,
       isExternal: Boolean): Unit = {
     val encoding = setupCurrentEntity(name, xmlInputSource, literal, isExternal)
-    if ((fSecurityManager ne null) && fEntityExpansionCount > fEntityExpansionLimit) {
-      fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EntityExpansionLimitExceeded", Array(Integer.valueOf(fEntityExpansionLimit)),
-        XMLErrorReporter.SEVERITY_FATAL_ERROR)
-      fEntityExpansionCount = 0
+    if (fSecurityManager ne null) {
+      fEntityExpansionCount += getParamEntityRefCount(name)
+      fEntityExpansionCount += 1
+      if (fEntityExpansionCount > fEntityExpansionLimit) {
+        fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN, "EntityExpansionLimitExceeded", Array(Integer.valueOf(fEntityExpansionLimit)),
+          XMLErrorReporter.SEVERITY_FATAL_ERROR)
+        fEntityExpansionCount = 0
+      }
     }
-    fEntityExpansionCount += 1
     if (fEntityHandler ne null) {
       fEntityHandler.startEntity(name, fResourceIdentifier, encoding, null)
     }
@@ -1161,17 +1212,18 @@ class XMLEntityManager(entityManager: XMLEntityManager) extends XMLComponent wit
         }
         if (count == 4) {
           val info = getEncodingInfo(b4, count)
-          encoding = info.encoding
+          encoding = info.autoDetectedEncoding
+          val readerEncoding = info.readerEncoding
           isBigEndian = info.isBigEndian
           stream.reset()
           if (info.hasBOM) {
-            if (encoding == "UTF-8") {
+            if (readerEncoding == "UTF-8") {
               stream.skip(3)
-            } else if (encoding == "UTF-16") {
+            } else if (readerEncoding == "UTF-16") {
               stream.skip(2)
             }
           }
-          reader = createReader(stream, encoding, isBigEndian)
+          reader = createReader(stream, readerEncoding, isBigEndian)
         } else {
           reader = createReader(stream, encoding, isBigEndian)
         }

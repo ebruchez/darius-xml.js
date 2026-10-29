@@ -533,8 +533,9 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
    *
    * @param name The name of the parameter entity to start (without the '%')
    * @param literal Whether this is happening within a literal
+   * @return The name of the parameter entity (with the '%')
    */
-  protected def startPE(name: String, literal: Boolean): Unit = {
+  protected def startPE(name: String, literal: Boolean): String = {
     val depth = fPEDepth
     val pName = "%" + name
     if (!fSeenPEReferences) {
@@ -548,6 +549,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
     if (depth != fPEDepth && fEntityScanner.isExternal) {
       scanTextDecl()
     }
+    pName
   }
 
   /**
@@ -1177,8 +1179,9 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
         reportFatalError("MSG_NOTATION_NAME_REQUIRED_FOR_UNPARSED_ENTITYDECL", Array(name))
       }
     }
+    var paramEntityRefs = 0
     if (systemId eq null) {
-      scanEntityValue(fLiteral, fLiteral2)
+      paramEntityRefs = scanEntityValue(fLiteral, fLiteral2)
       fStringBuffer.clear()
       fStringBuffer2.clear()
       fStringBuffer.append(fLiteral.ch, fLiteral.offset, fLiteral.length)
@@ -1209,7 +1212,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
         }
       }
     } else {
-      fEntityManager.addInternalEntity(name, fStringBuffer.toString)
+      fEntityManager.addInternalEntity(name, fStringBuffer.toString, paramEntityRefs)
       if (fDTDHandler ne null) {
         fDTDHandler.internalEntityDecl(name, fStringBuffer, fStringBuffer2, null)
       }
@@ -1223,17 +1226,19 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
    * @param value The string to fill in with the value.
    * @param nonNormalizedValue The string to fill in with the
    *                           non-normalized value.
+   * @return Count of direct and indirect references to parameter entities in the value of the entity.
    *
    * *Note:* This method uses fString, fStringBuffer (through
    * the use of scanCharReferenceValue), and fStringBuffer2, anything in them
    * at the time of calling is lost.
    */
-  protected def scanEntityValue(value: XMLString, nonNormalizedValue: XMLString): Unit = {
+  protected def scanEntityValue(value: XMLString, nonNormalizedValue: XMLString): Int = {
     val quote = fEntityScanner.scanChar()
     if (quote != '\'' && quote != '"') {
       reportFatalError("OpenQuoteMissingInDecl", null)
     }
     val entityDepth = fEntityDepth
+    var paramEntityRefs = 0
     var literal = fString
     var literal2 = fString
     if (fEntityScanner.scanLiteral(quote, fString) != quote) {
@@ -1264,27 +1269,26 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
             }
           }
         } else if (fEntityScanner.skipChar('%')) {
-          import scala.util.control.Breaks._
-          breakable {
-            while (true) {
-              fStringBuffer2.append('%')
-              val peName = fEntityScanner.scanName()
-              if (peName eq null) {
-                reportFatalError("NameRequiredInPEReference", null)
-              } else if (!fEntityScanner.skipChar(';')) {
-                reportFatalError("SemicolonRequiredInPEReference", Array(peName))
-              } else {
-                if (scanningInternalSubset()) {
-                  reportFatalError("PEReferenceWithinMarkup", Array(peName))
-                }
-                fStringBuffer2.append(peName)
-                fStringBuffer2.append(';')
+          var exitPELoop = false
+          while (! exitPELoop) {
+            fStringBuffer2.append('%')
+            val peName = fEntityScanner.scanName()
+            if (peName eq null) {
+              reportFatalError("NameRequiredInPEReference", null)
+            } else if (!fEntityScanner.skipChar(';')) {
+              reportFatalError("SemicolonRequiredInPEReference", Array(peName))
+            } else {
+              if (scanningInternalSubset()) {
+                reportFatalError("PEReferenceWithinMarkup", Array(peName))
               }
-              startPE(peName, literal = true)
-              fEntityScanner.skipSpaces()
-              if (!fEntityScanner.skipChar('%'))
-                break()
+              fStringBuffer2.append(peName)
+              fStringBuffer2.append(';')
             }
+            val pNameWithPct = startPE(peName, literal = true)
+            paramEntityRefs += (fEntityManager.getParamEntityRefCount(pNameWithPct) + 1)
+            fEntityScanner.skipSpaces()
+            if (!fEntityScanner.skipChar('%'))
+              exitPELoop = true
           }
         } else {
           val c = fEntityScanner.peekChar()
@@ -1311,6 +1315,7 @@ class XMLDTDScannerImpl extends XMLScanner with XMLDTDScanner with XMLComponent 
     if (!fEntityScanner.skipChar(quote)) {
       reportFatalError("CloseQuoteMissingInDecl", null)
     }
+    paramEntityRefs
   }
 
   /**

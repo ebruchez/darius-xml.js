@@ -280,5 +280,92 @@ object XMLScannerTest extends TestSuite {
       val xml = "<123root/>"
       parseExpectingFatalError(xml)
     }
+
+    test("Internal parameter entity containing &#xD; in entity declaration preserves carriage return in scanLiteral (0a785cfe)") {
+      // When &#xD; is inside a parameter entity %pe, %pe's replacement text contains a literal '\r' inside an internal entity (!external).
+      // When %pe; is expanded to declare <!ENTITY ge 'a\rb'>, scanLiteral scans the literal inside %pe (!external) and preserves '\r'.
+      val externalDtd =
+        """<!ENTITY % pe "<!ENTITY ge 'a&#xD;b'>">
+          |%pe;
+          |""".stripMargin
+      val xml =
+        """<?xml version="1.0" encoding="UTF-8"?>
+          |<!DOCTYPE root SYSTEM "external.dtd">
+          |<root>&ge;</root>
+          |""".stripMargin
+
+      val config = new NonValidatingConfiguration(new SymbolTable)
+      val parser = new SAXParser(config)
+      parser.setEntityResolver(new org.xml.sax.EntityResolver {
+        def resolveEntity(publicId: String, systemId: String): InputSource = {
+          val is = new InputSource(new ByteArrayInputStream(externalDtd.getBytes("UTF-8")))
+          is.setSystemId(systemId)
+          is
+        }
+      })
+      var textContent = ""
+      parser.setContentHandler(new DefaultHandler {
+        override def characters(ch: Array[Char], start: Int, length: Int): Unit = {
+          textContent += new String(ch, start, length)
+        }
+      })
+      val source = new InputSource(new ByteArrayInputStream(xml.getBytes("UTF-8")))
+      source.setSystemId("file:///test.xml")
+      parser.parse(source)
+      assert(textContent == "a\rb")
+    }
+
+    test("External entity ending with carriage return \\r does not throw ArrayIndexOutOfBoundsException (da8efa66)") {
+      val xml = "<root/>\r"
+      var rootSeen = false
+      parse(xml, new DefaultHandler {
+        override def startElement(uri: String, localName: String, qName: String, attributes: Attributes): Unit = {
+          if (qName == "root")
+            rootSeen = true
+        }
+      })
+      assert(rootSeen)
+    }
+
+    test("UTF-16BE and UTF-16LE auto-detection returns specific endian encoding name (XERCESJ-1574)") {
+      val xml = "<?xml version=\"1.0\"?><root>hello</root>"
+
+      def detectEncoding(bytes: Array[Byte]): String = {
+        val config = new NonValidatingConfiguration(new SymbolTable)
+        var detected: String = null
+        config.setDocumentHandler(new org.orbeon.apache.xerces.xni.XMLDocumentHandler {
+          def startDocument(locator: org.orbeon.apache.xerces.xni.XMLLocator, encoding: String, namespaceContext: org.orbeon.apache.xerces.xni.NamespaceContext, augs: org.orbeon.apache.xerces.xni.Augmentations): Unit =
+            detected = encoding
+          def xmlDecl(version: String, encoding: String, standalone: String, augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def doctypeDecl(rootElement: String, publicId: String, systemId: String, augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def comment(text: org.orbeon.apache.xerces.xni.XMLString, augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def processingInstruction(target: String, data: org.orbeon.apache.xerces.xni.XMLString, augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def startElement(element: org.orbeon.apache.xerces.xni.QName, attributes: org.orbeon.apache.xerces.xni.XMLAttributes, augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def emptyElement(element: org.orbeon.apache.xerces.xni.QName, attributes: org.orbeon.apache.xerces.xni.XMLAttributes, augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def startGeneralEntity(name: String, identifier: org.orbeon.apache.xerces.xni.XMLResourceIdentifier, encoding: String, augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def textDecl(version: String, encoding: String, augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def endGeneralEntity(name: String, augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def characters(text: org.orbeon.apache.xerces.xni.XMLString, augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def ignorableWhitespace(text: org.orbeon.apache.xerces.xni.XMLString, augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def endElement(element: org.orbeon.apache.xerces.xni.QName, augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def startCDATA(augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def endCDATA(augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def endDocument(augs: org.orbeon.apache.xerces.xni.Augmentations): Unit = ()
+          def setDocumentSource(source: org.orbeon.apache.xerces.xni.parser.XMLDocumentSource): Unit = ()
+          def getDocumentSource: org.orbeon.apache.xerces.xni.parser.XMLDocumentSource = null
+        })
+        config.parse(new org.orbeon.apache.xerces.xni.parser.XMLInputSource(null, "file:///test.xml", null, new ByteArrayInputStream(bytes), null))
+        detected
+      }
+
+      assert(detectEncoding(xml.getBytes("UTF-16BE")) == "UTF-16BE")
+      assert(detectEncoding(xml.getBytes("UTF-16LE")) == "UTF-16LE")
+    }
+
+    test("Pseudo-attribute scanning in XML declaration rejects unknown pseudo-attribute names (6859bbc6)") {
+      val invalidXml = """<?xml unknown="1.0"?><root/>"""
+      val ex = parseExpectingFatalError(invalidXml)
+      assert(ex.getMessage == "A pseudo attribute name is expected.")
+    }
   }
 }

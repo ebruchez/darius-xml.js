@@ -158,7 +158,7 @@ abstract class AbstractSAXParser(config: XMLParserConfiguration)
         throw new XNIException(e)
     }
     if (fDeclHandler != null)
-      fDeclaredAttrs = new SymbolHash
+      fDeclaredAttrs = new SymbolHash(25)
   }
 
   override def startGeneralEntity(

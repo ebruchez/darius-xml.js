@@ -16,7 +16,7 @@
  */
 package org.orbeon.apache.xerces.util
 
-class SymbolHash(fTableSize: Int) {
+class SymbolHash(protected var fTableSize: Int) {
 
   import SymbolHash._
 
@@ -25,8 +25,14 @@ class SymbolHash(fTableSize: Int) {
   /** Number of elements. */
   protected var fNum = 0
 
+  /**
+   * Array of randomly selected hash function multipliers or `null`
+   * if the default String.hashCode() function should be used.
+   */
+  protected var fHashMultipliers: Array[Int] = null
+
   def this() =
-    this(101)
+    this(SymbolHash.TABLE_SIZE)
 
   /**
    * Adds the key/value mapping to the key table. If the key already exists,
@@ -37,18 +43,37 @@ class SymbolHash(fTableSize: Int) {
    * @param value
    */
   def put(key: Any, value: Any): Unit = {
-    val bucket = (key.hashCode & 0x7FFFFFFF) % fTableSize
-    var entry = search(key, bucket)
-
-    // replace old value
-    if (entry != null)
-      entry.value = value
-    else {
-      // create new entry
-      entry = Entry(key, value, fBuckets(bucket))
-      fBuckets(bucket) = entry
-      fNum += 1
+    // search for identical key
+    var collisionCount = 0
+    val hash = this.hash(key)
+    var bucket = hash % fTableSize
+    var entry = fBuckets(bucket)
+    while (entry ne null) {
+      if (key == entry.key) {
+        // replace old value
+        entry.value = value
+        return
+      }
+      collisionCount += 1
+      entry = entry.next
     }
+
+    if (fNum >= fTableSize) {
+      // Rehash the table if the number of entries
+      // would exceed the number of buckets.
+      rehash()
+      bucket = hash % fTableSize
+    } else if (collisionCount >= MAX_HASH_COLLISIONS && key.isInstanceOf[String]) {
+      // Select a new hash function and rehash the table if
+      // MAX_HASH_COLLISIONS is exceeded.
+      rebalance()
+      bucket = this.hash(key) % fTableSize
+    }
+
+    // create new entry
+    entry = Entry(key, value, fBuckets(bucket))
+    fBuckets(bucket) = entry
+    fNum += 1
   }
 
   /**
@@ -58,7 +83,7 @@ class SymbolHash(fTableSize: Int) {
    * @return the value associated with the given key.
    */
   def get(key: Any): Any = {
-    val bucket = (key.hashCode & 0x7FFFFFFF) % fTableSize
+    val bucket = hash(key) % fTableSize
     val entry = search(key, bucket)
     if (entry != null)
       entry.value
@@ -127,6 +152,7 @@ class SymbolHash(fTableSize: Int) {
   def makeClone: SymbolHash = {
     val newTable = new SymbolHash(fTableSize)
     newTable.fNum = fNum
+    newTable.fHashMultipliers = if (fHashMultipliers ne null) fHashMultipliers.clone() else null
     for (i <- 0 until fTableSize)
       if (fBuckets(i) != null)
         newTable.fBuckets(i) = fBuckets(i).makeClone
@@ -134,13 +160,14 @@ class SymbolHash(fTableSize: Int) {
   }
 
   /**
-   * Remove all key/value assocaition. This tries to save a bit of GC'ing
+   * Remove all key/value association. This tries to save a bit of GC'ing
    * by at least keeping the fBuckets array around.
    */
   def clear(): Unit = {
     for (i <- 0 until fTableSize)
       fBuckets(i) = null
     fNum = 0
+    fHashMultipliers = null
   }
 
   protected def search(key: Any, bucket: Int): Entry = {
@@ -153,15 +180,93 @@ class SymbolHash(fTableSize: Int) {
     }
     null
   }
+
+  /**
+   * Returns a hashcode value for the specified key.
+   *
+   * @param key The key to hash.
+   */
+  protected def hash(key: Any): Int =
+    if ((fHashMultipliers eq null) || !key.isInstanceOf[String])
+      key.hashCode & 0x7FFFFFFF
+    else
+      hash0(key.asInstanceOf[String])
+
+  private def hash0(symbol: String): Int = {
+    var code = 0
+    val length = symbol.length
+    val multipliers = fHashMultipliers
+    var i = 0
+    while (i < length) {
+      code = code * multipliers(i & MULTIPLIERS_MASK) + symbol.charAt(i)
+      i += 1
+    }
+    code & 0x7FFFFFFF
+  }
+
+  /**
+   * Increases the capacity of and internally reorganizes this
+   * SymbolHash, in order to accommodate and access its entries more
+   * efficiently. This method is called automatically when the
+   * number of keys in the SymbolHash exceeds its number of buckets.
+   */
+  protected def rehash(): Unit =
+    rehashCommon((fBuckets.length << 1) + 1)
+
+  /**
+   * Randomly selects a new hash function and reorganizes this SymbolHash
+   * in order to more evenly distribute its entries across the table. This
+   * method is called automatically when the number keys in one of the
+   * SymbolHash's buckets exceeds MAX_HASH_COLLISIONS.
+   */
+  protected def rebalance(): Unit = {
+    if (fHashMultipliers eq null)
+      fHashMultipliers = new Array[Int](MULTIPLIERS_SIZE)
+    PrimeNumberSequenceGenerator.generateSequence(fHashMultipliers)
+    rehashCommon(fBuckets.length)
+  }
+
+  private def rehashCommon(newCapacity: Int): Unit = {
+    val oldCapacity = fBuckets.length
+    val oldTable = fBuckets
+
+    val newTable = new Array[Entry](newCapacity)
+
+    fBuckets = newTable
+    fTableSize = fBuckets.length
+
+    var i = oldCapacity
+    while (i > 0) {
+      i -= 1
+      var old = oldTable(i)
+      while (old ne null) {
+        val e = old
+        old = old.next
+
+        val index = hash(e.key) % newCapacity
+        e.next = newTable(index)
+        newTable(index) = e
+      }
+    }
+  }
 }
 
 object SymbolHash {
+
+  /** Default table size. */
+  protected val TABLE_SIZE = 101
+
+  /** Maximum hash collisions per bucket. */
+  protected val MAX_HASH_COLLISIONS = 40
+
+  protected val MULTIPLIERS_SIZE = 1 << 5
+  protected val MULTIPLIERS_MASK = MULTIPLIERS_SIZE - 1
 
   /**
    * This class is a key table entry. Each entry acts as a node
    * in a linked list.
    */
-  case class Entry(var key: Any, var value: Any, next: Entry) {
+  case class Entry(var key: Any, var value: Any, var next: Entry) {
     def makeClone: Entry =
       this.copy(next = if (next ne null) next.makeClone else null)
   }

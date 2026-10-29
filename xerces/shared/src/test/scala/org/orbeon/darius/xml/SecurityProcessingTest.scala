@@ -20,9 +20,10 @@ package org.orbeon.darius.xml
 import java.io.ByteArrayInputStream
 import org.orbeon.apache.xerces.impl.Constants
 import org.orbeon.apache.xerces.parsers.{NonValidatingConfiguration, SAXParser}
-import org.orbeon.apache.xerces.util.{SecurityManager, SymbolTable}
+import org.orbeon.apache.xerces.util.{SecurityManager, SymbolHash, SymbolTable, XMLAttributesImpl}
+import org.orbeon.apache.xerces.xni.QName
 import org.orbeon.apache.xerces.xni.parser.{XMLInputSource, XMLParseException}
-import org.xml.sax.{ErrorHandler, InputSource, SAXException, SAXParseException}
+import org.xml.sax.{EntityResolver, ErrorHandler, InputSource, SAXException, SAXParseException}
 import org.xml.sax.helpers.DefaultHandler
 import utest._
 
@@ -203,6 +204,126 @@ object SecurityProcessingTest extends TestSuite {
         parseXml(parser, circularXml)
       }
       assert(reportedFatal)
+    }
+
+    test("Indirect parameter entity expansion in external DTD subset is counted against limit") {
+      val externalDtd =
+        """<!ENTITY % x0 "<!---->">
+          |<!ENTITY % x1 "%x0;%x0;">
+          |<!ENTITY % x2 "%x1;%x1;">
+          |<!ENTITY % x3 "%x2;%x2;">
+          |<!ENTITY % x4 "%x3;%x3;">
+          |<!ENTITY % x5 "%x4;%x4;">
+          |<!ENTITY % x6 "%x5;%x5;">
+          |<!ENTITY % x7 "%x6;%x6;">
+          |%x7;
+          |""".stripMargin
+      val xml =
+        """<?xml version="1.0" encoding="UTF-8"?>
+          |<!DOCTYPE root SYSTEM "external.dtd">
+          |<root/>
+          |""".stripMargin
+
+      val parser = createParser(limit = 100)
+      parser.setEntityResolver(new EntityResolver {
+        def resolveEntity(publicId: String, systemId: String): InputSource = {
+          val is = new InputSource(new ByteArrayInputStream(externalDtd.getBytes("UTF-8")))
+          is.setSystemId(systemId)
+          is
+        }
+      })
+
+      var fatalErrorMessage: String = null
+      parser.setErrorHandler(new ErrorHandler {
+        def warning(e: SAXParseException): Unit = ()
+        def error(e: SAXParseException): Unit = ()
+        def fatalError(e: SAXParseException): Unit = {
+          fatalErrorMessage = e.getMessage
+          throw e
+        }
+      })
+
+      intercept[SAXParseException] {
+        val in = new ByteArrayInputStream(xml.getBytes("UTF-8"))
+        val source = new InputSource(in)
+        source.setSystemId("file:///test.xml")
+        parser.parse(source)
+      }
+      assert(fatalErrorMessage != null)
+      assert(fatalErrorMessage.contains("100"))
+      assert(fatalErrorMessage.contains("entity expansions"))
+    }
+
+    test("Hash collision DoS mitigation in SymbolTable, SymbolHash, and XMLAttributesImpl") {
+      // Generate 64 distinct strings that all share the exact same String.hashCode()
+      // because "Aa".hashCode == "BB".hashCode == 2112
+      val collidingStrings: IndexedSeq[String] = (0 until 64).map { mask =>
+        (0 until 6).map(bit => if (((mask >> bit) & 1) == 0) "Aa" else "BB").mkString("attr_", "", "")
+      }
+      assert(collidingStrings.map(_.hashCode).distinct.size == 1)
+
+      // 1. SymbolTable rebalance under heavy collisions (> 40)
+      val st = new SymbolTable(101)
+      for (s <- collidingStrings) {
+        val sym = st.addSymbol(s)
+        assert(sym == s)
+      }
+      for (s <- collidingStrings) {
+        assert(st.containsSymbol(s))
+        val chars = s.toCharArray
+        assert(st.containsSymbol(chars, 0, chars.length))
+        assert(st.addSymbol(chars, 0, chars.length) eq st.addSymbol(s))
+      }
+
+      // 2. SymbolHash rebalance under heavy collisions and dynamic rehash
+      val sh = new SymbolHash(11)
+      for ((s, idx) <- collidingStrings.zipWithIndex) {
+        sh.put(s, idx)
+      }
+      assert(sh.getLength == collidingStrings.size)
+      for ((s, idx) <- collidingStrings.zipWithIndex) {
+        assert(sh.get(s) == idx)
+      }
+      val cloned = sh.makeClone
+      assert(cloned.getLength == collidingStrings.size)
+      for ((s, idx) <- collidingStrings.zipWithIndex) {
+        assert(cloned.get(s) == idx)
+      }
+
+      // 3. XMLAttributesImpl table view growth and collision rebalancing (non-NS and NS)
+      val attrs = new XMLAttributesImpl()
+      attrs.setNamespaces(false)
+      for ((s, idx) <- collidingStrings.zipWithIndex) {
+        val qn = new QName(null, s, s, null)
+        attrs.addAttribute(qn, "CDATA", s"val_$idx")
+      }
+      assert(attrs.getLength == collidingStrings.size)
+      for ((s, idx) <- collidingStrings.zipWithIndex) {
+        assert(attrs.getValue(s) == s"val_$idx")
+      }
+      // Updating an existing attribute should overwrite in place without growing length
+      val dupQn = new QName(null, collidingStrings.head, collidingStrings.head, null)
+      attrs.addAttribute(dupQn, "CDATA", "updated")
+      assert(attrs.getLength == collidingStrings.size)
+      assert(attrs.getValue(collidingStrings.head) == "updated")
+
+      // Namespace-aware collision rebalancing via addAttributeNS + checkDuplicatesNS
+      val nsAttrs = new XMLAttributesImpl()
+      nsAttrs.setNamespaces(true)
+      val nsUri = "http://example.com/ns"
+      for ((s, idx) <- collidingStrings.zipWithIndex) {
+        val raw = s"p:$s"
+        val qn = new QName("p", s, raw, nsUri)
+        nsAttrs.addAttributeNS(qn, "CDATA", s"nsval_$idx")
+      }
+      assert(nsAttrs.checkDuplicatesNS() eq null)
+      for ((s, idx) <- collidingStrings.zipWithIndex) {
+        assert(nsAttrs.getValue(nsUri, s) == s"nsval_$idx")
+      }
+      // Adding a duplicate expanded name with a different prefix should be caught by checkDuplicatesNS
+      val dupNsQn = new QName("p2", collidingStrings.head, s"p2:${collidingStrings.head}", nsUri)
+      nsAttrs.addAttributeNS(dupNsQn, "CDATA", "dup")
+      assert(nsAttrs.checkDuplicatesNS() ne null)
     }
   }
 }

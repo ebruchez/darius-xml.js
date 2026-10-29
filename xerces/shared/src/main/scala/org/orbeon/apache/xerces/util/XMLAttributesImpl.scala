@@ -30,6 +30,12 @@ object XMLAttributesImpl {
    */
   protected val TABLE_SIZE = 101
 
+  /** Maximum hash collisions per bucket. */
+  protected val MAX_HASH_COLLISIONS = 40
+
+  protected val MULTIPLIERS_SIZE = 1 << 5
+  protected val MULTIPLIERS_MASK = MULTIPLIERS_SIZE - 1
+
   /**
    * Threshold at which an instance is treated
    * as a large attribute list.
@@ -115,6 +121,12 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    */
   protected var fIsTableViewConsistent: Boolean = false
 
+  /**
+   * Array of randomly selected hash function multipliers or `null`
+   * if the default String.hashCode() function should be used.
+   */
+  protected var fHashMultipliers: Array[Int] = null
+
   for (i <- fAttributes.indices) {
     fAttributes(i) = new Attribute()
   }
@@ -182,7 +194,8 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
       }
     } else if ((name.uri eq null) || name.uri.isEmpty ||
       { index = getIndexFast(name.uri, name.localpart); index } == -1) {
-      if (!fIsTableViewConsistent || fLength == SIZE_LIMIT) {
+      if (!fIsTableViewConsistent || fLength == SIZE_LIMIT ||
+        (fLength > SIZE_LIMIT && fLength > fTableViewBuckets)) {
         prepareAndPopulateTableView()
         fIsTableViewConsistent = true
       }
@@ -202,13 +215,16 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
         fAttributes(index).next = null
         fAttributeTableView(bucket) = fAttributes(index)
       } else {
+        var collisionCount = 0
         var found = fAttributeTableView(bucket)
         var exitLoop = false
         while (! exitLoop && (found ne null)) {
           if (found.name.rawname == name.rawname)
             exitLoop = true
-          else
+          else {
             found = found.next
+            collisionCount += 1
+          }
         }
         if (found eq null) {
           index = fLength
@@ -221,8 +237,13 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
             fAttributes = attributes
           }
           fLength += 1
-          fAttributes(index).next = fAttributeTableView(bucket)
-          fAttributeTableView(bucket) = fAttributes(index)
+          if (collisionCount >= MAX_HASH_COLLISIONS) {
+            fAttributes(index).name.setValues(name)
+            rebalanceTableView(fLength)
+          } else {
+            fAttributes(index).next = fAttributeTableView(bucket)
+            fAttributeTableView(bucket) = fAttributes(index)
+          }
         } else {
           index = getIndexFast(name.rawname)
         }
@@ -742,13 +763,15 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * otherwise null.
    */
   def checkDuplicatesNS(): QName = {
-    if (fLength <= SIZE_LIMIT) {
+    val length = fLength
+    if (length <= SIZE_LIMIT) {
+      val attributes = fAttributes
       var i = 0
-      while (i < fLength - 1) {
-        val att1 = fAttributes(i)
+      while (i < length - 1) {
+        val att1 = attributes(i)
         var j = i + 1
-        while (j < fLength) {
-          val att2 = fAttributes(j)
+        while (j < length) {
+          val att2 = attributes(j)
           if (att1.name.localpart == att2.name.localpart && att1.name.uri == att2.name.uri) {
             return att2.name
           }
@@ -756,32 +779,49 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
         }
         i += 1
       }
+      null
     } else {
-      fIsTableViewConsistent = false
-      prepareTableView()
-      var attr: Attribute = null
-      var bucket: Int = 0
-      var i = fLength - 1
-      while (i >= 0) {
-        attr = fAttributes(i)
-        bucket = getTableViewBucket(attr.name.localpart, attr.name.uri)
-        if (fAttributeTableViewChainState(bucket) != fLargeCount) {
-          fAttributeTableViewChainState(bucket) = fLargeCount
-          attr.next = null
-          fAttributeTableView(bucket) = attr
-        } else {
-          var found = fAttributeTableView(bucket)
-          while (found ne null) {
-            if (found.name.localpart == attr.name.localpart && found.name.uri == attr.name.uri) {
-              return attr.name
-            }
-            found = found.next
+      checkManyDuplicatesNS()
+    }
+  }
+
+  private def checkManyDuplicatesNS(): QName = {
+    fIsTableViewConsistent = false
+    prepareTableView()
+    var attr: Attribute = null
+    var bucket: Int = 0
+    val length = fLength
+    val attributes = fAttributes
+    val attributeTableView = fAttributeTableView
+    val attributeTableViewChainState = fAttributeTableViewChainState
+    var largeCount = fLargeCount
+    var i = 0
+    while (i < length) {
+      attr = attributes(i)
+      bucket = getTableViewBucket(attr.name.localpart, attr.name.uri)
+      if (attributeTableViewChainState(bucket) != largeCount) {
+        attributeTableViewChainState(bucket) = largeCount
+        attr.next = null
+        attributeTableView(bucket) = attr
+      } else {
+        var collisionCount = 0
+        var found = attributeTableView(bucket)
+        while (found ne null) {
+          if (found.name.localpart == attr.name.localpart && found.name.uri == attr.name.uri) {
+            return attr.name
           }
-          attr.next = fAttributeTableView(bucket)
-          fAttributeTableView(bucket) = attr
+          found = found.next
+          collisionCount += 1
         }
-        i -= 1
+        if (collisionCount >= MAX_HASH_COLLISIONS) {
+          rebalanceTableViewNS(i + 1)
+          largeCount = fLargeCount
+        } else {
+          attr.next = attributeTableView(bucket)
+          attributeTableView(bucket) = attr
+        }
       }
+      i += 1
     }
     null
   }
@@ -834,7 +874,7 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * would be hashed
    */
   protected def getTableViewBucket(qname: String): Int = {
-    (qname.hashCode & 0x7FFFFFFF) % fTableViewBuckets
+    (hash(qname) & 0x7FFFFFFF) % fTableViewBuckets
   }
 
   /**
@@ -848,10 +888,34 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    */
   protected def getTableViewBucket(localpart: String, uri: String): Int = {
     if (uri eq null) {
-      (localpart.hashCode & 0x7FFFFFFF) % fTableViewBuckets
+      (hash(localpart) & 0x7FFFFFFF) % fTableViewBuckets
     } else {
-      ((localpart.hashCode + uri.hashCode) & 0x7FFFFFFF) % fTableViewBuckets
+      (hash(localpart, uri) & 0x7FFFFFFF) % fTableViewBuckets
     }
+  }
+
+  private def hash(localpart: String): Int =
+    if (fHashMultipliers eq null)
+      localpart.hashCode
+    else
+      hash0(localpart)
+
+  private def hash(localpart: String, uri: String): Int =
+    if (fHashMultipliers eq null)
+      localpart.hashCode + uri.hashCode * 31
+    else
+      hash0(localpart) + hash0(uri) * fHashMultipliers(MULTIPLIERS_SIZE)
+
+  private def hash0(symbol: String): Int = {
+    var code = 0
+    val length = symbol.length
+    val multipliers = fHashMultipliers
+    var i = 0
+    while (i < length) {
+      code = code * multipliers(i & MULTIPLIERS_MASK) + symbol.charAt(i)
+      i += 1
+    }
+    code
   }
 
   /**
@@ -872,9 +936,33 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
   }
 
   /**
+   * Increases the capacity of the table view.
+   */
+  private def growTableView(): Unit = {
+    val length = fLength
+    var tableViewBuckets = fTableViewBuckets
+    var exitLoop = false
+    while (! exitLoop) {
+      tableViewBuckets = (tableViewBuckets << 1) + 1
+      if (tableViewBuckets < 0) {
+        tableViewBuckets = Int.MaxValue
+        exitLoop = true
+      } else if (length <= tableViewBuckets) {
+        exitLoop = true
+      }
+    }
+    fTableViewBuckets = tableViewBuckets
+    fAttributeTableView = null
+    fLargeCount = 1
+  }
+
+  /**
    * Prepares the table view of the attributes list for use.
    */
   protected def prepareTableView(): Unit = {
+    if (fLength > fTableViewBuckets) {
+      growTableView()
+    }
     if (fAttributeTableView eq null) {
       fAttributeTableView = new Array[Attribute](fTableViewBuckets)
       fAttributeTableViewChainState = new Array[Int](fTableViewBuckets)
@@ -888,11 +976,15 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
    * and populates it with the attributes which have been
    * previously read.
    */
-  protected def prepareAndPopulateTableView(): Unit = {
+  protected def prepareAndPopulateTableView(): Unit =
+    prepareAndPopulateTableView(fLength)
+
+  private def prepareAndPopulateTableView(count: Int): Unit = {
     prepareTableView()
     var attr: Attribute = null
     var bucket: Int = 0
-    for (i <- 0 until fLength) {
+    var i = 0
+    while (i < count) {
       attr = fAttributes(i)
       bucket = getTableViewBucket(attr.name.rawname)
       if (fAttributeTableViewChainState(bucket) != fLargeCount) {
@@ -903,6 +995,53 @@ class XMLAttributesImpl(protected var fTableViewBuckets: Int) extends XMLAttribu
         attr.next = fAttributeTableView(bucket)
         fAttributeTableView(bucket) = attr
       }
+      i += 1
     }
+  }
+
+  private def prepareAndPopulateTableViewNS(count: Int): Unit = {
+    prepareTableView()
+    var attr: Attribute = null
+    var bucket: Int = 0
+    var i = 0
+    while (i < count) {
+      attr = fAttributes(i)
+      bucket = getTableViewBucket(attr.name.localpart, attr.name.uri)
+      if (fAttributeTableViewChainState(bucket) != fLargeCount) {
+        fAttributeTableViewChainState(bucket) = fLargeCount
+        attr.next = null
+        fAttributeTableView(bucket) = attr
+      } else {
+        attr.next = fAttributeTableView(bucket)
+        fAttributeTableView(bucket) = attr
+      }
+      i += 1
+    }
+  }
+
+  /**
+   * Randomly selects a new hash function and reorganizes the table view
+   * in order to more evenly distribute its entries. This method is called
+   * automatically when the number of attributes in one bucket exceeds
+   * MAX_HASH_COLLISIONS.
+   */
+  private def rebalanceTableView(count: Int): Unit = {
+    if (fHashMultipliers eq null)
+      fHashMultipliers = new Array[Int](MULTIPLIERS_SIZE + 1)
+    PrimeNumberSequenceGenerator.generateSequence(fHashMultipliers)
+    prepareAndPopulateTableView(count)
+  }
+
+  /**
+   * Randomly selects a new hash function and reorganizes the table view
+   * in order to more evenly distribute its entries. This method is called
+   * automatically when the number of attributes in one bucket exceeds
+   * MAX_HASH_COLLISIONS.
+   */
+  private def rebalanceTableViewNS(count: Int): Unit = {
+    if (fHashMultipliers eq null)
+      fHashMultipliers = new Array[Int](MULTIPLIERS_SIZE + 1)
+    PrimeNumberSequenceGenerator.generateSequence(fHashMultipliers)
+    prepareAndPopulateTableViewNS(count)
   }
 }

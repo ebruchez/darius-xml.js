@@ -168,5 +168,15 @@ object TranslationFixesTest extends TestSuite {
       sec.setEntityExpansionLimit(50000)
       assert(sec.getEntityExpansionLimit() == 50000)
     }
+
+    test("XMLStringBuffer array doubling on append (5ad21ad4)") {
+      val buf = new org.orbeon.apache.xerces.util.XMLStringBuffer()
+      val chunk = ("0123456789" * 10).toCharArray
+      for (_ <- 1 to 20) {
+        buf.append(chunk, 0, chunk.length)
+      }
+      assert(buf.length == 2000)
+      assert(buf.toString == ("0123456789" * 200))
+    }
   }
 }

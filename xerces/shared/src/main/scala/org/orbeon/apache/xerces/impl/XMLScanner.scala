@@ -423,7 +423,7 @@ abstract class XMLScanner extends XMLComponent {
    * at the time of calling is lost.
    */
   def scanPseudoAttribute(scanningTextDecl: Boolean, value: XMLString): String = {
-    val name = fEntityScanner.scanName()
+    val name = scanPseudoAttributeName()
     XMLEntityManager.print(fEntityManager.getCurrentEntity)
     if (name eq null) {
       reportFatalError("PseudoAttrNameExpected", null)
@@ -466,6 +466,23 @@ abstract class XMLScanner extends XMLComponent {
         Array(name))
     }
     name
+  }
+
+  /**
+   * Scans the name of a pseudo attribute. The only legal names
+   * in XML 1.0/1.1 documents are 'version', 'encoding' and 'standalone'.
+   *
+   * @return the name of the pseudo attribute or `null` if a legal
+   * pseudo attribute name could not be scanned.
+   */
+  private def scanPseudoAttributeName(): String = {
+    val ch = fEntityScanner.peekChar()
+    ch match {
+      case 'v' if fEntityScanner.skipString(XMLScanner.fVersionSymbol)    => XMLScanner.fVersionSymbol
+      case 'e' if fEntityScanner.skipString(XMLScanner.fEncodingSymbol)   => XMLScanner.fEncodingSymbol
+      case 's' if fEntityScanner.skipString(XMLScanner.fStandaloneSymbol) => XMLScanner.fStandaloneSymbol
+      case _                                                              => null
+    }
   }
 
   /**
