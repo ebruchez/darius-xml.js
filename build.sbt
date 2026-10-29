@@ -20,8 +20,7 @@ ThisBuild / githubRepository  := "xerces-xml"
 ThisBuild / githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
 ThisBuild / traceLevel        := 0
 
-//lazy val xerces = (crossProject(JVMPlatform, JSPlatform, NativePlatform).crossType(CrossType.Full) in file("xerces"))
-lazy val xerces = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full) in file("xerces"))
+lazy val xerces = (crossProject(JVMPlatform, JSPlatform, NativePlatform).crossType(CrossType.Full) in file("xerces"))
   .settings(
     organization := "org.orbeon",
     name         := "xerces",
@@ -47,9 +46,9 @@ lazy val xerces = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Ful
   .jsSettings(
     libraryDependencies ++= Seq(("org.xml" %%% "sax" % SaxVersion).cross(CrossVersion.for2_13Use3))
   )
-//  .nativeSettings(
-//    libraryDependencies ++= Seq("org.xml" %%% "sax" % SaxVersion)
-//  )
+  .nativeSettings(
+    libraryDependencies ++= Seq(("org.xml" %%% "sax" % SaxVersion).cross(CrossVersion.for2_13Use3))
+  )
 
 lazy val xercesJS = xerces.js
   .settings(
@@ -64,14 +63,13 @@ lazy val xercesJVM = xerces.jvm
     libraryDependencies += "org.scala-js" %% "scalajs-stubs" % ScalaJsStubsVersion % Provided,
   )
 
-//lazy val xercesNative = xerces.native
-//  .settings(
-//    libraryDependencies += "org.scala-js" %% "scalajs-stubs" % ScalaJsStubsVersion % Provided,
-//  )
+lazy val xercesNative = xerces.native
+  .settings(
+    libraryDependencies += "org.scala-js" %% "scalajs-stubs" % ScalaJsStubsVersion % Provided,
+  )
 
 lazy val root = project.in(file("."))
-//  .aggregate(xercesJS, xercesJVM, xercesNative)
-  .aggregate(xercesJS, xercesJVM)
+  .aggregate(xercesJS, xercesJVM, xercesNative)
   .settings(
     publish                       := {},
     publishLocal                  := {},
